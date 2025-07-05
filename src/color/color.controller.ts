@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ColorService } from './color.service';
 import { Color } from './color.entity';
 
@@ -12,8 +12,10 @@ export class ColorController {
   }
 
   @Get()
-  findAll() {
-    return this.colorService.findAll();
+  findAll(@Query('offset') offset = 0, @Query('limit') limit = 200) {
+    offset = Number(offset) || 0;
+    limit = Math.min(Number(limit) || 200, 200);
+    return this.colorService.findAll(offset, limit);
   }
 
   @Get(':id')

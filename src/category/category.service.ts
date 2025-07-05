@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
+import { PAGINATION_LIMIT } from '../consts';
 
 @Injectable()
 export class CategoryService {
@@ -10,8 +11,20 @@ export class CategoryService {
     private categoriesRepository: Repository<Category>,
   ) {}
 
-  async findAll(): Promise<Category[]> {
-    return this.categoriesRepository.find({ where: { isActive: true } });
+  async findAll(offset = 0, limit = PAGINATION_LIMIT): Promise<any> {
+    const [data, total] = await this.categoriesRepository.findAndCount({
+      where: { isActive: true },
+      skip: offset,
+      take: limit,
+      order: { id: 'ASC' },
+    });
+    return {
+      total,
+      offset,
+      limit,
+      hasNextPage: offset + limit < total,
+      data,
+    };
   }
 
   async findOne(id: number): Promise<Category> {

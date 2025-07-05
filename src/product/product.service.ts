@@ -6,6 +6,7 @@ import { BrandService } from '../brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { ColorService } from '../color/color.service';
 import { SourceService } from '../source/source.service';
+import { PAGINATION_LIMIT } from '../consts';
 
 @Injectable()
 export class ProductService {
@@ -18,10 +19,31 @@ export class ProductService {
     private sourceService: SourceService,
   ) {}
 
-  async findAll(): Promise<Product[]> {
-    return this.productsRepository.find({
+  async findAll(offset = 0, limit = PAGINATION_LIMIT): Promise<any> {
+    const [data, total] = await this.productsRepository.findAndCount({
       relations: ['brand', 'source', 'categories', 'colors'],
+      skip: offset,
+      take: limit,
+      order: { id: 'ASC' },
     });
+    const mappedData = data.map(product => ({
+      ...product,
+      brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
+      source: product.source ? { id: product.source.id, name: product.source.name } : null,
+      categories: Array.isArray(product.categories)
+        ? product.categories.map(c => ({ id: c.id, name: c.name }))
+        : [],
+      colors: Array.isArray(product.colors)
+        ? product.colors.map(c => ({ id: c.id, name: c.name }))
+        : [],
+    }));
+    return {
+      total,
+      offset,
+      limit,
+      hasNextPage: offset + limit < total,
+      data: mappedData,
+    };
   }
 
   async findOne(id: number): Promise<Product> {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Color } from './color.entity';
+import { PAGINATION_LIMIT } from '../consts';
 
 @Injectable()
 export class ColorService {
@@ -10,8 +11,20 @@ export class ColorService {
     private colorsRepository: Repository<Color>,
   ) {}
 
-  async findAll(): Promise<Color[]> {
-    return this.colorsRepository.find({ where: { isActive: true } });
+  async findAll(offset = 0, limit = PAGINATION_LIMIT): Promise<any> {
+    const [data, total] = await this.colorsRepository.findAndCount({
+      where: { isActive: true },
+      skip: offset,
+      take: limit,
+      order: { id: 'ASC' },
+    });
+    return {
+      total,
+      offset,
+      limit,
+      hasNextPage: offset + limit < total,
+      data,
+    };
   }
 
   async findOne(id: number): Promise<Color> {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from './product.entity';
 
@@ -12,8 +12,10 @@ export class ProductController {
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  findAll(@Query('offset') offset = 0, @Query('limit') limit = 200) {
+    offset = Number(offset) || 0;
+    limit = Math.min(Number(limit) || 200, 200);
+    return this.productService.findAll(offset, limit);
   }
 
   @Get(':id')

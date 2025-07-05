@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Category } from './category.entity';
 
@@ -12,8 +12,10 @@ export class CategoryController {
   }
 
   @Get()
-  findAll() {
-    return this.categoryService.findAll();
+  findAll(@Query('offset') offset = 0, @Query('limit') limit = 200) {
+    offset = Number(offset) || 0;
+    limit = Math.min(Number(limit) || 200, 200);
+    return this.categoryService.findAll(offset, limit);
   }
 
   @Get(':id')
