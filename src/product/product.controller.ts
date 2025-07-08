@@ -12,10 +12,20 @@ export class ProductController {
   }
 
   @Get()
-  findAll(@Query('offset') offset = 0, @Query('limit') limit = 200) {
+  findAll(
+    @Query('offset') offset = 0,
+    @Query('limit') limit = 200,
+    @Query('color') color?: string,
+    @Query('brand') brand?: string,
+    @Query('category') category?: string,
+    @Query('priceFrom') priceFrom?: number,
+    @Query('priceTo') priceTo?: number,
+    @Query('sort') sort?: string,
+    @Query('search') search?: string,
+  ) {
     offset = Number(offset) || 0;
     limit = Math.min(Number(limit) || 200, 200);
-    return this.productService.findAll(offset, limit);
+    return this.productService.findAll({ offset, limit, color, brand, category, priceFrom, priceTo, sort, search });
   }
 
   @Get(':id')

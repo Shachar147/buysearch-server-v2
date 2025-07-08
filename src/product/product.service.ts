@@ -8,6 +8,18 @@ import { ColorService } from '../color/color.service';
 import { SourceService } from '../source/source.service';
 import { PAGINATION_LIMIT } from '../consts';
 
+export interface ProductFilters {
+  color?: string;
+  brand?: string;
+  category?: string;
+  priceFrom?: number;
+  priceTo?: number;
+  sort?: string;
+  search?: string;
+  offset?: number;
+  limit?: number;
+}
+
 @Injectable()
 export class ProductService {
   constructor(
@@ -19,13 +31,42 @@ export class ProductService {
     private sourceService: SourceService,
   ) {}
 
-  async findAll(offset = 0, limit = PAGINATION_LIMIT): Promise<any> {
-    const [data, total] = await this.productsRepository.findAndCount({
-      relations: ['brand', 'source', 'categories', 'colors'],
-      skip: offset,
-      take: limit,
-      order: { id: 'ASC' },
-    });
+  async findAll(filters: ProductFilters = {}): Promise<any> {
+    const qb = this.productsRepository.createQueryBuilder('product')
+      .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.source', 'source')
+      .leftJoinAndSelect('product.categories', 'category')
+      .leftJoinAndSelect('product.colors', 'color');
+
+    if (filters.brand) {
+      qb.andWhere('brand.name = :brand', { brand: filters.brand });
+    }
+    if (filters.category) {
+      qb.andWhere('category.name = :category', { category: filters.category });
+    }
+    if (filters.color) {
+      qb.andWhere('color.name = :color', { color: filters.color });
+    }
+    if (filters.priceFrom !== undefined) {
+      qb.andWhere('product.price >= :priceFrom', { priceFrom: filters.priceFrom });
+    }
+    if (filters.priceTo !== undefined) {
+      qb.andWhere('product.price <= :priceTo', { priceTo: filters.priceTo });
+    }
+    if (filters.search) {
+      qb.andWhere('product.title ILIKE :search', { search: `%${filters.search}%` });
+    }
+    if (filters.sort === 'Price: Low to High') {
+      qb.orderBy('product.price', 'ASC');
+    } else if (filters.sort === 'Price: High to Low') {
+      qb.orderBy('product.price', 'DESC');
+    } else {
+      qb.orderBy('product.id', 'DESC'); // Default sort
+    }
+    const offset = filters.offset || 0;
+    const limit = filters.limit || PAGINATION_LIMIT;
+    qb.skip(offset).take(limit);
+    const [data, total] = await qb.getManyAndCount();
     const mappedData = data.map(product => ({
       ...product,
       brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
