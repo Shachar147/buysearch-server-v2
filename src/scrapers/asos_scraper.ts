@@ -93,9 +93,42 @@ const DEFAULT_HEADERS = {
 // --- Color helpers ----------------------------------------------------
 const COLOR_KEYWORDS = [
   'black', 'white', 'red', 'blue', 'green', 'yellow', 'pink', 'purple',
-  'orange', 'brown', 'grey', 'gray', 'beige', 'navy', 'cream', 'khaki',
-  'burgundy', 'silver', 'gold', 'multi', 'mauve', 'teal', 'coral', 'mint', 'lavender',
+  'orange', 'brown', 'grey', 'beige', 'navy', 'cream', 'khaki', 'turquoise', 'indigo',
+  'burgundy', 'silver', 'gold', 'multi', 'mauve', 'teal', 'coral', 'mint', 'lavender'
 ];
+
+// New: Map of keyword/phrase to canonical color
+const COLOR_ALIASES: Record<string, string> = {
+  'charcoal marl': 'grey',
+  'off white': 'white',
+  'stone': 'beige',
+  'ivory': 'white',
+  'midnight': 'navy',
+  'taupe': 'beige',
+  'camel': 'brown',
+  'ecru': 'beige',
+  'cream': 'cream', // already in keywords, but for completeness
+  'chocolate': 'brown',
+  'denim': 'blue',
+  'olive': 'green',
+  'mustard': 'yellow',
+  'peach': 'pink',
+  'wine': 'burgundy',
+  'lilac': 'purple',
+  'charcoal': 'grey',
+  'marl': 'grey', // often used as 'grey marl', 'charcoal marl', etc.
+  'gray': 'grey',
+  'light moss': 'green',
+  'in sage': 'green',
+  'in anthracite': 'grey',
+  'in washed asphalt': 'grey',
+  'in stone': 'beige',
+  'in tan': 'beige',
+  'indigo': 'purple',
+  'in sand': 'beige',
+  'in rust': 'red',
+  'in lime': 'yellow'
+};
 
 // --- Axios client with Cloudflare‑ready cookie jar --------------------
 const jar = new CookieJar();
@@ -258,13 +291,19 @@ function buildProductObj(raw: RawProduct, categoriesPath: string[], gender: stri
   const colorsSet = new Set(
     COLOR_KEYWORDS.filter((c) => lowerTitle.includes(c))
   );
+  // Add alias-based color detection
+  for (const [alias, color] of Object.entries(COLOR_ALIASES)) {
+    if (lowerTitle.includes(alias)) {
+      colorsSet.add(color);
+    }
+  }
   if (raw.colour && raw.colour.trim()) colorsSet.add(raw.colour.toLowerCase());
   
   // Safely extract color from image URL
-  if (raw.imageUrl) {
-    const slugColor = slugToColor(raw.imageUrl.split('/').pop()?.split('-').pop());
-    if (slugColor) colorsSet.add(slugColor);
-  }
+  // if (raw.imageUrl) {
+  //   const slugColor = slugToColor(raw.imageUrl.split('/').pop()?.split('-').pop());
+  //   if (slugColor) colorsSet.add(slugColor);
+  // }
 
   const images: string[] = [];
   if (raw.imageUrl) {
