@@ -7,6 +7,7 @@ import { CategoryService } from '../category/category.service';
 import { ColorService } from '../color/color.service';
 import { SourceService } from '../source/source.service';
 import { PAGINATION_LIMIT } from '../consts';
+import { Brackets } from 'typeorm';
 
 export interface ProductFilters {
   color?: string;
@@ -18,6 +19,7 @@ export interface ProductFilters {
   search?: string;
   offset?: number;
   limit?: number;
+  priceRange?: string;
 }
 
 @Injectable()
@@ -36,16 +38,34 @@ export class ProductService {
       .leftJoinAndSelect('product.brand', 'brand')
       .leftJoinAndSelect('product.source', 'source')
       .leftJoinAndSelect('product.categories', 'category')
-      .leftJoinAndSelect('product.colors', 'color');
+      .leftJoinAndSelect('product.colors', 'color')
+      .distinct(true);
 
     if (filters.brand) {
-      qb.andWhere('brand.name = :brand', { brand: filters.brand });
+      if (filters.brand.includes(',')) {
+        const brands = filters.brand.split(',').map(b => b.trim());
+        qb.andWhere('brand.name IN (:...brands)', { brands });
+      } else {
+        qb.andWhere('brand.name = :brand', { brand: filters.brand });
+      }
     }
     if (filters.category) {
-      qb.andWhere('category.name = :category', { category: filters.category });
+      if (filters.category.includes(',')) {
+        const categories = filters.category.split(',').map(c => c.trim());
+        qb.andWhere('category.name IN (:...categories)', { categories });
+      } else {
+        qb.andWhere('category.name = :category', { category: filters.category });
+      }
     }
     if (filters.color) {
-      qb.andWhere('color.name = :color', { color: filters.color });
+      if (filters.color.includes(',')) {
+        const colors = filters.color.split(',').map(c => c.trim()).filter(Boolean);
+        if (colors.length > 0) {
+          qb.andWhere('color.name IN (:...colors)', { colors });
+        }
+      } else {
+        qb.andWhere('color.name = :color', { color: filters.color });
+      }
     }
     if (filters.priceFrom !== undefined) {
       qb.andWhere('product.price >= :priceFrom', { priceFrom: filters.priceFrom });
@@ -62,6 +82,34 @@ export class ProductService {
       qb.orderBy('product.price', 'DESC');
     } else {
       qb.orderBy('product.id', 'DESC'); // Default sort
+    }
+    if (filters.priceRange) {
+      const priceRanges = filters.priceRange.split(',').map(r => r.trim()).filter(Boolean);
+      const priceRangeMap = {
+        'Up to 100 ILS': { from: 0, to: 100 },
+        '100-150 ILS': { from: 100, to: 150 },
+        '151-200 ILS': { from: 151, to: 200 },
+        '201-300 ILS': { from: 201, to: 300 },
+        '301-600 ILS': { from: 301, to: 600 },
+        '601-1000 ILS': { from: 601, to: 1000 },
+        '1000+ ILS': { from: 1001, to: 1000000 },
+      };
+      if (priceRanges.length > 1) {
+        qb.andWhere(new Brackets(qb1 => {
+          priceRanges.forEach((label, idx) => {
+            const range = priceRangeMap[label];
+            if (range) {
+              qb1.orWhere('(product.price >= :from' + idx + ' AND product.price <= :to' + idx + ')', {
+                ['from' + idx]: range.from,
+                ['to' + idx]: range.to,
+              });
+            }
+          });
+        }));
+      } else if (priceRanges.length === 1 && priceRangeMap[priceRanges[0]]) {
+        const range = priceRangeMap[priceRanges[0]];
+        qb.andWhere('product.price >= :from AND product.price <= :to', { from: range.from, to: range.to });
+      }
     }
     const offset = filters.offset || 0;
     const limit = filters.limit || PAGINATION_LIMIT;
