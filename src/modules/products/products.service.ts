@@ -7,6 +7,18 @@ import { CategoriesService } from '../categories/categories.service';
 import { ColorsService } from '../colors/colors.service';
 import { SourcesService } from '../sources/sources.service';
 
+export interface ProductFilters {
+  color?: string;
+  brand?: string;
+  category?: string;
+  priceFrom?: number;
+  priceTo?: number;
+  sort?: string;
+  search?: string;
+  offset?: number;
+  limit?: number;
+}
+
 @Injectable()
 export class ProductsService {
   constructor(
@@ -18,10 +30,49 @@ export class ProductsService {
     private sourcesService: SourcesService,
   ) {}
 
-  async findAll(): Promise<Product[]> {
-    return this.productsRepository.find({
-      relations: ['brand', 'source', 'categories', 'colors'],
-    });
+  async findAll(filters: ProductFilters = {}) {
+    const qb = this.productsRepository.createQueryBuilder('product')
+      .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoinAndSelect('product.source', 'source')
+      .leftJoinAndSelect('product.categories', 'category')
+      .leftJoinAndSelect('product.colors', 'color');
+
+    if (filters.brand) {
+      qb.andWhere('brand.name = :brand', { brand: filters.brand });
+    }
+    if (filters.category) {
+      qb.andWhere('category.name = :category', { category: filters.category });
+    }
+    if (filters.color) {
+      qb.andWhere('color.name = :color', { color: filters.color });
+    }
+    if (filters.priceFrom !== undefined) {
+      qb.andWhere('product.price >= :priceFrom', { priceFrom: filters.priceFrom });
+    }
+    if (filters.priceTo !== undefined) {
+      qb.andWhere('product.price <= :priceTo', { priceTo: filters.priceTo });
+    }
+    if (filters.search) {
+      qb.andWhere('product.title ILIKE :search', { search: `%${filters.search}%` });
+    }
+    if (filters.sort === 'Price: Low to High') {
+      qb.orderBy('product.price', 'ASC');
+    } else if (filters.sort === 'Price: High to Low') {
+      qb.orderBy('product.price', 'DESC');
+    } else {
+      qb.orderBy('product.id', 'DESC'); // Default sort
+    }
+    const offset = filters.offset || 0;
+    const limit = filters.limit || 20;
+    qb.skip(offset).take(limit);
+    const [data, total] = await qb.getManyAndCount();
+    return {
+      data,
+      total,
+      offset,
+      limit,
+      hasNextPage: offset + data.length < total,
+    };
   }
 
   async findOne(id: number): Promise<Product> {

@@ -10,6 +10,9 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors();
 
+  // Set global API prefix
+  app.setGlobalPrefix('api');
+
   // Swagger setup
   const config = new DocumentBuilder()
     .setTitle('BuySearch API')
