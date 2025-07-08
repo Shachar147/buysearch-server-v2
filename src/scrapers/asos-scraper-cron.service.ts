@@ -7,7 +7,7 @@ import { join } from 'path';
 export class AsosScraperCronService {
   private readonly logger = new Logger(AsosScraperCronService.name);
 
-  @Cron(CronExpression.EVERY_DAY_AT_2AM)
+  @Cron(CronExpression.EVERY_DAY_AT_NOON)
   async handleCron() {
     this.logger.log('Running ASOS scraper cron job...');
     const scraperPath = join(__dirname, 'asos_scraper.ts');
