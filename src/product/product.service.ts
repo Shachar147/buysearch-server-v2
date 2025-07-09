@@ -44,28 +44,28 @@ export class ProductService {
 
     if (filters.brand) {
       if (filters.brand.includes(',')) {
-        const brands = filters.brand.split(',').map(b => b.trim());
-        qb.andWhere('brand.name IN (:...brands)', { brands });
+        const brands = filters.brand.split(',').map(b => b.trim().toLowerCase());
+        qb.andWhere('LOWER(brand.name) IN (:...brands)', { brands });
       } else {
-        qb.andWhere('brand.name = :brand', { brand: filters.brand });
+        qb.andWhere('LOWER(brand.name) = :brand', { brand: filters.brand.toLowerCase() });
       }
     }
     if (filters.category) {
       if (filters.category.includes(',')) {
-        const categories = filters.category.split(',').map(c => c.trim());
-        qb.andWhere('category.name IN (:...categories)', { categories });
+        const categories = filters.category.split(',').map(c => c.trim().toLowerCase());
+        qb.andWhere('LOWER(category.name) IN (:...categories)', { categories });
       } else {
-        qb.andWhere('category.name = :category', { category: filters.category });
+        qb.andWhere('LOWER(category.name) = :category', { category: filters.category.toLowerCase() });
       }
     }
     if (filters.color) {
       if (filters.color.includes(',')) {
-        const colors = filters.color.split(',').map(c => c.trim()).filter(Boolean);
+        const colors = filters.color.split(',').map(c => c.trim().toLowerCase()).filter(Boolean);
         if (colors.length > 0) {
-          qb.andWhere('color.name IN (:...colors)', { colors });
+          qb.andWhere('LOWER(color.name) IN (:...colors)', { colors });
         }
       } else {
-        qb.andWhere('color.name = :color', { color: filters.color });
+        qb.andWhere('LOWER(color.name) = :color', { color: filters.color.toLowerCase() });
       }
     }
     if (filters.priceFrom !== undefined) {

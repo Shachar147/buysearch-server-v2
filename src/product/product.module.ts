@@ -7,6 +7,7 @@ import { BrandModule } from '../brand/brand.module';
 import { CategoryModule } from '../category/category.module';
 import { ColorModule } from '../color/color.module';
 import { SourceModule } from '../source/source.module';
+import { SearchModule } from '../search/search.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { SourceModule } from '../source/source.module';
     CategoryModule,
     ColorModule,
     SourceModule,
+    SearchModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],

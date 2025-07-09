@@ -30,7 +30,7 @@ const CATEGORY_SYNONYMS = {
   "accessories": ["accessories", "jewelry", "watch", "sunglasses", "bag", "hat"],
   
   // Brands
-  "tommy hilfiger": ["tommy hilfiger", "tommy", "hilfiger"],
+  "tommy hilfiger": ["tommy hilfiger", "tommy h", "hilfiger"],
   "calvin klein": ["calvin klein", "calvin", "klein"],
   "polo ralph lauren": ["polo ralph lauren", "polo", "ralph lauren"],
   "levi's": ["levi's", "levis", "levi"],
