@@ -10,6 +10,7 @@ import { SourceModule } from '../source/source.module';
 import { SearchModule } from '../search/search.module';
 import { AuthModule } from '../auth/auth.module';
 import { FavouritesModule } from '../favourites/favourites.module';
+import { PriceHistoryModule } from '../price-history/price-history.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { FavouritesModule } from '../favourites/favourites.module';
     SearchModule,
     AuthModule,
     FavouritesModule,
+    PriceHistoryModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],

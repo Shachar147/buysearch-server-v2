@@ -9,6 +9,7 @@ import { SourceService } from '../source/source.service';
 import { PAGINATION_LIMIT } from '../consts';
 import { Brackets } from 'typeorm';
 import { FavouritesService } from '../favourites/favourites.service';
+import { PriceHistoryService } from '../price-history/price-history.service';
 
 export interface ProductFilters {
   color?: string;
@@ -35,6 +36,7 @@ export class ProductService {
     private colorService: ColorService,
     private sourceService: SourceService,
     private favouritesService: FavouritesService,
+    private readonly priceHistoryService: PriceHistoryService,
   ) {}
 
   async findAll(filters: ProductFilters = {}, userId?: number): Promise<any> {
@@ -209,7 +211,12 @@ export class ProductService {
     // Check if product already exists
     let product = await this.findByUrl(productData.url);
 
+    let originalMinimalPrice = undefined;
     if (product) {
+
+      // todo complete - bring back!
+      // originalMinimalPrice = product.price ?? product.oldPrice;
+
       // Update existing product - only update fields that actually changed
       const updates: Partial<Product> = {};
       
@@ -269,6 +276,12 @@ export class ProductService {
       });
 
       product = await this.productsRepository.save(product);
+    }
+
+    // Add price history if changed
+    let currMinimalPrice = productData.price ?? productData.oldPrice;
+    if (originalMinimalPrice != currMinimalPrice) {
+      await this.priceHistoryService.addIfChanged(product.id, currMinimalPrice);
     }
 
     return product;
