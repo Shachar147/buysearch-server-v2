@@ -1,12 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, Index } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, Index, Unique } from 'typeorm';
 import { Product } from '../product/product.entity';
 
 @Entity('categories')
+@Unique(['name', 'gender'])
 export class Category {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column()
   name: string;
 
   @Column({ nullable: true })

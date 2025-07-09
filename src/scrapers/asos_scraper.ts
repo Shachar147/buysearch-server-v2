@@ -213,12 +213,12 @@ const SUBCATEGORIES: Record<number, Category[]> = {
     { id: 7475, name: 'New Era', gender: 'Men' },
   ]
   // 4250: [ // Accessories
-  //   { id: 42501, name: 'Bags', gender: 'Men' },
-  //   { id: 42502, name: 'Hats & Caps', gender: 'Men' },
-  //   { id: 42503, name: 'Jewellery', gender: 'Men' },
-  //   { id: 42504, name: 'Sunglasses', gender: 'Men' },
-  //   { id: 42505, name: 'Watches', gender: 'Men' },
-  //   { id: 42506, name: 'Belts', gender: 'Men' },
+  //   { id: 42501, name: 'Bags', gender: 'Unisex' },
+  //   { id: 42502, name: 'Hats & Caps', gender: 'Unisex' },
+  //   { id: 42503, name: 'Jewellery', gender: 'Unisex' },
+  //   { id: 42504, name: 'Sunglasses', gender: 'Unisex' },
+  //   { id: 42505, name: 'Watches', gender: 'Unisex' },
+  //   { id: 42506, name: 'Belts', gender: 'Unisex' },
   // ],
 };
 

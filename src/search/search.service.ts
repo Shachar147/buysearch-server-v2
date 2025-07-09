@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { BrandService } from '../brand/brand.service';
+import { CategoryService } from '../category/category.service';
+import { ColorService } from '../color/color.service';
 import { ucfirst } from './search.utils';
 
 export interface ParsedFilters {
@@ -13,6 +16,12 @@ export interface ParsedFilters {
 
 @Injectable()
 export class SearchService {
+  constructor(
+    private readonly brandService: BrandService,
+    private readonly categoryService: CategoryService,
+    private readonly colorService: ColorService,
+  ) {}
+
   private COLOR_KEYWORDS = [
     'black', 'white', 'red', 'blue', 'green', 'yellow', 'pink', 'purple',
     'orange', 'brown', 'grey', 'gray', 'beige', 'navy', 'cream', 'khaki',
@@ -49,7 +58,7 @@ export class SearchService {
     'collusion': ['collusion']
   };
 
-  parseSearchQuery(query: string): ParsedFilters {
+  async parseSearchQuery(query: string): Promise<ParsedFilters> {
     const filters: ParsedFilters = {
       colors: [],
       categories: [],
@@ -61,12 +70,29 @@ export class SearchService {
     };
     const lowerQuery = query.toLowerCase();
 
+    // Fetch all DB values for brands, categories, colors
+    const [brandsRes, categoriesRes, colorsRes] = await Promise.all([
+      this.brandService.findAll(0, 1000),
+      this.categoryService.findAll(0, 1000, ''),
+      this.colorService.findAll(0, 1000),
+    ]);
+    const dbBrands = (brandsRes.data || []).map((b: any) => b.name.toLowerCase());
+    const dbCategories = (categoriesRes.data || []).map((c: any) => c.name.toLowerCase());
+    const dbColors = (colorsRes.data || []).map((c: any) => c.name.toLowerCase());
+
     // Extract colors
-    this.COLOR_KEYWORDS.forEach(color => {
+    const foundColors = new Set<string>();
+    dbColors.forEach(color => {
       if (lowerQuery.includes(color)) {
-        filters.colors.push(ucfirst(color));
+        foundColors.add(ucfirst(color));
       }
     });
+    this.COLOR_KEYWORDS.forEach(color => {
+      if (lowerQuery.includes(color)) {
+        foundColors.add(ucfirst(color));
+      }
+    });
+    filters.colors = Array.from(foundColors).filter(Boolean);
 
     // Extract price information (support both min and max in a single query)
     const priceMatches = Array.from(lowerQuery.matchAll(/(\d+)\s*(?:ils?|shekel|₪|dollar|usd|\$|euro|eur|€)?/g));
@@ -93,10 +119,14 @@ export class SearchService {
 
     // Extract categories
     const foundCategories = new Set<string>();
+    dbCategories.forEach(category => {
+      if (lowerQuery.includes(category)) {
+        foundCategories.add(ucfirst(category));
+      }
+    });
     Object.entries(this.CATEGORY_SYNONYMS).forEach(([category, synonyms]) => {
       synonyms.forEach(synonym => {
         let testQuery = lowerQuery;
-        // Exclude t-shirt variants before matching 'shirt' or 'shirts'
         if (synonym === 'shirt' || synonym === 'shirts') {
           ['t-shirt', 'tshirt', 't shirt'].forEach(ts => {
             testQuery = testQuery.replace(new RegExp(ts, 'g'), '');
@@ -107,18 +137,23 @@ export class SearchService {
         }
       });
     });
-    filters.categories = Array.from(foundCategories);
+    filters.categories = Array.from(foundCategories).filter(Boolean);
 
     // Extract brands
     const foundBrands = new Set<string>();
+    dbBrands.forEach(brand => {
+      if (lowerQuery.includes(brand)) {
+        foundBrands.add(ucfirst(brand));
+      }
+    });
     Object.entries(this.BRAND_SYNONYMS).forEach(([brand, synonyms]) => {
       synonyms.forEach(synonym => {
         if (lowerQuery.includes(synonym)) {
-          foundBrands.add(brand);
+          foundBrands.add(ucfirst(brand));
         }
       });
     });
-    filters.brands = Array.from(foundBrands);
+    filters.brands = Array.from(foundBrands).filter(Boolean);
 
     // Extract gender
     if (lowerQuery.includes('men') || lowerQuery.includes('male')) {
