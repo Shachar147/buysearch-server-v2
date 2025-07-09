@@ -13,6 +13,7 @@ import { AsosScraperCronService } from './scrapers/asos-scraper-cron.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { FavouritesModule } from './favourites/favourites.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
     SourceModule,
     ProductModule,
     ScheduleModule.forRoot(),
+    FavouritesModule,
   ],
   controllers: [AppController],
   providers: [AppService, AsosScraperCronService],

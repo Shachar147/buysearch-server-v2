@@ -130,6 +130,17 @@ const COLOR_ALIASES: Record<string, string> = {
   'in lime': 'yellow'
 };
 
+// --- Category detection keywords ---
+const TITLE_CATEGORY_KEYWORDS: Record<string, string[]> = {
+  'Boxers': ['boxers'],
+  'Polo Shirts': ['polo shirt'],
+  'Jackets & Coats': ['jacket'],
+  'Joggers': ['joggers'],
+  'Accessories': ['backpack'],
+  'Bags': ['backpack']
+  // Add more as needed
+};
+
 // --- Axios client with Cloudflare‑ready cookie jar --------------------
 const jar = new CookieJar();
 const client: AxiosInstance = wrapper(
@@ -320,7 +331,16 @@ function buildProductObj(raw: RawProduct, categoriesPath: string[], gender: stri
     }
   }
   if (raw.colour && raw.colour.trim()) colorsSet.add(raw.colour.toLowerCase());
-  
+
+  // --- Category detection from title ---
+  const detectedCategories = [...categoriesPath];
+  for (const [category, keywords] of Object.entries(TITLE_CATEGORY_KEYWORDS)) {
+    if (keywords.some(keyword => lowerTitle.includes(keyword))) {
+      detectedCategories.push(category);
+    }
+  }
+  // Add more keyword-category mappings as needed
+
   // Safely extract color from image URL
   // if (raw.imageUrl) {
   //   const slugColor = slugToColor(raw.imageUrl.split('/').pop()?.split('-').pop());
@@ -349,7 +369,7 @@ function buildProductObj(raw: RawProduct, categoriesPath: string[], gender: stri
     salePercent: calcSalePercent(price, salePrice),
     currency: raw.price?.currency ?? 'ILS',
     brand: raw.brandName ?? 'Unknown',
-    categories: categoriesPath,
+    categories: detectedCategories,
     gender,
     source: 'asos.com',
   };
