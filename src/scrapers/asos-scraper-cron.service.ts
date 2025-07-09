@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { exec } from 'child_process';
 import { join } from 'path';
 
-const CronexpressionExtended = {
+const CronExpressionExtended = {
   TWICE_DAILY: '0 2,12 * * *'
 }
 
@@ -11,7 +11,8 @@ const CronexpressionExtended = {
 export class AsosScraperCronService {
   private readonly logger = new Logger(AsosScraperCronService.name);
 
-  @Cron(CronexpressionExtended.TWICE_DAILY)
+  @Cron(CronExpressionExtended.TWICE_DAILY)
+  // @Cron(CronExpression.EVERY_MINUTE) // DEBUG
   async handleCron() {
     this.logger.log('Running ASOS scraper cron job...');
     const scraperPath = join(__dirname, 'asos_scraper.js');
