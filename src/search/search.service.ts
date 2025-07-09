@@ -39,7 +39,7 @@ export class SearchService {
   };
 
   private BRAND_SYNONYMS = {
-    'tommy hilfiger': ['tommy hilfiger', 'tommy h', 'hilfiger', 'טומי', 'טומי ה', 'טומי הילפיגר', 'הילפיגר'],
+    'tommy hilfiger': ['tommy hilfiger', 'tommy h', 'hilfiger', 'של טומי', 'טומי ה', 'טומי הילפיגר', 'הילפיגר'],
     'calvin klein': ['calvin klein', 'calvin', 'klein', 'קלווין ק', 'קלוין ק', 'קלווין קליין', 'קלוין קליין'],
     'polo ralph lauren': ['polo ralph lauren', 'polo', 'ralph lauren', 'ראלף ל', 'פולו ראלף', 'פולו', 'ראלף לורן', 'פולו ראלף לורן'],
     "levi's": ["levi's", 'levis', 'levi','ליוויס', 'ליויס', 'ליווייס', 'לוי׳ס'],
