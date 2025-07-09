@@ -132,7 +132,7 @@ const COLOR_ALIASES: Record<string, string> = {
 
 // --- Category detection keywords ---
 const TITLE_CATEGORY_KEYWORDS: Record<string, string[]> = {
-  'Boxers': ['boxers'],
+  'Boxers': ['boxers', 'trunks'],
   'Polo Shirts': ['polo shirt'],
   'Jackets & Coats': ['jacket'],
   'Joggers': ['joggers'],

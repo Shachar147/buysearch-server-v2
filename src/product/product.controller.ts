@@ -31,6 +31,14 @@ export class ProductController {
     return this.productService.findAll({ offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender });
   }
 
+  @Get('by-ids')
+  async findByIds(@Query('ids') ids: string) {
+    if (!ids) return { data: [] };
+    const idArr = ids.split(',').map(id => Number(id)).filter(Boolean);
+    const products = await this.productService.findByIds(idArr);
+    return { data: products };
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(+id);

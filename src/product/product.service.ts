@@ -261,4 +261,23 @@ export class ProductService {
 
     return product;
   }
+
+  async findByIds(ids: number[]): Promise<any[]> {
+    if (!ids || ids.length === 0) return [];
+    const products = await this.productsRepository.find({
+      where: ids.map(id => ({ id })),
+      relations: ['brand', 'source', 'categories', 'colors'],
+    });
+    return products.map(product => ({
+      ...product,
+      brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
+      source: product.source ? { id: product.source.id, name: product.source.name } : null,
+      categories: Array.isArray(product.categories)
+        ? product.categories.map(c => ({ id: c.id, name: c.name }))
+        : [],
+      colors: Array.isArray(product.colors)
+        ? product.colors.map(c => ({ id: c.id, name: c.name }))
+        : [],
+    }));
+  }
 } 
