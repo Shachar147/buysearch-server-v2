@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from './product.entity';
 import { UserGuard } from '../auth/user.guard';
@@ -25,10 +25,15 @@ export class ProductController {
     @Query('sort') sort?: string,
     @Query('search') search?: string,
     @Query('gender') gender?: string,
+    @Query('isFavourite') isFavourite?: string,
+    @Req() req?: any,
   ) {
     offset = Number(offset) || 0;
     limit = Math.min(Number(limit) || 200, 200);
-    return this.productService.findAll({ offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender });
+    const filters: any = { offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender };
+    if (isFavourite !== undefined) filters.isFavourite = isFavourite === 'true' || isFavourite === '';
+    const userId = filters.isFavourite && req && req.user ? req.user.sub : undefined;
+    return this.productService.findAll(filters, userId);
   }
 
   @Get('by-ids')

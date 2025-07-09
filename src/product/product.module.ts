@@ -9,6 +9,7 @@ import { ColorModule } from '../color/color.module';
 import { SourceModule } from '../source/source.module';
 import { SearchModule } from '../search/search.module';
 import { AuthModule } from '../auth/auth.module';
+import { FavouritesModule } from '../favourites/favourites.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from '../auth/auth.module';
     SourceModule,
     SearchModule,
     AuthModule,
+    FavouritesModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],

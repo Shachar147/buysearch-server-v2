@@ -8,6 +8,7 @@ import { ColorService } from '../color/color.service';
 import { SourceService } from '../source/source.service';
 import { PAGINATION_LIMIT } from '../consts';
 import { Brackets } from 'typeorm';
+import { FavouritesService } from '../favourites/favourites.service';
 
 export interface ProductFilters {
   color?: string;
@@ -21,6 +22,7 @@ export interface ProductFilters {
   limit?: number;
   priceRange?: string;
   gender?: string;
+  isFavourite?: boolean;
 }
 
 @Injectable()
@@ -32,15 +34,25 @@ export class ProductService {
     private categoryService: CategoryService,
     private colorService: ColorService,
     private sourceService: SourceService,
+    private favouritesService: FavouritesService,
   ) {}
 
-  async findAll(filters: ProductFilters = {}): Promise<any> {
+  async findAll(filters: ProductFilters = {}, userId?: number): Promise<any> {
     const qb = this.productsRepository.createQueryBuilder('product')
       .leftJoinAndSelect('product.brand', 'brand')
       .leftJoinAndSelect('product.source', 'source')
       .leftJoinAndSelect('product.categories', 'category')
       .leftJoinAndSelect('product.colors', 'color')
       .distinct(true);
+
+    if (filters.isFavourite && userId) {
+      const favs = await this.favouritesService.getFavourites(userId);
+      const favIds = favs.map((f: any) => f.productId);
+      if (favIds.length === 0) {
+        return { total: 0, offset: 0, limit: filters.limit || 20, hasNextPage: false, data: [] };
+      }
+      qb.andWhere('product.id IN (:...favIds)', { favIds });
+    }
 
     if (filters.brand) {
       if (filters.brand.includes(',')) {
