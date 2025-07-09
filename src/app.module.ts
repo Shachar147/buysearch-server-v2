@@ -10,10 +10,15 @@ import { ProductModule } from './product/product.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CategoryModule } from './category/category.module';
 import { AsosScraperCronService } from './scrapers/asos-scraper-cron.service';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(databaseConfig),
+    AuthModule,
+    UserModule,
     BrandModule,
     CategoryModule,
     ColorModule,

@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { ColorService } from './color.service';
 import { Color } from './color.entity';
+import { UserGuard } from '../auth/user.guard';
 
+@UseGuards(UserGuard)
 @Controller('colors')
 export class ColorController {
   constructor(private readonly colorService: ColorService) {}

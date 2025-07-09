@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { SourceService } from './source.service';
 import { Source } from './source.entity';
+import { UserGuard } from '../auth/user.guard';
 
+@UseGuards(UserGuard)
 @Controller('sources')
 export class SourceController {
   constructor(private readonly sourceService: SourceService) {}

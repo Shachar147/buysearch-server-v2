@@ -8,6 +8,7 @@ import { CategoryModule } from '../category/category.module';
 import { ColorModule } from '../color/color.module';
 import { SourceModule } from '../source/source.module';
 import { SearchModule } from '../search/search.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SearchModule } from '../search/search.module';
     ColorModule,
     SourceModule,
     SearchModule,
+    AuthModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],
