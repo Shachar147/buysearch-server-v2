@@ -154,9 +154,31 @@ const MAIN_CATEGORIES: Category[] = [
   { id: 4209, name: 'Clothing', gender: 'Men' }, // V
   { id: 4208, name: 'Shoes', gender: 'Men' }, // V
   { id: 1111, name: 'By Brand', gender: 'Men' }, // V
+  { id: 9999, name: 'Clothing', gender: 'Women'},
+  { id: 8888, name: 'By Brand', gender: 'Women' }, // V
 ];
 
 const SUBCATEGORIES: Record<number, Category[]> = {
+  9999: [
+    { id: 4169, name: 'Tops', gender: 'Women'}, // V
+    { id: 8799, name: 'Dresses', gender: 'Women'}, // V
+    { id: 2639, name: 'Skirts', gender: 'Women'}, // V
+    { id: 9263, name: 'Shorts', gender: 'Women'}, // V
+    { id: 2238, name: 'Swimwear', gender: 'Women'}, // V
+    { id: 3630, name: 'Jeans', gender: 'Women'}, // V
+    { id: 2641, name: 'Jackets & Coats', gender: 'Women'}, // V
+    { id: 6046, name: 'Lingerie & Nightwear', gender: 'Women'}, // V
+  ],
+  8888: [
+    { id: 12949, name: 'Abercrombie and Fitch', gender: 'Women'}, // V
+    { id: 20848, name: 'Polo Ralph Lauren', gender: 'Women' },
+    { id: 2505, name: 'Calvin Klein', gender: 'Women' },
+    { id: 19146, name: 'Calvin Klein Jeans', gender: 'Women' },
+    { id: 7294, name: 'Lacoste', gender: 'Women' },
+    { id: 21378, name: 'Tommy Hilfiger', gender: 'Women' },
+    { id: 50579, name: 'Tommy Jeans', gender: 'Women' },
+    { id: 26768, name: 'AllSaints', gender: 'Women' },
+  ],
   4209: [ // Clothing
     { id: 4208, name: 'Jeans', gender: 'Men' }, // V
     { id: 3606, name: 'Jackets & Coats', gender: 'Men' }, // V
