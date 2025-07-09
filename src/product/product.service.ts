@@ -91,12 +91,22 @@ export class ProductService {
     if (filters.search) {
       qb.andWhere('product.title ILIKE :search', { search: `%${filters.search}%` });
     }
+    // Sorting logic
     if (filters.sort === 'Price: Low to High') {
       qb.orderBy('product.price', 'ASC');
     } else if (filters.sort === 'Price: High to Low') {
       qb.orderBy('product.price', 'DESC');
+    } else if (filters.sort === 'Created: Newest First') {
+      qb.orderBy('product.createdAt', 'DESC');
+    } else if (filters.sort === 'Created: Oldest First') {
+      qb.orderBy('product.createdAt', 'ASC');
+    } else if (filters.sort === 'Updated: Newest First') {
+      qb.orderBy('product.updatedAt', 'DESC');
+    } else if (filters.sort === 'Updated: Oldest First') {
+      qb.orderBy('product.updatedAt', 'ASC');
     } else {
-      qb.orderBy('product.id', 'DESC'); // Default sort
+      // Default or relevance
+      qb.orderBy('product.id', 'DESC');
     }
     if (filters.priceRange) {
       const priceRanges = filters.priceRange.split(',').map(r => r.trim()).filter(Boolean);
@@ -214,8 +224,7 @@ export class ProductService {
     let originalMinimalPrice = undefined;
     if (product) {
 
-      // todo complete - bring back!
-      // originalMinimalPrice = product.price ?? product.oldPrice;
+      originalMinimalPrice = product.price ?? product.oldPrice;
 
       // Update existing product - only update fields that actually changed
       const updates: Partial<Product> = {};

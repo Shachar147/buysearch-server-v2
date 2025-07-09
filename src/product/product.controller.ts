@@ -14,26 +14,22 @@ export class ProductController {
   }
 
   @Get()
-  findAll(
-    @Query('offset') offset = 0,
-    @Query('limit') limit = 200,
-    @Query('color') color?: string,
-    @Query('brand') brand?: string,
-    @Query('category') category?: string,
-    @Query('priceFrom') priceFrom?: number,
-    @Query('priceTo') priceTo?: number,
-    @Query('sort') sort?: string,
-    @Query('search') search?: string,
-    @Query('gender') gender?: string,
-    @Query('isFavourite') isFavourite?: string,
-    @Req() req?: any,
-  ) {
-    offset = Number(offset) || 0;
-    limit = Math.min(Number(limit) || 200, 200);
+  async findAll(@Query() query: any, @Req() req?: any) {
+    const offset = Number(query.offset) || 0;
+    const limit = Math.min(Number(query.limit) || 200, 200);
+    const color = query.color;
+    const brand = query.brand;
+    const category = query.category;
+    const priceFrom = query.priceFrom;
+    const priceTo = query.priceTo;
+    const sort = query.sort || 'Relevance';
+    const search = query.search;
+    const gender = query.gender;
+    const isFavourite = query.isFavourite;
     const filters: any = { offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender };
     if (isFavourite !== undefined) filters.isFavourite = isFavourite === 'true' || isFavourite === '';
     const userId = filters.isFavourite && req && req.user ? req.user.sub : undefined;
-    return this.productService.findAll(filters, userId);
+    return this.productService.findAll({ ...query, sort }, userId);
   }
 
   @Get('by-ids')
