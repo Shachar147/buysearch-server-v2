@@ -32,10 +32,20 @@ export class SearchService {
     'T-Shirts & Vests': ['t-shirt', 'tshirt', 'tee', 't shirt', 'tank top', 'vest'],
     'Shirts': ['shirt', 'blouse', 'button down', 'button-up', 'dress shirt'],
     'Jeans': ['jeans', 'denim', 'pants', 'trousers'],
-    'Jackets & Coats': ['jacket', 'coat', 'blazer', 'suit jacket'],
-    'Dresses': ['dress', 'gown', 'frock'],
+    'Jackets & Coats': ['jacket', 'coat', 'blazer', 'suit jacket', 'jackets', 'coats', 'outerwear'],
+    'Dresses': ['dress', 'gown', 'frock', 'dresses'],
     'Shoes': ['shoes', 'footwear', 'sneakers', 'trainers', 'boots', 'sandals'],
-    'Accessories': ['accessories', 'jewelry', 'watch', 'sunglasses', 'bag', 'hat'],
+    'Accessories': ['accessories', 'jewelry', 'watch', 'sunglasses', 'bag', 'hat', 'hats', 'belt', 'scarf', 'gloves', 'accessory'],
+    'Joggers': ['joggers', 'sweatpants', 'track pants', 'jogger'],
+    'Hats': ['hat', 'hats', 'cap', 'caps', 'beanie', 'beret', 'bucket hat'],
+    'Polo Shirts': ['polo shirt', 'polo shirts', 'polo', 'collared shirt'],
+    'Bags': ['bag', 'bags', 'backpack', 'handbag', 'purse', 'tote', 'duffle', 'shoulder bag'],
+    'Skirts': ['skirt', 'skirts', 'mini skirt', 'midi skirt', 'maxi skirt'],
+    'Shorts': ['shorts', 'bermuda', 'cutoffs', 'hot pants'],
+    'Swimwear': ['swimwear', 'bikini', 'swimsuit', 'one piece', 'two piece', 'trunks', 'boardshorts'],
+    'Lingerie & Nightwear': ['lingerie', 'nightwear', 'bra', 'panties', 'underwear', 'sleepwear', 'pyjamas', 'pajamas', 'nightgown', 'camisole', 'slip'],
+    'Tops': ['top', 'tops', 'blouse', 'tank', 'camisole', 'crop top', 'tube top'],
+    'Clothing': ['clothing', 'apparel', 'garment', 'outfit', 'clothes', 'wear'],
   };
 
   private BRAND_SYNONYMS = {
@@ -54,7 +64,7 @@ export class SearchService {
     'abercrombie': ['abercrombie', 'abercrombie and fitch', 'a&f', 'אברקרומבי', 'אברקרומבי אנד פיץ׳'],
     'allsaints': ['allsaints', 'all saints', 'אולסיינטס', 'אול סיינטס'],
     'ellesse': ['ellesse', 'אלסה'],
-    'new era': ['new era', 'newera', 'ניו ארא', 'ניוארה'],
+    'new era': ['new era', 'newera', 'ניו ארה', 'ניוארה'],
     'collusion': ['collusion', 'קולוז׳ן', 'קולוזן']
   };
 
@@ -69,7 +79,6 @@ export class SearchService {
     'Boxers': ['בוקסר', 'בוקסרים'],
     'Polo Shirts': ['פולו', 'חולצת פולו', 'חולצות פולו'],
     'Joggers': ['ג׳וגר', 'ג׳וגרים', 'ג׳וגרז', 'מכנסי ג׳וגר', 'מכנס ג׳וגר'],
-    // Add more as needed
   };
 
   private HEBREW_COLOR_SYNONYMS = {

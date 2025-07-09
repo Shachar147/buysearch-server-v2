@@ -138,7 +138,9 @@ const TITLE_CATEGORY_KEYWORDS: Record<string, string[]> = {
   'Joggers': ['joggers'],
   'Accessories': ['backpack', ' cap ', 'gloves'],
   'Bags': ['backpack'],
-  'Hats': [' cap ']
+  'Hats': [' cap '],
+  'Shoes': ['Slippers', 'Flip Flops', 'Sandals'],
+  'Slippers': ['slippers']
   // Add more as needed
 };
 
@@ -323,11 +325,11 @@ function buildProductObj(raw: RawProduct, categoriesPath: string[], gender: stri
 } {
   const lowerTitle = raw.name.toLowerCase();
   const colorsSet = new Set(
-    COLOR_KEYWORDS.filter((c) => lowerTitle.includes(c))
+    COLOR_KEYWORDS.filter((c) => new RegExp(`\\b${c}\\b`).test(lowerTitle))
   );
   // Add alias-based color detection
   for (const [alias, color] of Object.entries(COLOR_ALIASES)) {
-    if (lowerTitle.includes(alias)) {
+    if (new RegExp(`\\b${alias}\\b`).test(lowerTitle)) {
       colorsSet.add(color);
     }
   }
