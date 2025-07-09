@@ -269,15 +269,20 @@ export class SearchService {
 
     // Extract brands
     const foundBrands = new Set<string>();
+    // Normalize function for brand matching
+    function normalizeBrandStr(str: string) {
+      return str.replace(/&/g, 'and').replace(/\band\b/g, 'and').replace(/\s+/g, ' ').trim();
+    }
+    const normalizedQuery = lowerQuery.replace(/&/g, 'and').replace(/\band\b/g, 'and').replace(/\s+/g, ' ').trim();
     dbBrands.forEach(brand => {
-      if (lowerQuery.includes(brand)) {
+      if (normalizedQuery.includes(normalizeBrandStr(brand))) {
         foundBrands.add(ucfirst(brand));
       }
     });
     Object.entries(this.BRAND_SYNONYMS).forEach(([brand, synonyms]) => {
       if (!dbBrands.includes(brand.toLowerCase())) return;
       synonyms.forEach(synonym => {
-        if (lowerQuery.includes(synonym)) {
+        if (normalizedQuery.includes(normalizeBrandStr(synonym))) {
           foundBrands.add(ucfirst(brand));
         }
       });

@@ -136,8 +136,9 @@ const TITLE_CATEGORY_KEYWORDS: Record<string, string[]> = {
   'Polo Shirts': ['polo shirt'],
   'Jackets & Coats': ['jacket'],
   'Joggers': ['joggers'],
-  'Accessories': ['backpack'],
-  'Bags': ['backpack']
+  'Accessories': ['backpack', ' cap ', 'gloves'],
+  'Bags': ['backpack'],
+  'Hats': [' cap ']
   // Add more as needed
 };
 

@@ -12,6 +12,6 @@ export class FavouriteProduct {
   @Column()
   productId: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 } 
