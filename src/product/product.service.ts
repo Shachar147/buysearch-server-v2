@@ -20,6 +20,7 @@ export interface ProductFilters {
   offset?: number;
   limit?: number;
   priceRange?: string;
+  gender?: string;
 }
 
 @Injectable()
@@ -110,6 +111,9 @@ export class ProductService {
         const range = priceRangeMap[priceRanges[0]];
         qb.andWhere('product.price >= :from AND product.price <= :to', { from: range.from, to: range.to });
       }
+    }
+    if (filters.gender) {
+      qb.andWhere('LOWER(product.gender) = LOWER(:gender)', { gender: filters.gender });
     }
     const offset = filters.offset || 0;
     const limit = filters.limit || PAGINATION_LIMIT;

@@ -22,10 +22,11 @@ export class ProductController {
     @Query('priceTo') priceTo?: number,
     @Query('sort') sort?: string,
     @Query('search') search?: string,
+    @Query('gender') gender?: string,
   ) {
     offset = Number(offset) || 0;
     limit = Math.min(Number(limit) || 200, 200);
-    return this.productService.findAll({ offset, limit, color, brand, category, priceFrom, priceTo, sort, search });
+    return this.productService.findAll({ offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender });
   }
 
   @Get(':id')
