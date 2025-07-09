@@ -11,13 +11,14 @@ export class CategoryService {
     private categoriesRepository: Repository<Category>,
   ) {}
 
-  async findAll(offset = 0, limit = PAGINATION_LIMIT): Promise<any> {
-    const [data, total] = await this.categoriesRepository.findAndCount({
-      where: { isActive: true },
-      skip: offset,
-      take: limit,
-      order: { id: 'ASC' },
-    });
+  async findAll(offset = 0, limit = PAGINATION_LIMIT, gender: string): Promise<any> {
+    const qb = this.categoriesRepository.createQueryBuilder('category')
+      .where('category.isActive = true');
+    if (gender) {
+      qb.andWhere('LOWER(category.gender) = LOWER(:gender)', { gender });
+    }
+    qb.skip(offset).take(limit).orderBy('category.id', 'ASC');
+    const [data, total] = await qb.getManyAndCount();
     return {
       total,
       offset,
@@ -31,8 +32,12 @@ export class CategoryService {
     return this.categoriesRepository.findOne({ where: { id, isActive: true } });
   }
 
-  async findByName(name: string): Promise<Category | null> {
-    return this.categoriesRepository.findOne({ where: { name, isActive: true } });
+  async findByName(name: string, gender: string): Promise<Category | null> {
+    return this.categoriesRepository.createQueryBuilder('category')
+      .where('category.isActive = true')
+      .andWhere('category.name = :name', { name })
+      .andWhere('LOWER(category.gender) = LOWER(:gender)', { gender })
+      .getOne();
   }
 
   async create(createCategoryDto: Partial<Category>): Promise<Category> {
@@ -49,21 +54,21 @@ export class CategoryService {
     await this.categoriesRepository.update(id, { isActive: false });
   }
 
-  async upsert(name: string): Promise<Category> {
-    let category = await this.findByName(name);
+  async upsert(name: string, gender: string): Promise<Category> {
+    let category = await this.findByName(name, gender);
     
     if (!category) {
-      category = await this.create({ name });
+      category = await this.create({ name, gender });
     }
     
     return category;
   }
 
-  async upsertMany(names: string[]): Promise<Category[]> {
+  async upsertMany(names: string[], gender: string): Promise<Category[]> {
     const categories: Category[] = [];
     
     for (const name of names) {
-      const category = await this.upsert(name);
+      const category = await this.upsert(name, gender);
       categories.push(category);
     }
     

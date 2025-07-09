@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, Index } from 'typeorm';
 import { Product } from '../product/product.entity';
 
 @Entity('categories')
@@ -14,6 +14,10 @@ export class Category {
 
   @Column({ default: true })
   isActive: boolean;
+
+  @Column()
+  @Index()
+  gender: string;
 
   @CreateDateColumn()
   createdAt: Date;

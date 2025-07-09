@@ -189,7 +189,7 @@ export class ProductService {
     const source = await this.sourceService.upsert(productData.source);
 
     // Upsert categories
-    const categories = await this.categoryService.upsertMany(productData.categories);
+    const categories = await this.categoryService.upsertMany(productData.categories, productData.gender);
 
     // Upsert colors
     const colors = await this.colorService.upsertMany(productData.colors);

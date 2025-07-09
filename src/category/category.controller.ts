@@ -12,10 +12,10 @@ export class CategoryController {
   }
 
   @Get()
-  findAll(@Query('offset') offset = 0, @Query('limit') limit = 200) {
+  findAll(@Query('gender') gender: string, @Query('offset') offset = 0, @Query('limit') limit = 200) {
     offset = Number(offset) || 0;
     limit = Math.min(Number(limit) || 200, 200);
-    return this.categoryService.findAll(offset, limit);
+    return this.categoryService.findAll(offset, limit, gender);
   }
 
   @Get(':id')
