@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PriceHistory } from './price-history.entity';
 import { PriceHistoryRepository } from './price-history.repository';
+import { In } from 'typeorm';
 
 @Injectable()
 export class PriceHistoryService {
@@ -23,5 +24,15 @@ export class PriceHistoryService {
       order: { date: 'DESC' },
       take: limit,
     });
+  }
+
+  async getProductIdsWithPriceChange(): Promise<number[]> {
+    const result = await this.repo.createQueryBuilder('ph')
+      .select('ph.productId', 'productId')
+      .addSelect('COUNT(*)', 'amount')
+      .groupBy('ph.productId')
+      .having('COUNT(*) > 1')
+      .getRawMany();
+    return result.map((row: any) => Number(row.productId));
   }
 } 

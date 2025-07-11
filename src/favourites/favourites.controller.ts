@@ -14,7 +14,7 @@ export class FavouritesController {
   }
 
   @Delete(':productId')
-  async removeFromFavourite(@Req() req, @Param('productId') productId: number) {
+    async removeFromFavourite(@Req() req, @Param('productId') productId: number) {
     const userId = req.user.sub;
     return this.favouritesService.removeFromFavourite(userId, Number(productId));
   }

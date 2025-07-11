@@ -139,8 +139,15 @@ export class ProductService {
     if (filters.gender) {
       qb.andWhere('LOWER(product.gender) = LOWER(:gender)', { gender: filters.gender });
     }
-    const offset = filters.offset || 0;
-    const limit = filters.limit || PAGINATION_LIMIT;
+    if ((filters as any).withPriceChange) {
+      const ids = await this.priceHistoryService.getProductIdsWithPriceChange();
+      if (!ids.length) {
+        return { total: 0, offset: 0, limit: filters.limit || 20, hasNextPage: false, data: [] };
+      }
+      qb.andWhere('product.id IN (:...ids)', { ids });
+    }
+    const offset = Number(filters.offset || 0);
+    const limit = Number(filters.limit || PAGINATION_LIMIT);
     qb.skip(offset).take(limit);
     const [data, total] = await qb.getManyAndCount();
     const mappedData = data.map(product => ({
@@ -154,6 +161,7 @@ export class ProductService {
         ? product.colors.map(c => ({ id: c.id, name: c.name }))
         : [],
     }));
+
     return {
       total,
       offset,
