@@ -22,7 +22,7 @@ export class ScraperCronService {
     ];
     await Promise.all(scrapers.map(({ name, script }) => {
       return new Promise<void>((resolve) => {
-        exec('node ' + script, { cwd: process.cwd() }, (error, stdout, stderr) => {
+        exec('node ' + script + ' --cron', { cwd: process.cwd() }, (error, stdout, stderr) => {
           if (error) {
             this.logger.error(`[${name}] Error: ${error.message}`);
             resolve();

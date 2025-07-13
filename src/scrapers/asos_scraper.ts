@@ -8,7 +8,7 @@
 //    (e.g. `["Shoes", "Boots"]`).
 // 3. Adds `currency` and `salePercent` (rounded discount %) per item.
 // 4. Streams progress logs like:
-//       Scanning category Shoes > Boots – 12/137 …
+//       Scanning category Boots – 12/137 …
 // 5. Saves everything to **PostgreSQL database** instead of JSON file.
 // 6. Uses upsert operations for brands, categories, colors, and sources.
 //
@@ -23,6 +23,7 @@ import { CookieJar } from 'tough-cookie';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { ProductService } from '../product/product.service';
+import { ScrapingHistoryService, ScrapingType } from '../scraping-history/scraping-history.service';
 import * as dotenv from 'dotenv';
 
 // Load environment variables
@@ -423,9 +424,21 @@ async function scrapeSingleCategory(cat: CategoryWithPath): Promise<{
 
 // ------------------- Main orchestrator -------------------------------
 async function main(): Promise<void> {
+  const startTime = new Date();
+  console.log(`ASOS: Starting scan at ${startTime.toISOString()}`);
+  
   // Initialize NestJS application
   const app = await NestFactory.createApplicationContext(AppModule);
   const productsService = app.get(ProductService);
+  const scrapingHistoryService = app.get(ScrapingHistoryService);
+
+  // Detect if running from cron service
+  const isAutoRun = process.argv.includes('--cron');
+  const scrapingType = isAutoRun ? ScrapingType.AUTO : ScrapingType.MANUAL;
+
+  // Create scraping session
+  const session = await scrapingHistoryService.createScrapingSession('asos_scraper', scrapingType);
+  console.log(`📊 Created scraping session #${session.id} (${scrapingType})`);
 
   await warmCookies();
 
@@ -445,32 +458,43 @@ async function main(): Promise<void> {
     try {
       const products = await scrapeSingleCategory(cat);
       console.log(`Found ${products.length} products`);
-      
       // Process products and save to database
       let newProducts = 0;
       let updatedProducts = 0;
-      
       for (const product of products) {
         try {
-          await productsService.upsertProduct(product);
+          const result = await productsService.upsertProduct(product);
+          if (result.created) {
+            newProducts++;
+          } else if (result.updated) {
+            updatedProducts++;
+          }
           totalProcessed++;
-          newProducts++;
         } catch (error) {
           console.warn(`⚠️  Failed to save product ${product.url}: ${error.message}`);
         }
       }
-      
-      console.log(`📊 Processed: ${newProducts} products from this category`);
       totalNew += newProducts;
+      totalUpdated += updatedProducts;
       
+      // Update scraping progress
+      await scrapingHistoryService.updateScrapingProgress(session.id, totalNew, totalUpdated);
+      
+      console.log(`📊 Processed: ${newProducts} CREATED, ${updatedProducts} UPDATED from this category`);
     } catch (e: any) {
       console.warn(`⚠️  Failed category ${cat.id}: ${e.message}`);
     }
   }
 
-  console.log(`🎉 Final result: ${totalProcessed} products processed`);
-  console.log(`📈 New products: ${totalNew}, Updated: ${totalUpdated}`);
+  const endTime = new Date();
+  const totalSeconds = Math.round((endTime.getTime() - startTime.getTime()) / 1000);
   
+  // Finish scraping session
+  await scrapingHistoryService.finishScrapingSession(session.id, totalNew, totalUpdated);
+  
+  console.log(`🎉 Final result: ${totalProcessed} products processed`);
+  console.log(`🟢 CREATED: ${totalNew}, 🟡 UPDATED: ${totalUpdated}`);
+  console.log(`⏱️  Scan completed in ${totalSeconds} seconds (${startTime.toISOString()} → ${endTime.toISOString()})`);
   await app.close();
 }
 

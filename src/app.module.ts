@@ -9,11 +9,11 @@ import { SourceModule } from './source/source.module';
 import { ProductModule } from './product/product.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CategoryModule } from './category/category.module';
-import { AsosScraperCronService } from './scrapers/asos-scraper-cron.service';
+import { ScraperCronService } from './scrapers/scraper-cron.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { FavouritesModule } from './favourites/favourites.module';
+import { ScrapingHistoryModule } from './scraping-history/scraping-history.module';
 
 @Module({
   imports: [
@@ -27,8 +27,9 @@ import { FavouritesModule } from './favourites/favourites.module';
     ProductModule,
     ScheduleModule.forRoot(),
     FavouritesModule,
+    ScrapingHistoryModule,
   ],
   controllers: [AppController],
-  providers: [AppService, AsosScraperCronService],
+  providers: [AppService, ScraperCronService],
 })
 export class AppModule {}

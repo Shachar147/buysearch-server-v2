@@ -12,6 +12,7 @@ import axios from 'axios';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { ProductService } from '../product/product.service';
+import { ScrapingHistoryService, ScrapingType } from '../scraping-history/scraping-history.service';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -119,24 +120,6 @@ function parseTerminalXProduct(item: any, categoryPath: string[], gender: string
     ...item.category_ids.map((c_id) => categoryIdToName[Number(c_id)]).filter(Boolean)
   ]));
 
-  console.log(item);
-
-  console.log("hereee", {
-    title,
-    url: `https://www.terminalx.com/${baseUrl}/${item.sku.toLowerCase()}`,
-    images,
-    colors,
-    isSellingFast: false, // Not available in API
-    price,
-    oldPrice,
-    salePercent: calcSalePercent(price, oldPrice) ?? 0,
-    currency: item.price_range?.minimum_price?.final_price?.currency ?? 'ILS',
-    brand: item.brand_url?.name || undefined,
-    categories,
-    gender,
-    source: 'terminalx.com',
-  })
-
   return {
     title,
     url: `https://www.terminalx.com/${baseUrl}/${item.sku.toLowerCase()}`,
@@ -171,29 +154,64 @@ async function scrapeTerminalXCategory(cat: { id: string; name: string; gender: 
 
 // Main orchestrator
 async function main() {
+  const startTime = new Date();
+  console.log(`TerminalX: Starting scan at ${startTime.toISOString()}`);
+  
   const app = await NestFactory.createApplicationContext(AppModule);
   const productsService = app.get(ProductService);
+  const scrapingHistoryService = app.get(ScrapingHistoryService);
+
+  // Detect if running from cron service
+  const isAutoRun = process.argv.includes('--cron');
+  const scrapingType = isAutoRun ? ScrapingType.AUTO : ScrapingType.MANUAL;
+
+  // Create scraping session
+  const session = await scrapingHistoryService.createScrapingSession('terminalx_scraper', scrapingType);
+  console.log(`📊 Created scraping session #${session.id} (${scrapingType})`);
 
   let totalProcessed = 0;
+  let totalNew = 0;
+  let totalUpdated = 0;
   for (const cat of CATEGORIES) {
     try {
       const products = await scrapeTerminalXCategory(cat);
       let newProducts = 0;
+      let updatedProducts = 0;
       for (const product of products) {
         try {
-          await productsService.upsertProduct(product);
-          newProducts++;
+          const result = await productsService.upsertProduct(product);
+          if (result.created) {
+            newProducts++;
+          } else if (result.updated) {
+            updatedProducts++;
+          }
+          totalProcessed++;
         } catch (e) {
           console.warn(`Failed to save product ${product.url}: ${e.message}`);
         }
       }
-      totalProcessed += newProducts;
-      console.log(`TerminalX: ${newProducts} products processed for category ${cat.name}`);
+      totalProcessed += newProducts + updatedProducts;
+      totalNew += newProducts;
+      totalUpdated += updatedProducts;
+      
+      // Update scraping progress
+      await scrapingHistoryService.updateScrapingProgress(session.id, totalNew, totalUpdated);
+      
+      console.log(`TerminalX: ${newProducts} CREATED, ${updatedProducts} UPDATED for category ${cat.name}`);
     } catch (e) {
       console.warn(`TerminalX: Failed category ${cat.name}: ${e.message}`);
     }
   }
+  
+  const endTime = new Date();
+  const totalSeconds = Math.round((endTime.getTime() - startTime.getTime()) / 1000);
+  
+  // Finish scraping session
+  await scrapingHistoryService.finishScrapingSession(session.id, totalNew, totalUpdated);
+  
   console.log(`TerminalX: ${totalProcessed} products processed in total.`);
+  console.log(`🟢 CREATED: ${totalNew}, 🟡 UPDATED: ${totalUpdated}`);
+  console.log(`⏱️  Scan completed in ${totalSeconds} seconds (${startTime.toISOString()} → ${endTime.toISOString()})`);
   await app.close();
 }
 
