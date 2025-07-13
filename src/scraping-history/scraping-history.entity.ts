@@ -47,6 +47,9 @@ export class ScrapingHistory {
   @Column({ type: 'int', default: 0 })
   updatedItems: number;
 
+  @Column({ type: 'int', default: 0 })
+  progress: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

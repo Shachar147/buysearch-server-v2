@@ -31,12 +31,19 @@ export class ScrapingHistoryService {
   async updateScrapingProgress(
     id: number,
     createdItems: number,
-    updatedItems: number
+    updatedItems: number,
+    progress?: number
   ): Promise<ScrapingHistory> {
-    await this.scrapingHistoryRepository.update(id, {
+    const updateData: any = {
       createdItems,
       updatedItems,
-    });
+    };
+    
+    if (progress !== undefined) {
+      updateData.progress = progress;
+    }
+    
+    await this.scrapingHistoryRepository.update(id, updateData);
     
     return this.scrapingHistoryRepository.findOne({ where: { id } });
   }

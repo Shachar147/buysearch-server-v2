@@ -30,4 +30,35 @@ export class ScrapingHistoryController {
   async getLatestByScraper(@Param('scraper') scraper: string): Promise<ScrapingHistory | null> {
     return this.scrapingHistoryService.getLatestByScraper(scraper);
   }
+
+  @Get('scraper/:scraper/progress')
+  async getScraperProgress(@Param('scraper') scraper: string): Promise<{
+    latest: ScrapingHistory | null;
+    progress: string;
+    isRunning: boolean;
+  }> {
+    const latest = await this.scrapingHistoryService.getLatestByScraper(scraper);
+    
+    if (!latest) {
+      return {
+        latest: null,
+        progress: 'No scraping sessions found',
+        isRunning: false
+      };
+    }
+
+    const isRunning = latest.status === 'in_progress';
+    let progress = 'Completed';
+    
+    if (isRunning) {
+      // Display progress as percentage
+      progress = `${latest.progress}% complete`;
+    }
+
+    return {
+      latest,
+      progress,
+      isRunning
+    };
+  }
 } 
