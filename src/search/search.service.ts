@@ -79,6 +79,7 @@ export class SearchService {
     'Boxers': ['בוקסר', 'בוקסרים'],
     'Polo Shirts': ['פולו', 'חולצת פולו', 'חולצות פולו'],
     'Joggers': ['ג׳וגר', 'ג׳וגרים', 'ג׳וגרז', 'מכנסי ג׳וגר', 'מכנס ג׳וגר'],
+    'Swimwear': ['בגד ים', 'ביקיני', 'בגד-ים', 'בגד חוף']
   };
 
   private HEBREW_COLOR_SYNONYMS = {
