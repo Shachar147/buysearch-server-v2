@@ -79,7 +79,6 @@ interface ApiResponse {
 
 // --- API endpoints ----------------------------------------------------
 const CATEGORY_API_URL = 'https://www.asos.com/api/product/search/v2/categories/';
-const NAV_TREE_URL = 'https://www.asos.com/api/fashion/navigation/v2/tree?lang=en-GB&country=GB&store=ROW&channel=desktop-web';
 
 // --- Default headers (look like a real browser) -----------------------
 const DEFAULT_HEADERS = {
