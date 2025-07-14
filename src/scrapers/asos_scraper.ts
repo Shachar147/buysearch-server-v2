@@ -13,7 +13,7 @@ import axios, { AxiosInstance } from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
 import { BaseScraper, Category } from './base-scraper';
-import { Product, extractColors, calcSalePercent, prefixHttp, slugToColor } from './scraper_utils';
+import { Product, extractColors, calcSalePercent, prefixHttp, slugToColor, normalizeBrandName } from './scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -270,7 +270,7 @@ class ASOSScraper extends BaseScraper {
       oldPrice: salePrice,
       salePercent: calcSalePercent(price, salePrice),
       currency: raw.price?.currency ?? 'ILS',
-      brand: raw.brandName ?? 'Unknown',
+      brand: normalizeBrandName(raw.brandName ?? 'Unknown'),
       categories: detectedCategories,
       gender,
     });
