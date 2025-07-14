@@ -213,7 +213,7 @@ export class ProductService {
     categories: string[];
     gender: string;
     source: string;
-  }): Promise<Product> {
+  }): Promise<{ product: Product; created: boolean; updated: boolean }> {
     // Upsert brand
     const brand = await this.brandService.upsert(productData.brand);
 
@@ -230,8 +230,9 @@ export class ProductService {
     let product = await this.findByUrl(productData.url);
 
     let originalMinimalPrice = undefined;
+    let wasUpdated = false;
+    
     if (product) {
-
       originalMinimalPrice = product.price ?? product.oldPrice;
 
       // Update existing product - only update fields that actually changed
@@ -251,6 +252,7 @@ export class ProductService {
       // Only update if there are actual changes
       if (Object.keys(updates).length > 0) {
         await this.productsRepository.update(product.id, updates);
+        wasUpdated = true;
       }
 
       // Handle many-to-many relationships separately to avoid unnecessary deletes
@@ -261,6 +263,7 @@ export class ProductService {
       if (JSON.stringify(currentCategoryIds) !== JSON.stringify(newCategoryIds)) {
         product.categories = categories;
         await this.productsRepository.save(product);
+        wasUpdated = true;
       }
 
       // Only update colors if they actually changed
@@ -270,6 +273,7 @@ export class ProductService {
       if (JSON.stringify(currentColorIds) !== JSON.stringify(newColorIds)) {
         product.colors = colors;
         await this.productsRepository.save(product);
+        wasUpdated = true;
       }
 
       // Reload the product to get updated data
@@ -301,7 +305,11 @@ export class ProductService {
       await this.priceHistoryService.addIfChanged(product.id, currMinimalPrice);
     }
 
-    return product;
+    return {
+      product,
+      created: !product.id || product.id === 0 ? false : !wasUpdated && product.id > 0,
+      updated: wasUpdated
+    };
   }
 
   async findByIds(ids: number[]): Promise<any[]> {

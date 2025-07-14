@@ -1,44 +1,25 @@
-// asos_category_scraper.ts – v6 (database integration)
+// asos_scraper.ts – v7 (using BaseScraper)
 // =============================================================
-// What's new
-// ----------
-// 1. **Auto‑discovers every category/sub‑category** via the navigation tree
-//    endpoint and scans them one by one – no CLI args needed.
-// 2. `categories` is now **an array** of the full category path
-//    (e.g. `["Shoes", "Boots"]`).
-// 3. Adds `currency` and `salePercent` (rounded discount %) per item.
-// 4. Streams progress logs like:
-//       Scanning category Shoes > Boots – 12/137 …
-// 5. Saves everything to **PostgreSQL database** instead of JSON file.
-// 6. Uses upsert operations for brands, categories, colors, and sources.
+// Features:
+// - Extends BaseScraper for common functionality
+// - Auto‑discovers every category/sub‑category via the navigation tree
+// - Scans categories one by one with progress tracking
+// - Uses both API info and keyword/alias enrichment
+// - Saves to PostgreSQL database with upsert operations
 //
-// -------------------------------------------------------------
-// Quick start
-//   npm run scrape:asos
-// -------------------------------------------------------------
+// Usage: npm run scrape:asos
 
 import axios, { AxiosInstance } from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../app.module';
-import { ProductService } from '../product/product.service';
+import { BaseScraper, Category } from './base-scraper';
+import { Product, extractColors, calcSalePercent, prefixHttp, slugToColor, normalizeBrandName } from './scraper_utils';
 import * as dotenv from 'dotenv';
-
-// Load environment variables
 dotenv.config();
 
-// --- Type definitions ----------------------------------------------------
-interface Category {
-  id: number;
-  name: string;
-  gender: string;
-}
-
-interface CategoryWithPath {
-  id: number;
+// --- Type definitions ---
+interface CategoryWithPath extends Category {
   path: string[];
-  gender: string;
 }
 
 interface RawProduct {
@@ -57,77 +38,20 @@ interface RawProduct {
   brandName?: string;
 }
 
-interface Product {
-  title: string;
-  url: string;
-  images: string[];
-  colors: string[];
-  isSellingFast?: boolean;
-  price: number | null;
-  oldPrice: number | null;
-  salePercent: number | null;
-  currency: string;
-  brand?: string;
-  categories: string[];
-  gender: string;
-  source: string;
-}
-
 interface ApiResponse {
   products?: RawProduct[];
 }
 
-// --- API endpoints ----------------------------------------------------
+// --- API endpoints ---
 const CATEGORY_API_URL = 'https://www.asos.com/api/product/search/v2/categories/';
-const NAV_TREE_URL = 'https://www.asos.com/api/fashion/navigation/v2/tree?lang=en-GB&country=GB&store=ROW&channel=desktop-web';
 
-// --- Default headers (look like a real browser) -----------------------
+// --- Default headers ---
 const DEFAULT_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
   Accept: 'application/json, text/plain, */*',
   Referer: 'https://www.asos.com/',
   Origin: 'https://www.asos.com',
   'Accept-Language': 'en-GB,en;q=0.9',
-};
-
-// --- Color helpers ----------------------------------------------------
-const COLOR_KEYWORDS = [
-  'black', 'white', 'red', 'blue', 'green', 'yellow', 'pink', 'purple',
-  'orange', 'brown', 'grey', 'beige', 'navy', 'cream', 'khaki', 'turquoise', 'indigo',
-  'burgundy', 'silver', 'gold', 'multi', 'mauve', 'teal', 'coral', 'mint', 'lavender'
-];
-
-// New: Map of keyword/phrase to canonical color
-const COLOR_ALIASES: Record<string, string> = {
-  'charcoal marl': 'grey',
-  'off white': 'white',
-  'stone': 'beige',
-  'ivory': 'white',
-  'midnight': 'navy',
-  'taupe': 'beige',
-  'camel': 'brown',
-  'ecru': 'beige',
-  'cream': 'cream', // already in keywords, but for completeness
-  'chocolate': 'brown',
-  'denim': 'blue',
-  'olive': 'green',
-  'mustard': 'yellow',
-  'peach': 'pink',
-  'wine': 'burgundy',
-  'lilac': 'purple',
-  'charcoal': 'grey',
-  'marl': 'grey', // often used as 'grey marl', 'charcoal marl', etc.
-  'gray': 'grey',
-  'light moss': 'green',
-  'in sage': 'green',
-  'in anthracite': 'grey',
-  'in washed asphalt': 'grey',
-  'in stone': 'beige',
-  'in tan': 'beige',
-  'indigo': 'purple',
-  'in sand': 'beige',
-  'in rust': 'red',
-  'in lime': 'yellow'
 };
 
 // --- Category detection keywords ---
@@ -141,50 +65,30 @@ const TITLE_CATEGORY_KEYWORDS: Record<string, string[]> = {
   'Hats': [' cap '],
   'Shoes': ['Slippers', 'Flip Flops', 'Sandals'],
   'Slippers': ['slippers']
-  // Add more as needed
 };
 
-// --- Axios client with Cloudflare‑ready cookie jar --------------------
-const jar = new CookieJar();
-const client: AxiosInstance = wrapper(
-  axios.create({
-    headers: DEFAULT_HEADERS,
-    jar,
-    withCredentials: true,
-    timeout: 30000,
-  })
-);
-
-async function warmCookies(): Promise<void> {
-  try {
-    await client.get('https://www.asos.com/');
-  } catch {
-    console.warn('⚠️  Could not warm Cloudflare cookies – continuing anyway.');
-  }
-}
-
-// ------------------- Static Categories ---------------------------
+// --- Static Categories ---
 const MAIN_CATEGORIES: Category[] = [
-  { id: 4209, name: 'Clothing', gender: 'Men' }, // V
-  { id: 4208, name: 'Shoes', gender: 'Men' }, // V
-  { id: 1111, name: 'By Brand', gender: 'Men' }, // V
+  { id: 4209, name: 'Clothing', gender: 'Men' },
+  { id: 4208, name: 'Shoes', gender: 'Men' },
+  { id: 1111, name: 'By Brand', gender: 'Men' },
   { id: 9999, name: 'Clothing', gender: 'Women'},
-  { id: 8888, name: 'By Brand', gender: 'Women' }, // V
+  { id: 8888, name: 'By Brand', gender: 'Women' },
 ];
 
 const SUBCATEGORIES: Record<number, Category[]> = {
   9999: [
-    { id: 4169, name: 'Tops', gender: 'Women'}, // V
-    { id: 8799, name: 'Dresses', gender: 'Women'}, // V
-    { id: 2639, name: 'Skirts', gender: 'Women'}, // V
-    { id: 9263, name: 'Shorts', gender: 'Women'}, // V
-    { id: 2238, name: 'Swimwear', gender: 'Women'}, // V
-    { id: 3630, name: 'Jeans', gender: 'Women'}, // V
-    { id: 2641, name: 'Jackets & Coats', gender: 'Women'}, // V
-    { id: 6046, name: 'Lingerie & Nightwear', gender: 'Women'}, // V
+    { id: 4169, name: 'Tops', gender: 'Women'},
+    { id: 8799, name: 'Dresses', gender: 'Women'},
+    { id: 2639, name: 'Skirts', gender: 'Women'},
+    { id: 9263, name: 'Shorts', gender: 'Women'},
+    { id: 2238, name: 'Swimwear', gender: 'Women'},
+    { id: 3630, name: 'Jeans', gender: 'Women'},
+    { id: 2641, name: 'Jackets & Coats', gender: 'Women'},
+    { id: 6046, name: 'Lingerie & Nightwear', gender: 'Women'},
   ],
   8888: [
-    { id: 12949, name: 'Abercrombie and Fitch', gender: 'Women'}, // V
+    { id: 12949, name: 'Abercrombie and Fitch', gender: 'Women'},
     { id: 20848, name: 'Polo Ralph Lauren', gender: 'Women' },
     { id: 2505, name: 'Calvin Klein', gender: 'Women' },
     { id: 19146, name: 'Calvin Klein Jeans', gender: 'Women' },
@@ -236,246 +140,167 @@ const SUBCATEGORIES: Record<number, Category[]> = {
   // ],
 };
 
-function getCategories(): CategoryWithPath[] {
-  const categories: CategoryWithPath[] = [];
+class ASOSScraper extends BaseScraper {
+  protected readonly scraperName = 'ASOS';
+  protected readonly source = 'asos.com';
   
-  // Add main categories that don't have subcategories
-  const mainCategoriesWithoutSubs = MAIN_CATEGORIES.filter(cat => !SUBCATEGORIES[cat.id]);
-  mainCategoriesWithoutSubs.forEach(cat => {
-    categories.push({ id: cat.id, path: [cat.name], gender: cat.gender });
-  });
-  
-  // Add subcategories with their parent category path
-  Object.entries(SUBCATEGORIES).forEach(([parentId, subs]) => {
-    const parentCategory = MAIN_CATEGORIES.find(cat => cat.id === parseInt(parentId));
-    if (parentCategory) {
-      subs.forEach(sub => {
-        // Filter out 'By Brand' from the path
-        const path = [parentCategory.name, sub.name].filter(name => name !== 'By Brand');
-        categories.push({ id: sub.id, path, gender: sub.gender });
-      });
-    }
-  });
-  
-  return categories;
-}
+  private client: AxiosInstance;
+  private jar: CookieJar;
 
-// ------------------- Product scraping core ---------------------------
-async function fetchPage(categoryId: number, offset: number, limit: number = 72, retries: number = 3): Promise<RawProduct[]> {
-  const params = {
-    channel: 'desktop-web',
-    store: 'ROW',
-    country: 'IL',
-    lang: 'en-GB',
-    currency: 'ILS',
-    limit,
-    offset,
-    includeNonPurchasableTypes: 'restocking',
-  };
-  
-  try {
-    const { data } = await client.get<ApiResponse>(`${CATEGORY_API_URL}${categoryId}`, {
-      params,
-    });
-    return data.products ?? [];
-  } catch (err: any) {
-    console.warn(
-      `Error offset ${offset} cid ${categoryId}: ${err.response?.status || err.code} – ${err.message}`
+  constructor() {
+    super();
+    // Initialize Axios client with Cloudflare‑ready cookie jar
+    this.jar = new CookieJar();
+    this.client = wrapper(
+      axios.create({
+        headers: DEFAULT_HEADERS,
+        jar: this.jar,
+        withCredentials: true,
+        timeout: 30000,
+      })
     );
-    if (retries > 0) {
-      await new Promise((r) => setTimeout(r, 1500));
-      return fetchPage(categoryId, offset, limit, retries - 1);
-    }
-    throw err;
   }
-}
 
-function prefixHttp(url?: string): string {
-  return url?.startsWith('http') ? url : `http://${url}`;
-}
-
-function slugToColor(slug?: string): string | null {
-  if (!slug) return null;
-  const cleaned = slug.replace(/[^a-z]/gi, '').toLowerCase();
-  if (!cleaned) return null;
-  // try camel split
-  const camel = cleaned.replace(/([a-z])([A-Z])/g, '$1 $2');
-  return camel;
-}
-
-function calcSalePercent(price: number | null, salePrice: number | null): number | null {
-  if (!salePrice || !price || salePrice <= price) return null;
-  return Math.round(((salePrice - price) / salePrice) * 100);
-}
-
-function buildProductObj(raw: RawProduct, categoriesPath: string[], gender: string): {
-  title: string;
-  url: string;
-  images: string[];
-  colors: string[];
-  isSellingFast: boolean;
-  price: number | null;
-  oldPrice: number | null;
-  salePercent: number | null;
-  currency: string;
-  brand: string;
-  categories: string[];
-  gender: string;
-  source: string;
-} {
-  const lowerTitle = raw.name.toLowerCase();
-  const colorsSet = new Set(
-    COLOR_KEYWORDS.filter((c) => new RegExp(`\\b${c}\\b`).test(lowerTitle))
-  );
-  // Add alias-based color detection
-  for (const [alias, color] of Object.entries(COLOR_ALIASES)) {
-    if (new RegExp(`\\b${alias}\\b`).test(lowerTitle)) {
-      colorsSet.add(color);
-    }
+  protected async initialize(): Promise<void> {
+    await this.warmCookies();
   }
-  if (raw.colour && raw.colour.trim()) colorsSet.add(raw.colour.toLowerCase());
 
-  // --- Category detection from title ---
-  const detectedCategories = [...categoriesPath];
-  for (const [category, keywords] of Object.entries(TITLE_CATEGORY_KEYWORDS)) {
-    if (keywords.some(keyword => lowerTitle.includes(keyword))) {
-      detectedCategories.push(category);
-    }
+  protected getCategories(): Category[] {
+    return this.getCategoriesWithPath();
   }
-  // Add more keyword-category mappings as needed
 
-  // Safely extract color from image URL
-  // if (raw.imageUrl) {
-  //   const slugColor = slugToColor(raw.imageUrl.split('/').pop()?.split('-').pop());
-  //   if (slugColor) colorsSet.add(slugColor);
-  // }
-
-  const images: string[] = [];
-  if (raw.imageUrl) {
-    images.push(prefixHttp(raw.imageUrl));
+  protected async scrapeCategory(category: Category): Promise<Product[]> {
+    return this.scrapeSingleCategory(category as CategoryWithPath);
   }
-  if (raw.additionalImageUrls && Array.isArray(raw.additionalImageUrls)) {
-    images.push(...raw.additionalImageUrls.map(prefixHttp));
-  }
-  
-  const price = raw.price?.current?.value ?? null;
-  const salePrice = raw.price?.previous?.value ?? raw.price?.rrp?.value ?? null;
 
-  return {
-    title: raw.name,
-    url: `https://www.asos.com/${raw.url.replace(/^\/+/, '')}`,
-    images,
-    colors: Array.from(colorsSet),
-    isSellingFast: raw.isSellingFast ?? false,
-    price,
-    oldPrice: salePrice,
-    salePercent: calcSalePercent(price, salePrice),
-    currency: raw.price?.currency ?? 'ILS',
-    brand: raw.brandName ?? 'Unknown',
-    categories: detectedCategories,
-    gender,
-    source: 'asos.com',
-  };
-}
-
-async function scrapeSingleCategory(cat: CategoryWithPath): Promise<{
-  title: string;
-  url: string;
-  images: string[];
-  colors: string[];
-  isSellingFast: boolean;
-  price: number | null;
-  oldPrice: number | null;
-  salePercent: number | null;
-  currency: string;
-  brand: string;
-  categories: string[];
-  gender: string;
-  source: string;
-}[]> {
-  const { id, path, gender } = cat;
-  let offset = 0;
-  const limit = 200;
-  const items: {
-    title: string;
-    url: string;
-    images: string[];
-    colors: string[];
-    isSellingFast: boolean;
-    price: number | null;
-    oldPrice: number | null;
-    salePercent: number | null;
-    currency: string;
-    brand: string;
-    categories: string[];
-    gender: string;
-    source: string;
-  }[] = [];
-  
-  while (true) {
-    const page = await fetchPage(id, offset, limit);
-    if (!page.length) break;
-    items.push(...page.map((p) => buildProductObj(p, path, gender)));
-    offset += page.length;
-  }
-  
-  return items;
-}
-
-// ------------------- Main orchestrator -------------------------------
-async function main(): Promise<void> {
-  // Initialize NestJS application
-  const app = await NestFactory.createApplicationContext(AppModule);
-  const productsService = app.get(ProductService);
-
-  await warmCookies();
-
-  console.log('Using static ASOS categories…');
-  const categories = getCategories();
-  console.log(`Found ${categories.length} categories to scan.`);
-
-  let totalProcessed = 0;
-  let totalNew = 0;
-  let totalUpdated = 0;
-
-  for (let i = 0; i < categories.length; i++) {
-    const cat = categories[i];
-    console.log(
-      `Scanning category #${cat.id} - ${cat.path.join(' > ')} – ${i + 1}/${categories.length}`
-    );
+  private async warmCookies(): Promise<void> {
     try {
-      const products = await scrapeSingleCategory(cat);
-      console.log(`Found ${products.length} products`);
+      await this.client.get('https://www.asos.com/');
+    } catch {
+      this.logWarning('Could not warm Cloudflare cookies – continuing anyway.');
+    }
+  }
+
+  private getCategoriesWithPath(): CategoryWithPath[] {
+    const categories: CategoryWithPath[] = [];
+    
+    for (const mainCat of MAIN_CATEGORIES) {
+      const subcats = SUBCATEGORIES[mainCat.id] || [];
       
-      // Process products and save to database
-      let newProducts = 0;
-      let updatedProducts = 0;
-      
-      for (const product of products) {
-        try {
-          await productsService.upsertProduct(product);
-          totalProcessed++;
-          newProducts++;
-        } catch (error) {
-          console.warn(`⚠️  Failed to save product ${product.url}: ${error.message}`);
+      if (subcats.length === 0) {
+        // Main category with no subcategories
+        categories.push({
+          ...mainCat,
+          path: [mainCat.name]
+        });
+      } else {
+        // Add subcategories with full path
+        for (const subcat of subcats) {
+          categories.push({
+            ...subcat,
+            path: [mainCat.name, subcat.name]
+          });
         }
       }
-      
-      console.log(`📊 Processed: ${newProducts} products from this category`);
-      totalNew += newProducts;
-      
-    } catch (e: any) {
-      console.warn(`⚠️  Failed category ${cat.id}: ${e.message}`);
     }
+    
+    return categories;
   }
 
-  console.log(`🎉 Final result: ${totalProcessed} products processed`);
-  console.log(`📈 New products: ${totalNew}, Updated: ${totalUpdated}`);
   
-  await app.close();
+  private async fetchPage(categoryId: number, offset: number, limit: number = 72, retries: number = 3): Promise<RawProduct[]> {
+
+    const params = {
+      channel: 'desktop-web',
+      store: 'ROW',
+      country: 'IL',
+      lang: 'en-GB',
+      currency: 'ILS',
+      limit,
+      offset,
+      includeNonPurchasableTypes: 'restocking',
+    };
+
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        const url = `${CATEGORY_API_URL}${categoryId}?limit=${limit}&offset=${offset}`;
+        const response = await this.client.get<ApiResponse>(url, { params });
+        return response.data.products || [];
+      } catch (error) {
+        if (attempt === retries) throw error;
+        this.logWarning(`Attempt ${attempt} failed for category ${categoryId}, retrying...`);
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+      }
+    }
+    return [];
+  }
+
+  private buildProductObj(raw: RawProduct, categoriesPath: string[], gender: string): Product {
+    const lowerTitle = raw.name.toLowerCase();
+    const colorsSet = new Set(
+      extractColors(lowerTitle, raw.colour ? [raw.colour] : [])
+    );
+
+    // --- Category detection from title ---
+    const detectedCategories = [...categoriesPath];
+    for (const [category, keywords] of Object.entries(TITLE_CATEGORY_KEYWORDS)) {
+      if (keywords.some(keyword => lowerTitle.includes(keyword))) {
+        detectedCategories.push(category);
+      }
+    }
+
+    const images: string[] = [];
+    if (raw.imageUrl) {
+      images.push(prefixHttp(raw.imageUrl));
+    }
+    if (raw.additionalImageUrls && Array.isArray(raw.additionalImageUrls)) {
+      images.push(...raw.additionalImageUrls.map(prefixHttp));
+    }
+    
+    const price = raw.price?.current?.value ?? null;
+    const salePrice = raw.price?.previous?.value ?? raw.price?.rrp?.value ?? null;
+
+    return this.createProduct({
+      title: raw.name,
+      url: `https://www.asos.com/${raw.url.replace(/^\/+/, '')}`,
+      images,
+      colors: Array.from(colorsSet),
+      isSellingFast: raw.isSellingFast ?? false,
+      price,
+      oldPrice: salePrice,
+      salePercent: calcSalePercent(price, salePrice),
+      currency: raw.price?.currency ?? 'ILS',
+      brand: normalizeBrandName(raw.brandName ?? 'Unknown'),
+      categories: detectedCategories,
+      gender,
+    });
+  }
+
+  private async scrapeSingleCategory(cat: CategoryWithPath): Promise<Product[]> {
+    const { id, path, gender } = cat;
+    let offset = 0;
+    const limit = 200;
+    const items: Product[] = [];
+    
+    while (true) {
+      const page = await this.fetchPage(id as number, offset, limit);
+      if (!page.length) break;
+      
+      items.push(...page.map((p) => this.buildProductObj(p, path, gender)));
+      offset += page.length;
+    }
+    
+    return items;
+  }
 }
 
-// ------------------- Run if CLI --------------------------------------
+// Main function
+async function main(): Promise<void> {
+  const scraper = new ASOSScraper();
+  await scraper.run();
+}
+
+// CLI entry point
 if (require.main === module) {
   main().catch((e) => {
     console.error(e);
@@ -483,4 +308,4 @@ if (require.main === module) {
   });
 }
 
-export { main, getCategories, scrapeSingleCategory, buildProductObj }; 
+export { main, ASOSScraper }; 

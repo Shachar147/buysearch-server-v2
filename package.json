@@ -9,6 +9,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "scrape:asos": "npx ts-node -r tsconfig-paths/register src/scrapers/asos_scraper.ts",
+    "scrape:terminal": "npx ts-node -r tsconfig-paths/register src/scrapers/terminalx_scraper.ts",
+    "scrape:terminalx": "npm run scrape:terminal",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
