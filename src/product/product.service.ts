@@ -24,6 +24,8 @@ export interface ProductFilters {
   priceRange?: string;
   gender?: string;
   isFavourite?: boolean;
+  source?: string;
+  isOnSale?: string;
 }
 
 @Injectable()
@@ -146,6 +148,22 @@ export class ProductService {
       }
       qb.andWhere('product.id IN (:...ids)', { ids });
     }
+    if (filters.source && filters.source != 'All') {
+      if (filters.source.includes(',')) {
+        const sources = filters.source.split(',').map(c => c.trim().toLowerCase());
+        qb.andWhere('LOWER(source.name) IN (:...sources)', { sources });
+      } else {
+        qb.andWhere('LOWER(source.name) = :source', { source: filters.source.toLowerCase() });
+      }
+    }
+
+    if (filters.isOnSale !== undefined) {
+      if (filters.isOnSale === 'Yes') {
+        qb.andWhere('product.oldPrice > product.price');
+      } else if (filters.isOnSale === 'No') {
+        qb.andWhere('(product.oldPrice <= product.price OR product.oldPrice IS NULL)');
+      }
+    }
     const offset = Number(filters.offset || 0);
     const limit = Number(filters.limit || PAGINATION_LIMIT);
     qb.skip(offset).take(limit);
@@ -160,6 +178,8 @@ export class ProductService {
       colors: Array.isArray(product.colors)
         ? product.colors.map(c => ({ id: c.id, name: c.name }))
         : [],
+        price: Number(product.price),
+        oldPrice: product.oldPrice ? Number(product.oldPrice) : undefined
     }));
 
     return {

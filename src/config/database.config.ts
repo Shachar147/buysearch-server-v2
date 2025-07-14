@@ -12,3 +12,4 @@ export const databaseConfig: TypeOrmModuleOptions = {
   logging: false, // Disable query logging
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 }; 
+
