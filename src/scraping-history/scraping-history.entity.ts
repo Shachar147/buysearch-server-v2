@@ -7,7 +7,8 @@ export enum ScrapingType {
 
 export enum ScrapingStatus {
   IN_PROGRESS = 'in_progress',
-  FINISHED = 'finished'
+  FINISHED = 'finished',
+  FAILED = 'failed'
 }
 
 @Entity('scraping_history')

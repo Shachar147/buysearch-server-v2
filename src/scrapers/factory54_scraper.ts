@@ -38,6 +38,20 @@ const CATEGORIES: Category[] = [
     gender: 'Men',
     baseUrl: 'https://www.factory54.co.il/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99-%D7%92%27%D7%99%D7%A0%D7%A1',
     url: 'https://www.factory54.co.il/men-clothes-guinness'
+  },
+  {
+    id: 'men-shoes',
+    name: 'Shoes',
+    gender: 'Men',
+    baseUrl: 'https://www.factory54.co.il/%D7%A0%D7%A2%D7%9C%D7%99-%D7%A1%D7%A0%D7%99%D7%A7%D7%A8%D7%A1',
+    url: 'https://www.factory54.co.il/men-shoes'
+  },
+  {
+    id: 'men-accessories',
+    name: 'Accessories',
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-accessories',
+    baseUrl: 'https://www.factory54.co.il/%D7%AA%D7%99%D7%A7'
   }
   // Add more categories as needed
 ];

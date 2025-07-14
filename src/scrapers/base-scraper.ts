@@ -51,6 +51,8 @@ export abstract class BaseScraper {
    * Main scraping orchestration method
    */
   async run(): Promise<void> {
+    let totalNew = 0;
+    let totalUpdated = 0;
     try {
       // Initialize NestJS context
       const { app, productsService, scrapingHistoryService } = await createAppContext();
@@ -70,15 +72,12 @@ export abstract class BaseScraper {
       this.totalCategories = categories.length;
       console.log(`Found ${categories.length} categories to scan.`);
 
-      let totalNew = 0;
-      let totalUpdated = 0;
       let categoriesScanned = 0;
 
       // Process each category
       for (let i = 0; i < categories.length; i++) {
         const category = categories[i];
         console.log(`Scanning category ${category.name} – ${i + 1}/${categories.length}`);
-        
         try {
           const products = await this.scrapeCategory(category);
           console.log(`Found ${products.length} products in ${category.name}`);
@@ -134,6 +133,13 @@ export abstract class BaseScraper {
       
     } catch (error) {
       console.error(`❌ ${this.scraperName} scraper failed:`, error);
+      if (this.scrapingHistoryService && this.session) {
+        await this.scrapingHistoryService.failScrapingSession(
+          this.session.id,
+          totalNew,
+          totalUpdated
+        );
+      }
       throw error;
     }
   }

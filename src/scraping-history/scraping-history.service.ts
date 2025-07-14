@@ -72,6 +72,27 @@ export class ScrapingHistoryService {
     return this.scrapingHistoryRepository.findOne({ where: { id } });
   }
 
+  async failScrapingSession(
+    id: number,
+    createdItems: number,
+    updatedItems: number
+  ): Promise<ScrapingHistory> {
+    const session = await this.scrapingHistoryRepository.findOne({ where: { id } });
+    if (!session) {
+      throw new Error(`Scraping session with id ${id} not found`);
+    }
+    const endTime = new Date();
+    const totalSeconds = Math.round((endTime.getTime() - session.startTime.getTime()) / 1000);
+    await this.scrapingHistoryRepository.update(id, {
+      status: ScrapingStatus.FAILED,
+      endTime,
+      totalSeconds,
+      createdItems,
+      updatedItems,
+    });
+    return this.scrapingHistoryRepository.findOne({ where: { id } });
+  }
+
   async findAll(limit: number = 50): Promise<ScrapingHistory[]> {
     return this.scrapingHistoryRepository.find({
       order: { startTime: 'DESC' },
