@@ -64,4 +64,7 @@ export class Product {
     inverseJoinColumn: { name: 'colorId', referencedColumnName: 'id' }
   })
   colors: Color[];
+
+  @Column({ default: true })
+  isActive: boolean;
 } 

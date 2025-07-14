@@ -47,6 +47,8 @@ export class ProductService {
       .leftJoinAndSelect('product.colors', 'color')
       .distinct(true);
 
+      qb.andWhere('product.isActive = true');
+
     if (filters.isFavourite && userId) {
       const favs = await this.favouritesService.getFavourites(userId);
       const favIds = favs.map((f: any) => f.productId);

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, Index, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany, Index, Unique, ManyToOne, OneToMany } from 'typeorm';
 import { Product } from '../product/product.entity';
 
 @Entity('categories')
@@ -19,6 +19,16 @@ export class Category {
   @Column()
   @Index()
   gender: string;
+
+  // --- Hierarchy ---
+  @ManyToOne(() => Category, category => category.children, { nullable: true, onDelete: 'SET NULL' })
+  parent?: Category;
+
+  @Column({ nullable: true })
+  parentId?: number;
+
+  @OneToMany(() => Category, category => category.parent)
+  children?: Category[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
