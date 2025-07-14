@@ -60,7 +60,7 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'under armour': 'Under Armour',
   'underarmour': 'Under Armour',
   'calvin klein': 'Calvin Klein',
-  'allsaints': 'Allsaints',
+  'allsaints': 'AllSaints',
   'ck': 'Calvin Klein',
   'tommy hilfiger': 'Tommy Hilfiger',
   'tommy': 'Tommy Hilfiger',

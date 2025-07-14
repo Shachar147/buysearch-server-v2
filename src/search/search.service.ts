@@ -3,6 +3,7 @@ import { BrandService } from '../brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { ColorService } from '../color/color.service';
 import { ucfirst } from './search.utils';
+import { normalizeBrandName } from 'src/scrapers/scraper_utils';
 
 export interface ParsedFilters {
   colors: string[];
@@ -294,7 +295,7 @@ export class SearchService {
       if (!dbBrands.includes(brand.toLowerCase())) return;
       synonyms.forEach(synonym => {
         if (normalizedQuery.includes(normalizeBrandStr(synonym))) {
-          foundBrands.add(ucfirst(brand));
+          foundBrands.add(normalizeBrandName(ucfirst(brand)));
         }
       });
     });
