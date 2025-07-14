@@ -13,6 +13,8 @@ export interface ParsedFilters {
   minPrice: number | null;
   keywords: string[];
   gender: string | null;
+  isOnSale?: string;
+  sources?: string[];
 }
 
 @Injectable()
@@ -243,7 +245,9 @@ export class SearchService {
       maxPrice: null,
       minPrice: null,
       keywords: [],
-      gender: null
+      gender: null,
+      isOnSale: null,
+      sources: [],
     };
     const lowerQuery = query.toLowerCase();
 
@@ -325,6 +329,27 @@ export class SearchService {
       }
     });
     filters.keywords = Array.from(foundKeywords);
+
+    // --- Sale/Not On Sale detection ---
+    if (
+      lowerQuery.includes('במבצע') ||
+      lowerQuery.includes('במחיר מבצע') ||
+      /\bsale\b/.test(lowerQuery)
+    ) {
+      filters.isOnSale = 'Yes';
+    } else if (/\b(not on sale|לא במבצע|במחיר מלא)\b/.test(lowerQuery)) {
+      filters.isOnSale = 'False';
+    }
+
+    // --- Source detection ---
+    const sourceKeywords = [
+      { key: 'factory54.co.il', patterns: [/\bfactory\b/, /\bfactory54\b/, /factory 54/, /פקטורי/] },
+      { key: 'terminalx.com', patterns: [/\bterminal\b/, /\bterminalx\b/, /terminal x/, /טרמינל/, /טרמינל איקס/] },
+      { key: 'asos.com', patterns: [/\basos\b/, /אסוס /] },
+    ];
+    filters.sources = sourceKeywords
+      .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))
+      .map(src => src.key);
 
     return filters;
   }
