@@ -9,6 +9,7 @@ export interface Category {
   id: string | number;
   name: string;
   gender: string;
+  additionalFilters?: object; // { department_level: { eq: MEN } }
   [key: string]: any; // Allow additional properties
 }
 

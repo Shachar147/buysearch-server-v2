@@ -117,6 +117,7 @@ export class SearchService {
       { regex: /בין\s*(\d+)\s*ל-?\s*(\d+)/, type: 'range' },
       { regex: /מקס(?:ימום|׳)?\s*(\d+)/, type: 'max' },
       { regex: /לפחות\s*(\d+)/, type: 'min' },
+      { regex: /החל מ\s*(\d+)/, type: 'min' },
       { regex: /לא יותר מ\s*(\d+)/, type: 'max' },
       { regex: /יותר מ-?\s*(\d+)/, type: 'min' }, // NEW: 'יותר מ200' or 'יותר מ-200'
       { regex: /מינימום\s*(\d+)/, type: 'min' }, // NEW: 'מינימום 200'
@@ -151,7 +152,7 @@ export class SearchService {
       const context = before + after;
       if (/not\s*(over|above|more)/.test(context)) {
         maxPrice = price;
-      } else if (/min(imum)?|over|above|more/.test(context)) {
+      } else if (/min(imum)?|over|above|from|more/.test(context)) {
         minPrice = price;
       } else if (/max(imum)?|under|below|less/.test(context)) {
         maxPrice = price;
