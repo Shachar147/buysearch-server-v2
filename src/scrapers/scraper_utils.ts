@@ -337,9 +337,10 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'מטפחות': ['Accessories', 'Handkerchiefs'],
   "טישירט": ['Clothing', 'T-Shirts & Vests'],
   "מכנסיים קצרים": ['Clothing', 'Pants', 'Shorts'],
+  'short jeans': ['Clothing', 'Shorts', 'Jeans'],
   "אוברסייז": ['Clothing', 'Oversize'],
   "Oversize": ['Clothing', 'Oversize'],
-  
+  'home': ['Home']
   // 'mocha mousse': 'Mocha Mousse',
   // 'מתנות': 'Gifts',
   // Add more as needed
@@ -387,7 +388,13 @@ export const CATEGORIES_TO_IGNORE = new Set([
   'וסט',
   "קז'ואל",
   'טי שירט שרוול ארוך',
-  'טי שירט שרוול קצר'
+  'טי שירט שרוול קצר',
+  'men', // <- todo remove,
+  'short jeans', // <- todo remove,
+  'tax free', // todo remove,
+  'italian summer', // todo remove,
+  'mocha mousse', // todo remove,
+  'straight',
 ]);
 
 /**
