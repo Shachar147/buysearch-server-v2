@@ -226,6 +226,127 @@ export const HEBREW_COLOR_MAP: Record<string, string> = {
   'אבן': 'stone'
 };
 
+// --- Category Synonyms Mapping ---
+export const CATEGORY_SYNONYMS: Record<string, string[]> = {
+  'caps': ['Hats'],
+  'כובעים': ['Hats'],
+  'כובע': ['Hats'],
+  'hats': ['Hats'],
+  't-shirts': ['T-Shirts & Vests'],
+  'tshirts': ['T-Shirts & Vests'],
+  'חולצות': ['Shirts'],
+  'shirts': ['Shirts'],
+  'pants': ['Pants'],
+  'מכנסיים': ['Pants'],
+  'dresses': ['Dresses'],
+  'שמלות': ['Dresses'],
+  'skirts': ['Skirts'],
+  'חצאיות': ['Skirts'],
+  'jackets': ['Jackets & Coats'],
+  'coats': ['Jackets & Coats'],
+  'ג׳קטים': ['Jackets & Coats'],
+  'אוברולים': ['Overalls'],
+  'overalls': ['Overalls'],
+  'bodysuit': ['Bodysuits'],
+  'bodysuits': ['Bodysuits'],
+  'בגד גוף': ['Bodysuits'],
+  'בגדי גוף': ['Bodysuits'],
+  'jewlery': ['Jewelry'],
+  'תכשיטים': ['Jewelry'],
+  'אביזרים': ['Accessories'],
+  'תיקים': ['Accessories', 'Bags'],
+  'תיקי נסיעה': ['Accessories', 'Bags'],
+  'תיקי גב': ['Accessories', 'Bags', 'Backpacks'],
+  'פאוץ׳': ['Accessories', 'Bags', 'Pouch'],
+  "תיקי פאוץ'": ['Accessories', 'Bags', 'Pouch'],
+  "סנדלים וכפכפים": ['Shoes', 'Sandals', 'Flip Flops'],
+  "סניקרס": ['Shoes', 'Snickers'],
+  'תיק לפטופ': ['Bags', 'Laptop Bags'],
+  'תיק ללפטופ': ['Bags', 'Laptop Bags'],
+  'תיק למחשב נייד': ['Bags', 'Laptop Bags'],
+  'תיק למחשב-נייד': ['Bags', 'Laptop Bags'],
+  'תיקי לפטופ': ['Bags', 'Laptop Bags'],
+  'בגדים': ['Clothing'],
+  'טי שרט שרוול קצר': ['T-Shirts & Vests'],
+  'נעליים': ['Shoes'],
+  "ג'ינסים": ['Jeans'],
+  "תיקי צד": ['Bags', 'Side Bags'],
+  "חגורות": ['Accessories', 'Belts'],
+  'ארנק כרטיסים': ['Accessories', 'Wallets'],
+  'ארנקים': ['Accessories', 'Wallets'],
+  "פאוץ'": ['Bags', 'Pouch Bags'],
+  'משקפי שמש': ['Accessories', 'Sunglasses'],
+  'גרב': ['Accessories', 'Socks'],
+  'גרביים': ['Accessories', 'Socks'],
+  'צמידים': ['Accessories', 'Jewelry', 'Bracelets'],
+  'צמיד': ['Accessories', 'Jewelry', 'Bracelets'],
+  'tax free': ['Tax Free'],
+  'שרשרת': ['Accessories', 'Jewelry', 'Necklaces'],
+  'שרשראות': ['Accessories', 'Jewelry', 'Necklaces'],
+  'טבעות': ['Accessories', 'Jewelry', 'Rings'],
+  'בקבוקי ספורט': ['Accessories', 'Sport', 'Bottles'],
+  'אביזרי ספורט': ['Accessories', 'Sport'],
+  'כפפות': ['Accessories', 'Gloves'],
+  'חליפות': ['Suites'],
+  'גוף & וולנס': ['Welness & Body'],
+  'straight': ['Jeans', 'Straight Jeans'],
+  'skinny': ['Jeans', 'Skinny Jeans'],
+  'slim': ['Jeans', 'Slim Jeans'],
+  'נעליים אלגנטיות': ['Shoes', 'Elegant Shoes'],
+  'מוקסינים': ['Shoes', 'Moccasin Shoes'],
+  'כפכפים': ['Flip Flops'],
+  'סנדלים': ['Sandals'],
+  'ספורט': ['Sport'],
+  
+  // Add more as needed
+};
+
+// --- Categories to Ignore ---
+export const CATEGORIES_TO_IGNORE = new Set([
+  'גברים',
+  'נשים',
+  'מצחיה',
+  'מצחייה',
+  '(not set)',
+  'נמוכות',
+  'גבוהות',
+  'sale',
+  'or luzon picks',
+  'סטיילינג',
+  '10%',
+  '20%',
+  '30%',
+  '40%',
+  '50%',
+  '60%',
+  '70%',
+  '80%',
+  '90%',
+  'archive',
+  'wear it like jeremy'
+]);
+
+/**
+ * Normalize category names using synonyms mapping and ignore unwanted categories
+ * @param categories Array of category names (string[])
+ * @returns Array of normalized category names (string[])
+ */
+export function normalizeCategories(categories: string[]): string[] {
+  if (!Array.isArray(categories)) return [];
+  const resultSet = new Set<string>();
+  categories.forEach((cat) => {
+    if (!cat) return;
+    const normalized = cat.trim().toLowerCase();
+    const mapped = CATEGORY_SYNONYMS[normalized] || [cat.trim()];
+    mapped.forEach((normCat) => {
+      if (normCat && !CATEGORIES_TO_IGNORE.has(normCat.toLocaleLowerCase())) {
+        resultSet.add(normCat);
+      }
+    });
+  });
+  return Array.from(resultSet);
+}
+
 // --- Utility Functions ---
 export function extractColors(title: string, apiColors: string[]): string[] {
   const lowerTitle = title.toLowerCase();
@@ -414,3 +535,28 @@ export async function processProducts(
   
   return { created: newProducts, updated: updatedProducts, total: totalProcessed };
 } 
+
+/**
+ * Extract categories from a product title/name using keyword matching and normalization
+ * @param title Product title or name
+ * @returns Array of normalized category names (string[])
+ */
+export function extractCategory(title: string): string[] {
+  if (!title) return [];
+  const lowerTitle = title.toLowerCase();
+  const foundCategories = new Set<string>();
+  // Check for each synonym key and value in the title
+  for (const [key, mappedArr] of Object.entries(CATEGORY_SYNONYMS)) {
+    if (lowerTitle.includes(key)) {
+      mappedArr.forEach((cat) => foundCategories.add(cat));
+    }
+    // Also check if any mapped category appears as a word in the title
+    mappedArr.forEach((cat) => {
+      if (lowerTitle.includes(cat.toLowerCase())) {
+        foundCategories.add(cat);
+      }
+    });
+  }
+  // Remove ignored categories
+  return Array.from(foundCategories).filter((cat) => !CATEGORIES_TO_IGNORE.has(cat.toLowerCase()));
+}

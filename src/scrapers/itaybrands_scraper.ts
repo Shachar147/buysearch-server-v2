@@ -30,8 +30,8 @@ const CATEGORIES: Category[] = [
     url: 'https://itaybrands.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99%D7%99%D7%9D-%D7%92%D7%91%D7%A8%D7%99%D7%9D'
   },
   {
-    id: 'jewlery',
-    name: 'Jewlery',
+    id: 'חewelry',
+    name: 'Jewelry',
     gender: 'Men',
     url: 'https://itaybrands.co.il/collections/%D7%AA%D7%9B%D7%A9%D7%99%D7%98%D7%99%D7%9D'
   },

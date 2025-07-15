@@ -59,7 +59,8 @@ export class SearchService {
     'nike': ['nike', 'נייק', 'נייקי'],
     'adidas': ['adidas', 'אדידס', 'אדידאס'],
     'converse': ['converse', 'אול-סטאר', 'אולסטאר', 'אול סטאר', 'קונברס', 'קונברס אולסטאר'],
-    'jordan': ['jordan', 'ג׳ורדן', 'גורדן', 'ג׳ורדאן'],
+    'jordan': ['jordan', 'ג׳ורדן', 'גורדן', 'ג׳ורדאן', "ג׳ורד"],
+    'asos design': ["asos d","אסוס די"],
     'new balance': ['new balance', 'newbalance', 'ניובלאנס', 'ניו באלאנס', 'ניו בלאנס', 'ניו באלנס'],
     'champion': ['champion', 'צ׳מפיון', 'צמפיון'],
     'lacoste': ['lacoste', 'לקוסט', 'לאקוסט'],
@@ -346,7 +347,7 @@ export class SearchService {
     const sourceKeywords = [
       { key: 'Factory54', patterns: [/\bfactory\b/, /\bfactory54\b/, /factory 54/, /פקטורי/] },
       { key: 'Terminalx', patterns: [/\bterminal\b/, /\bterminalx\b/, /terminal x/, /טרמינל/, /טרמינל איקס/] },
-      { key: 'Asos', patterns: [/\basos\b/, /אסוס /] },
+      { key: 'Asos', patterns: [/\basos\b/, /אסוס/] },
       { key: 'ItayBrands', patterns: [/\itay b\b/, /איתי בר/] },
 
     ];

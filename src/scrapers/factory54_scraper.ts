@@ -12,7 +12,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category } from './base-scraper';
-import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './scraper_utils';
+import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName, normalizeCategories, extractCategory } from './scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -147,7 +147,14 @@ class Factory54Scraper extends BaseScraper {
     const salePercent = calcSalePercent(price, oldPrice) ?? 0;
     const currency = item.currency || 'ILS';
     const brand = normalizeBrandName(item.item_brand || 'Unknown');
-    const categories = [category.name, item.item_category, item.item_category2, item.item_category3, item.item_category4].filter(Boolean);
+    const rawCategories = [category.name, item.item_category, item.item_category2, item.item_category3, item.item_category4].filter(Boolean);
+    // Extract categories from both the raw categories and the product title
+    const extractedFromTitle = extractCategory(title);
+    const categories = normalizeCategories(Array.from(new Set([...rawCategories, ...extractedFromTitle])));
+    console.log("heree", {
+        title,
+        rawCategories, extractedFromTitle, categories
+    });
     const gender = category.gender;
 
     const product = {
