@@ -31,7 +31,7 @@ const CATEGORIES: Category[] = [
     id: 'sale-40',
     name: 'Sale',
     gender: 'Men',
-    url: 'https://www.zara.com/il/he/s-man-from-40-l10609.html?v1=2585098'
+    url: 'https://www.zara.com/il/he/s-man-from-40-l10609.html'
   }
   // Add more categories as needed
 ];
@@ -190,6 +190,7 @@ class ZaraScraper extends BaseScraper {
     let page = 1;
     let allProducts: Product[] = [];
     let hasMore = true;
+    let prevPageUrls: string[] = [];
     while (hasMore) {
       const url = `${category.url}${page > 1 ? `?page=${page}` : ''}`;
       this.logProgress(`Fetching ${url}`);
@@ -200,7 +201,15 @@ class ZaraScraper extends BaseScraper {
       const products = this.extractProductsFromLdJson(html);
       this.logProgress(`extractProductsFromLdJson found: ${products.length} products`);
       if (!products.length) break;
-      allProducts.push(...products.map((p: any) => this.parseZaraProduct(p, category, $)).filter(Boolean));
+      const pageProducts = products.map((p: any) => this.parseZaraProduct(p, category, $)).filter(Boolean) as Product[];
+      const pageUrls = pageProducts.map(p => p.url);
+      // If all URLs are the same as previous page, stop
+      if (prevPageUrls.length && pageUrls.length && prevPageUrls.join(',') === pageUrls.join(',')) {
+        hasMore = false;
+        break;
+      }
+      allProducts.push(...pageProducts);
+      prevPageUrls = pageUrls;
       // If less than 9 products, it's the last page (Zara paginates by 9)
       hasMore = products.length >= 9;
       page++;
