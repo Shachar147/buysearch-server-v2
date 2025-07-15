@@ -353,6 +353,10 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'short jeans': ['Clothing', 'Shorts', 'Jeans'],
   "אוברסייז": ['Clothing', 'Oversize'],
   "Oversize": ['Clothing', 'Oversize'],
+  "סוודר": ['Clothing', 'Sweaters'],
+  "קרדיגנים": ['Clothing', 'Cardigans'],
+  "בלייזר": ['Clothing', 'Blazers'],
+  "בלייזרים": ['Clothing', 'Blazers'],
   'home': ['Home']
   // 'mocha mousse': 'Mocha Mousse',
   // 'מתנות': 'Gifts',

@@ -203,11 +203,11 @@ class ZaraScraper extends BaseScraper {
       if (!products.length) break;
       const pageProducts = products.map((p: any) => this.parseZaraProduct(p, category, $)).filter(Boolean) as Product[];
       const pageUrls = pageProducts.map(p => p.url);
-      // If all URLs are the same as previous page, stop
-      if (prevPageUrls.length && pageUrls.length && prevPageUrls.join(',') === pageUrls.join(',')) {
-        hasMore = false;
-        break;
-      }
+    //   // If all URLs are the same as previous page, stop
+    //   if (prevPageUrls.length && pageUrls.length && prevPageUrls.join(',') === pageUrls.join(',')) {
+    //     hasMore = false;
+    //     break;
+    //   }
       allProducts.push(...pageProducts);
       prevPageUrls = pageUrls;
       // If less than 9 products, it's the last page (Zara paginates by 9)
