@@ -13,6 +13,7 @@
     "scrape:terminalx": "npm run scrape:terminal",
     "scrape:factory": "npx ts-node -r tsconfig-paths/register src/scrapers/factory54_scraper.ts",
     "scrape:terminal54": "npm run scrape:factory",
+    "scrape:itay": "npx ts-node -r tsconfig-paths/register src/scrapers/itaybrands_scraper.ts",
     "scrape:all": "npm-run-all --parallel scrape:asos scrape:terminal scrape:factory",
     "start": "nest start",
     "start:dev": "nest start --watch",

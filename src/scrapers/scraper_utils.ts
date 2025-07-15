@@ -135,7 +135,8 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'cos': 'COS',
   'arket': 'Arket',
   'other stories': '& Other Stories',
-  '& other stories': '& Other Stories'
+  '& other stories': '& Other Stories',
+  'itay brands': 'Itay Brands'
 };
 
 // --- Hebrew to English Color Mapping ---
