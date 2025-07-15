@@ -21,12 +21,12 @@ import * as StealthPlugin from 'puppeteer-extra-plugin-stealth';
 puppeteer.use((StealthPlugin as any)());
 
 const CATEGORIES: Category[] = [
-  {
-    id: 'man-shirts',
-    name: 'T-Shirts & Vests',
-    gender: 'Men',
-    url: 'https://www.zara.com/il/he/s-man-shirts-l11058.html',
-  },
+//   {
+//     id: 'man-shirts',
+//     name: 'T-Shirts & Vests',
+//     gender: 'Men',
+//     url: 'https://www.zara.com/il/he/s-man-shirts-l11058.html',
+//   },
   {
     id: 'sale-40',
     name: 'Sale',
