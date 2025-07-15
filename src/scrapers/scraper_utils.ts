@@ -189,7 +189,7 @@ export const HEBREW_COLOR_MAP: Record<string, string> = {
   'אפורים': 'grey',
   'אפורות': 'grey',
   'אפרפר': 'grey',
-  'בז׳': 'beige',
+  "בז'": 'beige',
   'בז': 'beige',
   'בזים': 'beige',
   'בזות': 'beige',
@@ -225,7 +225,8 @@ export const HEBREW_COLOR_MAP: Record<string, string> = {
   'לונדר': 'lavender',
   'אבן': 'stone',
   'אופייט': 'off white',
-  'אוף וויט': 'off white'
+  "אוף וויט": 'off white',
+  "אוף ווייט": 'off white'
 };
 
 // --- Category Synonyms Mapping ---
@@ -233,7 +234,7 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'caps': ['Hats'],
   'כובעים': ['Hats'],
   'כובע': ['Hats'],
-  "ג׳קט": ['Jackets & Coats'],
+  "ג'קט": ['Jackets & Coats'],
   'hats': ['Hats'],
   't-shirts': ['T-Shirts & Vests'],
   'tshirts': ['T-Shirts & Vests'],

@@ -21,17 +21,41 @@ import * as StealthPlugin from 'puppeteer-extra-plugin-stealth';
 puppeteer.use((StealthPlugin as any)());
 
 const CATEGORIES: Category[] = [
-//   {
-//     id: 'man-shirts',
-//     name: 'T-Shirts & Vests',
-//     gender: 'Men',
-//     url: 'https://www.zara.com/il/he/s-man-shirts-l11058.html',
-//   },
   {
-    id: 'sale-40',
+    id: 'man-shirts',
+    name: 'T-Shirts & Vests',
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/s-man-shirts-l11058.html',
+  },
+  {
+    id: 'sale', // 'sale-40',
     name: 'Sale',
     gender: 'Men',
-    url: 'https://www.zara.com/il/he/s-man-from-40-l10609.html'
+    url: 'https://www.zara.com/il/he/s-man-sale-l10847.html', // 'https://www.zara.com/il/he/s-man-from-40-l10609.html'
+  },
+  {
+    id: 'jeans',
+    name: 'Jeans',
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/s-man-jeans-l10664.html',
+  },
+  {
+    id: 'shorts',
+    name: 'Shorts',
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/s-man-bermudas-l10482.html'
+  },
+  {
+    id: 'sweaters',
+    name: 'Sweaters',
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/s-man-knitwear-l10702.html'
+  },
+  {
+    id: 'shirts',
+    name: 'Shirts',
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/s-man-shirts-l11058.html'
   }
   // Add more categories as needed
 ];
@@ -167,23 +191,27 @@ class ZaraScraper extends BaseScraper {
       fallbackOldPrice = product.offers.priceSpecification?.originalPrice ? Number(product.offers.priceSpecification?.originalPrice) : null;
       currency = product.offers.priceCurrency || 'ILS';
     }
+
     const brand = normalizeBrandName(product.brand?.name || 'Zara');
     const categories = [category.name, ...extractCategory(title)];
     const gender = category.gender;
-    return this.createProduct({
-      title,
-      url,
-      images,
-      colors: extractColorsWithHebrew(title, colors, 'zara_scraper'),
-      isSellingFast: false,
-      price: price ?? fallbackPrice,
-      oldPrice: oldPrice ?? fallbackOldPrice,
-      salePercent: calcSalePercent(price ?? fallbackPrice, oldPrice ?? fallbackOldPrice) ?? 0,
-      currency,
-      brand,
-      categories,
-      gender,
-    });
+    const productJson = {
+        title,
+        url,
+        images,
+        colors: extractColorsWithHebrew(title, colors, 'zara_scraper'),
+        isSellingFast: false,
+        price: fallbackPrice,
+        oldPrice: oldPrice ?? fallbackOldPrice,
+        salePercent: calcSalePercent(fallbackPrice, oldPrice ?? fallbackOldPrice) ?? 0,
+        currency,
+        brand,
+        categories,
+        gender,
+      };
+
+    // console.log(productJson);
+    return this.createProduct(productJson);
   }
 
   private async scrapeZaraCategory(category: Category): Promise<Product[]> {
