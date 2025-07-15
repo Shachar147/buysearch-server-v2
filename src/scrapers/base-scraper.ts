@@ -3,7 +3,7 @@
 
 import { ProductService } from '../product/product.service';
 import { ScrapingHistoryService } from '../scraping-history/scraping-history.service';
-import { Product, ScrapingResult, createAppContext, createScrapingSession, finishScrapingSession, processProducts } from './scraper_utils';
+import { Product, ScrapingResult, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, processProducts } from './scraper_utils';
 
 export interface Category {
   id: string | number;
@@ -161,8 +161,18 @@ export abstract class BaseScraper {
     gender: string;
     isSellingFast?: boolean;
   }): Product {
+
+     // Extract categories from both the raw categories and the product title
+     const extractedFromTitle = extractCategory(data.title);
+     const categories = normalizeCategories(Array.from(new Set([...data.categories, ...extractedFromTitle])));
+     console.log("heree", {
+         title: data.title,
+         rawCategories: data.categories, extractedFromTitle, categories
+     });
+
     return {
       ...data,
+      categories,
       isSellingFast: data.isSellingFast ?? false,
       source: this.source,
     };

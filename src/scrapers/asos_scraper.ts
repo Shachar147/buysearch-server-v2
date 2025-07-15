@@ -142,7 +142,7 @@ const SUBCATEGORIES: Record<number, Category[]> = {
 
 class ASOSScraper extends BaseScraper {
   protected readonly scraperName = 'ASOS';
-  protected readonly source = 'asos.com';
+  protected readonly source = 'Asos';
   
   private client: AxiosInstance;
   private jar: CookieJar;

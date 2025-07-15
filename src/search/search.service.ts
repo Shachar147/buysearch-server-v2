@@ -59,7 +59,8 @@ export class SearchService {
     'nike': ['nike', 'נייק', 'נייקי'],
     'adidas': ['adidas', 'אדידס', 'אדידאס'],
     'converse': ['converse', 'אול-סטאר', 'אולסטאר', 'אול סטאר', 'קונברס', 'קונברס אולסטאר'],
-    'jordan': ['jordan', 'ג׳ורדן', 'גורדן', 'ג׳ורדאן'],
+    'jordan': ['jordan', 'ג׳ורדן', 'גורדן', 'ג׳ורדאן', "ג׳ורד"],
+    'asos design': ["asos d","אסוס די"],
     'new balance': ['new balance', 'newbalance', 'ניובלאנס', 'ניו באלאנס', 'ניו בלאנס', 'ניו באלנס'],
     'champion': ['champion', 'צ׳מפיון', 'צמפיון'],
     'lacoste': ['lacoste', 'לקוסט', 'לאקוסט'],
@@ -111,6 +112,7 @@ export class SearchService {
     'coral': ['אלמוג', 'קורל'],
     'mint': ['מנטה'],
     'lavender': ['לבנדר', 'לוונדר', 'לונדר'],
+    'stone': ['אבן']
   };
 
   // --- Hebrew price extraction ---
@@ -343,9 +345,11 @@ export class SearchService {
 
     // --- Source detection ---
     const sourceKeywords = [
-      { key: 'factory54.co.il', patterns: [/\bfactory\b/, /\bfactory54\b/, /factory 54/, /פקטורי/] },
-      { key: 'terminalx.com', patterns: [/\bterminal\b/, /\bterminalx\b/, /terminal x/, /טרמינל/, /טרמינל איקס/] },
-      { key: 'asos.com', patterns: [/\basos\b/, /אסוס /] },
+      { key: 'Factory54', patterns: [/\bfactory\b/, /\bfactory54\b/, /factory 54/, /פקטורי/] },
+      { key: 'Terminalx', patterns: [/\bterminal\b/, /\bterminalx\b/, /terminal x/, /טרמינל/, /טרמינל איקס/] },
+      { key: 'Asos', patterns: [/\basos\b/, /אסוס/] },
+      { key: 'ItayBrands', patterns: [/\itay b\b/, /איתי בר/] },
+
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))
