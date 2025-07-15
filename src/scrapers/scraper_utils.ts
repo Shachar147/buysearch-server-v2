@@ -223,7 +223,9 @@ export const HEBREW_COLOR_MAP: Record<string, string> = {
   'לבנדר': 'lavender',
   'לוונדר': 'lavender',
   'לונדר': 'lavender',
-  'אבן': 'stone'
+  'אבן': 'stone',
+  'אופייט': 'off white',
+  'אוף וויט': 'off white'
 };
 
 // --- Category Synonyms Mapping ---
@@ -231,6 +233,7 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'caps': ['Hats'],
   'כובעים': ['Hats'],
   'כובע': ['Hats'],
+  "ג׳קט": ['Jackets & Coats'],
   'hats': ['Hats'],
   't-shirts': ['T-Shirts & Vests'],
   'tshirts': ['T-Shirts & Vests'],
@@ -278,7 +281,9 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   "חגורות": ['Accessories', 'Belts'],
   'ארנק כרטיסים': ['Accessories', 'Wallets'],
   'ארנקים': ['Accessories', 'Wallets'],
-  "פאוץ'": ['Bags', 'Pouch Bags'],
+  "פאוץ'": ['Bags', 'Pouch'],
+  'pouch bags': ['Bags', 'Pouch'],
+  't-shirt': ['Clothing', 'T-Shirts & Vests'],
   'משקפי שמש': ['Accessories', 'Sunglasses'],
   'גרב': ['Accessories', 'Socks'],
   'גרביים': ['Accessories', 'Socks'],
@@ -303,19 +308,25 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'בגד ים': ['Swimwear'],
   "מגפי צ'לסי": ['Shoes', 'Boots'],
   'מוקסינים': ['Shoes', 'Moccasin Shoes'],
+  'מוקסין': ['Shoes', 'Moccasin Shoes'],
   'כפכפים': ['Flip Flops'],
   'סנדלים': ['Sandals'],
   'ספורט': ['Sport'],
   'גופיות': ['Tanks'],
+  'sleeveless': ['Tanks'],
+  'גופייה': ['Tanks'],
+  'גופיה': ['Tanks'],
   'beauty': ['Beauty'],
   'סריגים': ['Clothing', 'Knitwear'],
   'סריג רוכסן': ['Clothing', 'Knitwear'],
   'קרדיגן': ['Clothing', 'Knitwear'],
   'סווטשירטים': ['Clothing', 'Sweaters'],
   'סוודרים': ['Clothing', 'Sweaters'],
-  'סווטשירט crew': ['Clothing', 'Sweaters', 'Crew Neck Sweaters'],
-  'חולצות פולו': ['Clothing', 'T-Shirts & Vests', 'Polo T-Shirts'],
-  'פולו שרוול קצר': ['Clothing', 'T-Shirts & Vests', 'Polo T-Shirts'],
+  'סווטשירט crew': ['Clothing', 'Sweaters'],
+  'חולצות פולו': ['Clothing', 'T-Shirts & Vests', 'Polo Shirts'],
+  'פולו שרוול קצר': ['Clothing', 'T-Shirts & Vests', 'Polo Shirts'],
+  'polo t-shirts': ['Polo Shirts'],
+  'polo tshirts': ['Polo Shirts'],
   'נעלי בית': ['Slippers'],
   'אביזרי נעליים': ['Shoes', 'Accessories'],
   'clothes': ['Clothing'],
@@ -395,6 +406,8 @@ export const CATEGORIES_TO_IGNORE = new Set([
   'italian summer', // todo remove,
   'mocha mousse', // todo remove,
   'straight',
+  'back in stock', // todo remove,
+  'crew neck sweaters' // todo remove
 ]);
 
 /**
