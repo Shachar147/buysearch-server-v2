@@ -249,7 +249,6 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'jackets': ['Jackets & Coats'],
   'coats': ['Jackets & Coats'],
   "ג'קטים": ['Jackets & Coats'],
-  "ג'קט": ['Jackets & Coats'],
   'אוברולים': ['Overalls'],
   'overalls': ['Overalls'],
   'bodysuit': ['Bodysuits'],
