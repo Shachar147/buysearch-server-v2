@@ -222,7 +222,8 @@ export const HEBREW_COLOR_MAP: Record<string, string> = {
   'מנטה': 'mint',
   'לבנדר': 'lavender',
   'לוונדר': 'lavender',
-  'לונדר': 'lavender'
+  'לונדר': 'lavender',
+  'אבן': 'stone'
 };
 
 // --- Utility Functions ---

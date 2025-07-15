@@ -23,6 +23,60 @@ const CATEGORIES: Category[] = [
     gender: 'Men',
     url: 'https://itaybrands.co.il/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA-%D7%92%D7%91%D7%A8%D7%99%D7%9D',
   },
+  {
+    id: 'pants',
+    name: 'Pants',
+    gender: 'Men',
+    url: 'https://itaybrands.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99%D7%99%D7%9D-%D7%92%D7%91%D7%A8%D7%99%D7%9D'
+  },
+  {
+    id: 'jewlery',
+    name: 'Jewlery',
+    gender: 'Men',
+    url: 'https://itaybrands.co.il/collections/%D7%AA%D7%9B%D7%A9%D7%99%D7%98%D7%99%D7%9D'
+  },
+  {
+    id: 't-shirts',
+    name: 'T-Shirts & Vests', 
+    gender: 'Women',
+    url: 'https://itaybrands.co.il/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA'
+  },
+  {
+    id: 'pants',
+    name: 'Pants',
+    gender: 'Women',
+    url: 'https://itaybrands.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99%D7%99%D7%9D'
+  },
+  {
+    id: 'bodysuits',
+    name: 'Bodysuits',
+    gender: 'Women',
+    url: 'https://itaybrands.co.il/collections/%D7%91%D7%92%D7%93%D7%99-%D7%92%D7%95%D7%A3',
+  },
+  {
+    id: 'overalls',
+    name: 'Overalls',
+    gender: 'Women',
+    url: 'https://itaybrands.co.il/collections/%D7%90%D7%95%D7%91%D7%A8%D7%95%D7%9C%D7%99%D7%9D',
+  },
+  {
+    id: 'dresses',
+    name: 'Dresses',
+    gender: 'Women',
+    url: 'https://itaybrands.co.il/collections/%D7%A9%D7%9E%D7%9C%D7%95%D7%AA',
+  },
+  {
+    id: 'skirts',
+    name: 'Skirts',
+    gender: 'Women',
+    url: 'https://itaybrands.co.il/collections/%D7%97%D7%A6%D7%90%D7%99%D7%95%D7%AA'
+  },
+  {
+    id: 'jackets-and-coats',
+    name: 'Jackets & Coats',
+    gender: 'Women',
+    url: 'https://itaybrands.co.il/collections/%D7%92%D7%A7%D7%98%D7%99%D7%9D'
+  }
   // Add more categories as needed
 ];
 
