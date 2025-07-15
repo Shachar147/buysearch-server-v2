@@ -165,10 +165,10 @@ export abstract class BaseScraper {
      // Extract categories from both the raw categories and the product title
      const extractedFromTitle = extractCategory(data.title);
      const categories = normalizeCategories(Array.from(new Set([...data.categories, ...extractedFromTitle])));
-     console.log("heree", {
-         title: data.title,
-         rawCategories: data.categories, extractedFromTitle, categories
-     });
+    //  console.log("heree", {
+    //      title: data.title,
+    //      rawCategories: data.categories, extractedFromTitle, categories
+    //  });
 
     return {
       ...data,

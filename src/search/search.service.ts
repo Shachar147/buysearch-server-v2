@@ -37,6 +37,7 @@ export class SearchService {
     'Jeans': ['jeans', 'denim', 'pants', 'trousers'],
     'Jackets & Coats': ['jacket', 'coat', 'blazer', 'suit jacket', 'jackets', 'coats', 'outerwear'],
     'Dresses': ['dress', 'gown', 'frock', 'dresses'],
+    'Moccasin Shoes': ['moccasin'],
     'Shoes': ['shoes', 'footwear', 'sneakers', 'trainers', 'boots', 'sandals'],
     'Accessories': ['accessories', 'jewelry', 'watch', 'sunglasses', 'bag', 'hat', 'hats', 'belt', 'scarf', 'gloves', 'accessory'],
     'Joggers': ['joggers', 'sweatpants', 'track pants', 'jogger'],
@@ -78,6 +79,7 @@ export class SearchService {
     'Jeans': ['ג׳ינס', 'גינס', 'ג׳ינסים', 'גינסים', 'דנים', 'מכנס ג׳ינס', 'מכנסי ג׳ינס'],
     'Jackets & Coats': ['מעיל', 'מעילים', 'ג׳קט', 'גקט', 'ג׳קטים', 'גקטים', 'ז׳קט', 'זקט', 'ז׳קטים', 'זקטים', 'בלייזר', 'בלייזרים', 'מעיל גשם', 'מעיל רוח', 'מעיל חורף', 'מעיל קיץ', 'מעיל טרנץ׳', 'מעיל טרנץ', 'מעיל פוך', 'מעיל עור', 'מעיל ג׳ינס', 'מעיל גינס', 'מעיל קצר', 'מעיל ארוך', 'מעיל ספורט'],
     'Dresses': ['שמלה', 'שמלות'],
+    'Moccasin Shoes': ['מוקסין'],
     'Shoes': ['נעל', 'נעליים', 'סניקרס', 'סניקרסים', 'נעלי ספורט', 'נעלי עור', 'נעלי גברים', 'נעלי נשים', 'מגף', 'מגפיים', 'סנדל', 'סנדלים'],
     'Accessories': ['אקססוריז', 'אביזר', 'אביזרים', 'שעון', 'שעונים', 'תיק', 'תיקים', 'כובע', 'כובעים', 'משקפיים', 'משקפי שמש', 'צמיד', 'צמידים', 'שרשרת', 'שרשראות', 'עגיל', 'עגילים', 'טבעת', 'טבעות', 'חגורה', 'חגורות', 'ארנק', 'ארנקים'],
     'Boxers': ['בוקסר', 'בוקסרים'],
@@ -349,6 +351,7 @@ export class SearchService {
       { key: 'Terminalx', patterns: [/\bterminal\b/, /\bterminalx\b/, /terminal x/, /טרמינל/, /טרמינל איקס/] },
       { key: 'Asos', patterns: [/\basos\b/, /אסוס/] },
       { key: 'ItayBrands', patterns: [/\itay b\b/, /איתי בר/] },
+      { key: 'Zara', patterns: [/\zara\b/, /זארה/] },
 
     ];
     filters.sources = sourceKeywords
