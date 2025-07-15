@@ -191,7 +191,8 @@ class ZaraScraper extends BaseScraper {
     let allProducts: Product[] = [];
     let hasMore = true;
     let prevPageUrls: string[] = [];
-    while (hasMore) {
+    const MAX_PAGES = 100;
+    while (hasMore && page <= MAX_PAGES) {
       const url = `${category.url}${page > 1 ? `?page=${page}` : ''}`;
       this.logProgress(`Fetching ${url}`);
       const html = await this.fetchZaraPage(url);

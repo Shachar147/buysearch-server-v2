@@ -351,6 +351,7 @@ export class SearchService {
       { key: 'Terminalx', patterns: [/\bterminal\b/, /\bterminalx\b/, /terminal x/, /טרמינל/, /טרמינל איקס/] },
       { key: 'Asos', patterns: [/\basos\b/, /אסוס/] },
       { key: 'ItayBrands', patterns: [/\itay b\b/, /איתי בר/] },
+      { key: 'Zara', patterns: [/\zara\b/, /זארה/] },
 
     ];
     filters.sources = sourceKeywords
