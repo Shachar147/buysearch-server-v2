@@ -60,7 +60,7 @@ const BASE_URL = 'https://www.factory54.co.il';
 
 class Factory54Scraper extends BaseScraper {
   protected readonly scraperName = 'Factory54';
-  protected readonly source = 'factory54.co.il';
+  protected readonly source = 'Factory54';
 
   protected getCategories(): Category[] {
     return CATEGORIES;

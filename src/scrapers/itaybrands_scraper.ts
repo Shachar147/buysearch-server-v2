@@ -30,7 +30,7 @@ const BASE_URL = 'https://itaybrands.co.il';
 
 class ItayBrandsScraper extends BaseScraper {
   protected readonly scraperName = 'ItayBrands';
-  protected readonly source = 'itaybrands.co.il';
+  protected readonly source = 'ItayBrands';
 
   protected getCategories(): Category[] {
     return CATEGORIES;
@@ -70,32 +70,50 @@ class ItayBrandsScraper extends BaseScraper {
     }
   }
 
-  private extractProductImages($: cheerio.CheerioAPI, handle: string): string[] {
-    // Find product-card[data-handle=handle] and extract all <img src="...">
-    const images: string[] = [];
-    const $card = $(`product-card[data-handle="${handle}"]`);
-    $card.find('img').each((_, img) => {
-      const src = $(img).attr('src');
-      if (src && !images.includes(src)) images.push(src.startsWith('http') ? src : BASE_URL + src);
-    });
-    return images;
+  /**
+   * Extracts Spurit.Preorder2.snippet.products from the HTML and returns a map of variantId -> compare_at_price (in ILS)
+   */
+  private extractSpuritCompareAtPrices(html: string): Record<string, number> {
+    // Look for all occurrences of Spurit.Preorder2.snippet.products['handle'] = {...};
+    const regex = /Spurit\.Preorder2\.snippet\.products\['[^']+'\] = (\{[\s\S]*?\});/g;
+    let match;
+    const variantIdToCompareAt: Record<string, number> = {};
+    while ((match = regex.exec(html)) !== null) {
+      try {
+        // Parse the JS object (not strict JSON)
+        const objStr = match[1]
+          .replace(/([,{])([a-zA-Z0-9_]+):/g, '$1"$2":') // quote keys
+          .replace(/'/g, '"'); // single to double quotes
+        const productObj = JSON.parse(objStr);
+        if (Array.isArray(productObj.variants)) {
+          for (const v of productObj.variants) {
+            if (v.id && typeof v.compare_at_price === 'number') {
+              variantIdToCompareAt[v.id] = v.compare_at_price / 100; // convert to ILS
+            }
+          }
+        }
+      } catch (e) {
+        // Ignore parse errors
+      }
+    }
+    return variantIdToCompareAt;
   }
 
-  private parseItayBrandsVariant(variant: any, category: Category): Product {
-    if (variant.product.url == '/products/%D7%92%D7%95%D7%A4%D7%99%D7%99%D7%AA-%D7%9B%D7%95%D7%AA%D7%A0%D7%94-%D7%91%D7%99%D7%99%D7%A1%D7%99%D7%A7') {
-        console.log("hereeee", variant);
-    }
+  private parseItayBrandsVariant(variant: any, category: Category, compareAtMap: Record<string, number>): Product {
     // variant: { price: { amount, currencyCode }, product: { title, vendor, ... }, ... }
     const title = variant.product?.title || '';
     const url = variant.product?.url ? `${BASE_URL}/${variant.product.url}` : '';
     if (!url){
-
-        console.error("url not found", variant);
+      console.error("url not found", variant);
     }
-    const images = Array.isArray(variant.product?.images) ? variant.product.images : [];
-    const colors = extractColorsWithHebrew(title, [variant.public_title].filter(Boolean), 'itaybrands_scraper');
+    const images = [`http:${variant.image.src}`];
+    const colors = variant.title.split(' / ').length > 1 ? extractColorsWithHebrew(title, [variant.title.split(' / ')[1]], 'itaybrands_scraper') : [];
     const price = typeof variant.price?.amount === 'number' ? variant.price.amount : null;
-    const oldPrice = null; // Sale price logic can be added if available
+    // Use compare_at_price from Spurit if available
+    let oldPrice = null;
+    if (variant.id && compareAtMap[variant.id]) {
+      oldPrice = compareAtMap[variant.id];
+    }
     const salePercent = calcSalePercent(price, oldPrice) ?? 0;
     const currency = variant.price?.currencyCode || 'ILS';
     const brand = normalizeBrandName(variant.product?.vendor || 'Itay Brands');
@@ -115,6 +133,7 @@ class ItayBrandsScraper extends BaseScraper {
       categories,
       gender,
     };
+    // console.log(product);
     return this.createProduct(product);
   }
 
@@ -127,12 +146,11 @@ class ItayBrandsScraper extends BaseScraper {
       this.logProgress(`Fetching ${url}`);
       const html = await this.fetchItayBrandsPage(url);
       const variants = this.extractLastProductVariants(html);
-      
+      const compareAtMap = this.extractSpuritCompareAtPrices(html);
       this.logProgress(`extractLastProductVariants found: ${variants.length} variants`);
       if (!variants.length) break;
-      allProducts.push(...variants.map((variant: any) => this.parseItayBrandsVariant(variant, category)));
-
-      // If less than 24 variants, it's the last page
+      allProducts.push(...variants.map((variant: any) => this.parseItayBrandsVariant(variant, category, compareAtMap)));
+      // If less than 20 variants, it's the last page
       hasMore = variants.length === 20;
       page++;
     }

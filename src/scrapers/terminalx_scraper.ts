@@ -141,7 +141,7 @@ const BASE_URL = 'https://www.terminalx.com/a/listingSearch';
 
 class TerminalXScraper extends BaseScraper {
   protected readonly scraperName = 'TerminalX';
-  protected readonly source = 'terminalx.com';
+  protected readonly source = 'TerminalX';
 
   protected getCategories(): Category[] {
     return CATEGORIES;
