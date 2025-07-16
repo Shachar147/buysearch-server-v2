@@ -7,6 +7,7 @@ export enum Category {
 
   // 👕 Clothing - Tops
   T_SHIRTS = "T-Shirts & Vests",
+  LONG_T_SHIRTS = "Long T-Shirts",
   TOPS = "Tops",
   SHIRTS = "Shirts",
   POLO_SHIRTS = "Polo Shirts",
@@ -24,11 +25,14 @@ export enum Category {
   SLIM_JEANS = "Slim Jeans",
   STRAIGHT_JEANS = "Straight Jeans",
   PANTS = "Pants",
+  TIGHTS = "Tights",
+  SHORT_TIGHTS = "Short Tights",
   JOGGERS = "Joggers",
   TROUSERS = "Trousers",
   SHORTS = "Shorts",
   SKIRTS = "Skirts",
   MINI_SKIRTS = "Mini Skirts",
+  MIDI_SKIRTS = "Midi Skirts",
   MAXI_SKIRTS = "Maxi Skirts",
   SHORT_JEANS = "Short Jeans",
 
@@ -36,6 +40,7 @@ export enum Category {
   DRESSES_OVERALLS = "Dresses & Overalls",
   DRESSES = "Dresses",
   MAXI_DRESSES = "Maxi Dresses",
+  MIDI_DRESSES = "Midi Dresses",
   MINI_DRESSES = "Mini Dresses",
   OVERALLS = "Overalls",
   JACKETS_COATS = "Jackets & Coats",
@@ -48,7 +53,8 @@ export enum Category {
   UNDERWEAR = "Underwear",
   BOXERS = "Boxers",
   SOCKS = "Socks",
-  LINGERIE = "Lingerie & Nightwear",
+  SLEEP_WEAR = "Nightwear",
+  LINGERIE = "Lingerie",
   STRAPLESS = "Strapless",
   UNDERWEAR_LINGERIE = "Underwear & Lingerie",
   OVERSIZE = "Oversize",
@@ -209,6 +215,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   'סריג רוכסן': [Category.KNITWEAR],
   'קרדיגן': [Category.KNITWEAR],
   'סווטשירטים': [Category.SWEATERS],
+  'סוויטשירטים': [Category.SWEATERS],
   'סווטשירט': [Category.SWEATERS],
   'סוודרים': [Category.SWEATERS],
   'סווטשירט crew': [Category.SWEATERS],
@@ -251,12 +258,29 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   'חצאית': [Category.SKIRTS],
   'חצאית מיני': [Category.SKIRTS, Category.MINI_SKIRTS],
   'חצאית מקסי': [Category.SKIRTS, Category.MAXI_SKIRTS],
+  'חצאיות מיני': [Category.SKIRTS, Category.MINI_SKIRTS],
+  'חצאיות מקסי': [Category.SKIRTS, Category.MAXI_SKIRTS],
+  'חצאית מידי': [Category.SKIRTS, Category.MIDI_SKIRTS],
+  'חצאיות מידי': [Category.SKIRTS, Category.MIDI_SKIRTS],
   'שמלה ארוכה': [Category.DRESSES, Category.MAXI_DRESSES],
   'שמלה קצרה': [Category.DRESSES, Category.MINI_DRESSES],
   'שמלה מקסי': [Category.DRESSES, Category.MAXI_DRESSES],
-  'שמלה מיני': [Category.DRESSES, Category.MINI_DRESSES],
+  'שמלות מיני': [Category.DRESSES, Category.MINI_DRESSES],
   'שמלת מיני': [Category.DRESSES, Category.MINI_DRESSES],
+  'שמלה מידי': [Category.DRESSES, Category.MIDI_DRESSES],
+  'שמלות מידי': [Category.DRESSES, Category.MIDI_DRESSES],
+  'שמלת מידי': [Category.DRESSES, Category.MIDI_DRESSES],
   'welness & body': [Category.WELLNESS],
+  'טייץ': [Category.TIGHTS],
+  'טייצים': [Category.TIGHTS],
+  'בגדי חוף': [Category.BEACHWEAR],
+  'מכנסיים וטייצים': [Category.PANTS],
+  'שמלות וחצאיות': [Category.DRESSES],
+  'חליפות ואוברולים': [Category.OVERALLS],
+  'בגדי ים וחוף': [Category.BEACHWEAR],
+  "ז'קטים ומעילים": [Category.JACKETS_COATS],
+  "פיג'מות": [Category.SLEEP_WEAR],
+
 };
 
 // --- Category Synonyms Map ---
@@ -283,7 +307,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.SWEATERS]: {
     en: ['sweater', 'sweaters', 'jumper', 'pull', 'pull-over', 'pullover'],
-    he: ['סוודר', 'סוודרים']
+    he: ['סוודר', 'סוודרים', 'סוויטשירטים', 'סווטשירטים', 'סווטשיירטים']
   },
   [Category.CREW_NECK_SWEATERS]: {
     en: ['crew neck sweater', 'crewneck sweater', 'crew neck', 'crewneck'],
@@ -295,7 +319,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.BODYSUITS]: {
     en: ['bodysuit', 'bodysuits'],
-    he: ['בודי', 'בודיס', 'בודיסוט', 'בודיסוטים', 'בגד גוף', 'בגד-גוף', 'בגדי גוף','בגדי-גוף']
+    he: ['בודי', 'בודיס', 'בודיסוט', 'בודיסוטים', 'בגד גוף', 'בגד-גוף', 'בגדי גוף', 'בגדי-גוף']
   },
   [Category.OVERSHIRTS]: {
     en: ['overshirt', 'overshirts'],
@@ -414,8 +438,8 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
     he: ['גרב', 'גרביים']
   },
   [Category.LINGERIE]: {
-    en: ['lingerie', 'nightwear', 'night wear', 'nightgown', 'nightdress', 'nightie'],
-    he: ['הלבשה תחתונה', 'לנז׳רי', 'לנז׳רי', 'פיג׳מה', 'פיג׳מות', 'כותונת', 'כותנות']
+    en: ['lingerie'],
+    he: ['הלבשה תחתונה', "לנז'רי"]
   },
   [Category.STRAPLESS]: {
     en: ['strapless'],
@@ -624,6 +648,30 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.POLO_SHIRTS]: {
     en: ['polo shirt', 'polo shirts', 'polo'],
     he: ['חולצת פולו', 'חולצות פולו', 'פולו']
+  },
+  [Category.LONG_T_SHIRTS]: {
+    en: ['long t-shirt', 'long t-shirts', 'long sleeve t-shirt', 'long sleeve tee', 'long tee', 'long t shirt', 'long sleeve shirt'],
+    he: ['טי שירט ארוך', 'טי שירטים ארוכים', 'חולצת טי ארוכה', 'חולצות טי ארוכות', 'חולצה ארוכה', 'חולצות ארוכות']
+  },
+  [Category.TIGHTS]: {
+    en: ['tights', 'leggings', 'long tights', 'long leggings'],
+    he: ['טייץ', 'טייצים', 'טייץ ארוך', 'טייצים ארוכים']
+  },
+  [Category.SHORT_TIGHTS]: {
+    en: ['short tights', 'short leggings', 'bike shorts', 'biker shorts'],
+    he: ['טייץ קצר', 'טייצים קצרים', 'טייץ אופניים', 'טייץ קצר']
+  },
+  [Category.MIDI_SKIRTS]: {
+    en: ['midi skirt', 'midi skirts'],
+    he: ['חצאית מידי', 'חצאיות מידי']
+  },
+  [Category.MIDI_DRESSES]: {
+    en: ['midi dress', 'midi dresses'],
+    he: ['שמלת מידי', 'שמלות מידי']
+  },
+  [Category.SLEEP_WEAR]: {
+    en: ['pajamas', 'sleep wear', 'nightwear', 'night wear', 'nightgown', 'nightdress', 'nightie'],
+    he: ["פיג'מה", "פיג'מות", "לבוש לילה", "לבוש שינה", "פיגמה", "פיגמות", 'כותונת', 'כותנות']
   }
 };
 

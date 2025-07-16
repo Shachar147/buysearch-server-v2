@@ -236,7 +236,10 @@ export const HEBREW_COLOR_MAP: Record<string, string> = {
   'אבן': 'stone',
   'אופייט': 'off white',
   "אוף וויט": 'off white',
-  "אוף ווייט": 'off white'
+  "אוף ווייט": 'off white',
+  "אוף-וויט": "off white",
+  "כחול-ים": "navy",
+  "כחול נייבי": "navy",
 };
 
 // --- Categories to Ignore ---

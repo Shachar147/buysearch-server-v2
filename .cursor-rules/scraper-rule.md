@@ -14,6 +14,7 @@ description: All new scrapers must follow the BaseScraper pattern, use axios/che
 ## 2. Registration
 - Every new scraper must be added to:
   - `package.json` as a script (e.g., `scrape:story`)
+  - `package.json` in `npm run scrape:all`
   - `scraper-cron.service.ts` for scheduled runs
 
 ## 3. Current Scrapers
@@ -22,7 +23,8 @@ description: All new scrapers must follow the BaseScraper pattern, use axios/che
 - `factory54_scraper.ts`
 - `itaybrands_scraper.ts`
 - `zara_scraper.ts`
-- `story_scraper.ts`  <!-- NEW -->
+- `story_scraper.ts`
+- `oneprojectshop_scraper.ts`
 
 ## 4. Code Style
 - Use clear comments and structure matching the other scrapers.
