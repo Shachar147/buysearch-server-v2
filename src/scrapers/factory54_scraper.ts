@@ -11,9 +11,9 @@
 
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { BaseScraper } from './base-scraper';
-import { Category as CategoryType } from './base-scraper';
-import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './scraper_utils';
+import { BaseScraper } from './base/base-scraper';
+import { Category as CategoryType } from './base/base-scraper';
+import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 dotenv.config();

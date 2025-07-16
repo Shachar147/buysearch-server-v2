@@ -1,9 +1,9 @@
 // Abstract base class for all scrapers
 // =============================================================
 
-import { ProductService } from '../product/product.service';
-import { ScrapingHistoryService } from '../scraping-history/scraping-history.service';
-import { Product, ScrapingResult, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, processProducts } from './scraper_utils';
+import { ProductService } from '../../product/product.service';
+import { ScrapingHistoryService } from '../../scraping-history/scraping-history.service';
+import { Product, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, processProducts } from './scraper_utils';
 
 export interface Category {
   id: string | number;

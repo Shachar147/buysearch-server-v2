@@ -10,9 +10,9 @@
 // Usage: npm run scrape:terminalx
 
 import axios from 'axios';
-import { BaseScraper } from './base-scraper';
-import { Category as CategoryType } from './base-scraper';
-import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './scraper_utils';
+import { BaseScraper } from './base/base-scraper';
+import { Category as CategoryType } from './base/base-scraper';
+import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
 

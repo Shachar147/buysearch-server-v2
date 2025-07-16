@@ -12,9 +12,9 @@
 import axios, { AxiosInstance } from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
-import { BaseScraper } from './base-scraper';
-import { Category as CategoryType } from './base-scraper';
-import { Product, extractColors, calcSalePercent, prefixHttp, slugToColor, normalizeBrandName } from './scraper_utils';
+import { BaseScraper } from './base/base-scraper';
+import { Category as CategoryType } from './base/base-scraper';
+import { Product, extractColors, calcSalePercent, prefixHttp, slugToColor, normalizeBrandName } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 dotenv.config();

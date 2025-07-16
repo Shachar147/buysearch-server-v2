@@ -11,10 +11,10 @@
 
 import puppeteer from 'puppeteer-extra';
 import * as cheerio from 'cheerio';
-import { BaseScraper } from './base-scraper';
-import { Category as CategoryType } from './base-scraper';
+import { BaseScraper } from './base/base-scraper';
+import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './scraper_utils';
+import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
 

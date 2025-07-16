@@ -9,7 +9,7 @@ import { SourceModule } from './source/source.module';
 import { ProductModule } from './product/product.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CategoryModule } from './category/category.module';
-import { ScraperCronService } from './scrapers/scraper-cron.service';
+import { ScraperCronService } from './scrapers/base/scraper-cron.service';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { FavouritesModule } from './favourites/favourites.module';

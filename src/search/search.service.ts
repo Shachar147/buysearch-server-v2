@@ -3,7 +3,7 @@ import { BrandService } from '../brand/brand.service';
 import { CategoryService } from '../category/category.service';
 import { ColorService } from '../color/color.service';
 import { ucfirst } from './search.utils';
-import { normalizeBrandName } from 'src/scrapers/scraper_utils';
+import { normalizeBrandName } from 'src/scrapers/base/scraper_utils';
 import {
   CATEGORY_SEARCH_KEYWORDS_MAP
 } from '../category.constants';
