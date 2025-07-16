@@ -95,7 +95,9 @@ import {
   HOME_CATEGORY,
   HOME_WELLNESS_MAIN_CATEGORY,
   GIFTS_CATEGORY,
-  GIFTS_MAIN_CATEGORY
+  GIFTS_MAIN_CATEGORY,
+  MAXI_DRESSES_CATEGORY,
+  MINI_DRESSES_CATEGORY
 } from '../category.constants';
 
 export interface ParsedFilters {
@@ -322,6 +324,8 @@ export class SearchService {
     [HOME_CATEGORY]: ['בית'],
     [HOME_WELLNESS_MAIN_CATEGORY]: ['בית ווולנס'],
     [GIFTS_CATEGORY]: ['מתנה', 'מתנות'],
+    [MAXI_DRESSES_CATEGORY]: ['שמלת מקסי', 'שמלה ארוכה', 'שמלה מקסי'],
+    [MINI_DRESSES_CATEGORY]: ['שמלת מיני', 'שמלה קצרה', 'שמלה מיני'],
   };
 
   private HEBREW_COLOR_SYNONYMS = {

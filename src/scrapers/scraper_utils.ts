@@ -68,7 +68,9 @@ import {
   SHORT_JEANS_CATEGORY,
   POUCH_BAGS_CATEGORY,
   MINI_SKIRTS_CATEGORY,
-  MAXI_SKIRTS_CATEGORY
+  MAXI_SKIRTS_CATEGORY,
+  MAXI_DRESSES_CATEGORY,
+  MINI_DRESSES_CATEGORY
 } from '../category.constants';
 
 // --- Common Types ---
@@ -430,7 +432,12 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   'abercrombie and fitch': ['Abercrombie & Fitch'],
   'חצאית': [SKIRTS_CATEGORY],
   'חצאית מיני': [SKIRTS_CATEGORY, MINI_SKIRTS_CATEGORY],
-  'חצאית מקסי': [SKIRTS_CATEGORY, MAXI_SKIRTS_CATEGORY]
+  'חצאית מקסי': [SKIRTS_CATEGORY, MAXI_SKIRTS_CATEGORY],
+  'שמלה ארוכה': [DRESSES_CATEGORY, MAXI_DRESSES_CATEGORY],
+  'שמלה קצרה': [DRESSES_CATEGORY, MINI_DRESSES_CATEGORY],
+  'שמלה מקסי': [DRESSES_CATEGORY, MAXI_DRESSES_CATEGORY],
+  'שמלה מיני': [DRESSES_CATEGORY, MINI_DRESSES_CATEGORY],
+  'שמלת מיני': [DRESSES_CATEGORY, MINI_DRESSES_CATEGORY]
   // 'mocha mousse': 'Mocha Mousse',
   // 'מתנות': 'Gifts',
   // Add more as needed

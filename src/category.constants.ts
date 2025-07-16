@@ -32,6 +32,8 @@ export const SHORT_JEANS_CATEGORY = "Short Jeans"
 // 👕 Clothing - Dresses, Outerwear, etc.
 export const DRESSES_OVERALLS_MAIN_CATEGORY = "Dresses & Overalls";
 export const DRESSES_CATEGORY = "Dresses";
+export const MAXI_DRESSES_CATEGORY = "Maxi Dresses";
+export const MINI_DRESSES_CATEGORY = "Mini Dresses";
 export const OVERALLS_CATEGORY = "Overalls";
 
 export const JACKETS_COATS_CATEGORY = "Jackets & Coats";
