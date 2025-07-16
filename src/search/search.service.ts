@@ -53,7 +53,8 @@ export class SearchService {
     'ellesse': ['ellesse', 'אלסה'],
     'new era': ['new era', 'newera', 'ניו ארה', 'ניוארה'],
     'collusion': ['collusion', 'קולוז׳ן', 'קולוזן'],
-    'skims': ['סקימס']
+    'skims': ['סקימס'],
+    'brownie': ['בראוני']
   };
 
   private HEBREW_COLOR_SYNONYMS = {
