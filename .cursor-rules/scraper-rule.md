@@ -25,6 +25,7 @@ description: All new scrapers must follow the BaseScraper pattern, use axios/che
 - `zara_scraper.ts`
 - `story_scraper.ts`
 - `oneprojectshop_scraper.ts`
+- `chozen_scraper.ts`
 
 ## 4. Code Style
 - Use clear comments and structure matching the other scrapers.

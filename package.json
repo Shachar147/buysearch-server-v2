@@ -16,9 +16,10 @@
     "scrape:itay": "npx ts-node -r tsconfig-paths/register src/scrapers/itaybrands_scraper.ts",
     "scrape:zara": "npx ts-node -r tsconfig-paths/register src/scrapers/zara_scraper.ts",
     "scrape:oneprojectshop": "npx ts-node -r tsconfig-paths/register src/scrapers/oneprojectshop_scraper.ts",
-    "scrape:all": "npm-run-all --parallel scrape:asos scrape:terminal scrape:factory scrape:itay scrape:zara scrape:story scrape:oneprojectshop",
     "scrape:new": "npm-run-all --parallel scrape:factory scrape:itay scrape:zara",
     "scrape:story": "npx ts-node -r tsconfig-paths/register src/scrapers/story_scraper.ts",
+    "scrape:chozen": "npx ts-node -r tsconfig-paths/register src/scrapers/chozen_scraper.ts",
+    "scrape:all": "npm-run-all --parallel scrape:asos scrape:terminal scrape:factory scrape:itay scrape:zara scrape:story scrape:oneprojectshop scrape:chozen",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -96,3 +97,5 @@
     "testEnvironment": "node"
   }
 }
+
+

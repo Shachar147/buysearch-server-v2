@@ -23,6 +23,7 @@ export class ScraperCronService {
       { name: 'Zara', script: join(__dirname, '../zara_scraper.js') },
       { name: 'Story', script: join(__dirname, '../story_scraper.js') },
       { name: 'OneProjectShop', script: join(__dirname, '../oneprojectshop_scraper.js') },
+      { name: 'Chozen', script: join(__dirname, '../chozen_scraper.js') },
       // Add more scrapers here
     ];
     await Promise.all(scrapers.map(({ name, script }) => {
