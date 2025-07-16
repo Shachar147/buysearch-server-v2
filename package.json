@@ -15,7 +15,7 @@
     "scrape:terminal54": "npm run scrape:factory",
     "scrape:itay": "npx ts-node -r tsconfig-paths/register src/scrapers/itaybrands_scraper.ts",
     "scrape:zara": "npx ts-node -r tsconfig-paths/register src/scrapers/zara_scraper.ts",
-    "scrape:all": "npm-run-all --parallel scrape:asos scrape:terminal scrape:factory scrape:itay scrape:zara",
+    "scrape:all": "npm-run-all --parallel scrape:asos scrape:terminal scrape:factory scrape:itay scrape:zara scrape:story",
     "scrape:new": "npm-run-all --parallel scrape:factory scrape:itay scrape:zara",
     "scrape:story": "npx ts-node -r tsconfig-paths/register src/scrapers/story_scraper.ts",
     "start": "nest start",
