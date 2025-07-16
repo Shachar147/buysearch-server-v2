@@ -357,7 +357,8 @@ export const CATEGORY_SYNONYMS: Record<string, string[]> = {
   "קרדיגנים": ['Clothing', 'Cardigans'],
   "בלייזר": ['Clothing', 'Blazers'],
   "בלייזרים": ['Clothing', 'Blazers'],
-  'home': ['Home']
+  'home': ['Home'],
+  'new era': ['New Era']
   // 'mocha mousse': 'Mocha Mousse',
   // 'מתנות': 'Gifts',
   // Add more as needed
