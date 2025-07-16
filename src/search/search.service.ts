@@ -4,6 +4,9 @@ import { CategoryService } from '../category/category.service';
 import { ColorService } from '../color/color.service';
 import { ucfirst } from './search.utils';
 import { normalizeBrandName } from 'src/scrapers/scraper_utils';
+import {
+  CATEGORY_SEARCH_KEYWORDS_MAP
+} from '../category.constants';
 
 export interface ParsedFilters {
   colors: string[];
@@ -31,27 +34,6 @@ export class SearchService {
     'burgundy', 'silver', 'gold', 'multi', 'mauve', 'teal', 'coral', 'mint', 'lavender'
   ];
 
-  private CATEGORY_SYNONYMS = {
-    'T-Shirts & Vests': ['t-shirt', 'tshirt', 'tee', 't shirt', 'tank top', 'vest'],
-    'Shirts': ['shirt', 'blouse', 'button down', 'button-up', 'dress shirt'],
-    'Jeans': ['jeans', 'denim', 'pants', 'trousers'],
-    'Jackets & Coats': ['jacket', 'coat', 'blazer', 'suit jacket', 'jackets', 'coats', 'outerwear'],
-    'Dresses': ['dress', 'gown', 'frock', 'dresses'],
-    'Moccasin Shoes': ['moccasin'],
-    'Shoes': ['shoes', 'footwear', 'sneakers', 'trainers', 'boots', 'sandals'],
-    'Accessories': ['accessories', 'jewelry', 'watch', 'sunglasses', 'bag', 'hat', 'hats', 'belt', 'scarf', 'gloves', 'accessory'],
-    'Joggers': ['joggers', 'sweatpants', 'track pants', 'jogger'],
-    'Hats': ['hat', 'hats', 'cap', 'caps', 'beanie', 'beret', 'bucket hat'],
-    'Polo Shirts': ['polo shirt', 'polo shirts', 'polo', 'collared shirt'],
-    'Bags': ['bag', 'bags', 'backpack', 'handbag', 'purse', 'tote', 'duffle', 'shoulder bag'],
-    'Skirts': ['skirt', 'skirts', 'mini skirt', 'midi skirt', 'maxi skirt'],
-    'Shorts': ['shorts', 'bermuda', 'cutoffs', 'hot pants'],
-    'Swimwear': ['swimwear', 'bikini', 'swimsuit', 'one piece', 'two piece', 'trunks', 'boardshorts'],
-    'Lingerie & Nightwear': ['lingerie', 'nightwear', 'bra', 'panties', 'underwear', 'sleepwear', 'pyjamas', 'pajamas', 'nightgown', 'camisole', 'slip'],
-    'Tops': ['top', 'tops', 'blouse', 'tank', 'camisole', 'crop top', 'tube top'],
-    'Clothing': ['clothing', 'apparel', 'garment', 'outfit', 'clothes', 'wear'],
-  };
-
   private BRAND_SYNONYMS = {
     'tommy hilfiger': ['tommy hilfiger', 'tommy h', 'hilfiger', 'של טומי', 'טומי ה', 'טומי הילפיגר', 'הילפיגר'],
     'calvin klein': ['calvin klein', 'calvin', 'klein', 'קלווין ק', 'קלוין ק', 'קלווין קליין', 'קלוין קליין'],
@@ -70,23 +52,8 @@ export class SearchService {
     'allsaints': ['allsaints', 'all saints', 'אולסיינטס', 'אול סיינטס'],
     'ellesse': ['ellesse', 'אלסה'],
     'new era': ['new era', 'newera', 'ניו ארה', 'ניוארה'],
-    'collusion': ['collusion', 'קולוז׳ן', 'קולוזן']
-  };
-
-  private HEBREW_CATEGORY_SYNONYMS = {
-    'T-Shirts & Vests': ['חולצה', 'חולצות', 'טי שירט', 'טי-שירט', 'טישרט', 'טי שירט', 'טי שירטים', 'טי-שירטים'],
-    'Shirts': ['חולצה מכופתרת', 'חולצות מכופתרות', 'חולצה אלגנט', 'חולצות אלגנט', 'חולצה מכופתרת', 'מכופתרת', 'מכופתרות', 'שירט', 'שירטים'],
-    'Jeans': ['ג׳ינס', 'גינס', 'ג׳ינסים', 'גינסים', 'דנים', 'מכנס ג׳ינס', 'מכנסי ג׳ינס'],
-    'Jackets & Coats': ['מעיל', 'מעילים', 'ג׳קט', 'גקט', 'ג׳קטים', 'גקטים', 'ז׳קט', 'זקט', 'ז׳קטים', 'זקטים', 'בלייזר', 'בלייזרים', 'מעיל גשם', 'מעיל רוח', 'מעיל חורף', 'מעיל קיץ', 'מעיל טרנץ׳', 'מעיל טרנץ', 'מעיל פוך', 'מעיל עור', 'מעיל ג׳ינס', 'מעיל גינס', 'מעיל קצר', 'מעיל ארוך', 'מעיל ספורט'],
-    'Dresses': ['שמלה', 'שמלות'],
-    'Moccasin Shoes': ['מוקסין'],
-    'Shoes': ['נעל', 'נעליים', 'סניקרס', 'סניקרסים', 'נעלי ספורט', 'נעלי עור', 'נעלי גברים', 'נעלי נשים', 'מגף', 'מגפיים', 'סנדל', 'סנדלים'],
-    'Accessories': ['אקססוריז', 'אביזר', 'אביזרים', 'שעון', 'שעונים', 'תיק', 'תיקים', 'כובע', 'כובעים', 'משקפיים', 'משקפי שמש', 'צמיד', 'צמידים', 'שרשרת', 'שרשראות', 'עגיל', 'עגילים', 'טבעת', 'טבעות', 'חגורה', 'חגורות', 'ארנק', 'ארנקים'],
-    'Boxers': ['בוקסר', 'בוקסרים'],
-    'Polo Shirts': ['פולו', 'חולצת פולו', 'חולצות פולו'],
-    'Joggers': ['ג׳וגר', 'ג׳וגרים', 'ג׳וגרז', 'מכנסי ג׳וגר', 'מכנס ג׳וגר'],
-    'Swimwear': ['בגד ים', 'ביקיני', 'בגד-ים', 'בגד חוף'],
-    'Snickers': ['סניקרס']
+    'collusion': ['collusion', 'קולוז׳ן', 'קולוזן'],
+    'skims': ['סקימס']
   };
 
   private HEBREW_COLOR_SYNONYMS = {
@@ -184,9 +151,15 @@ export class SearchService {
   // --- Hebrew category extraction ---
   private extractHebrewCategories(lowerQuery: string, dbCategories: string[]): string[] {
     const foundCategories = new Set<string>();
-    Object.entries(this.HEBREW_CATEGORY_SYNONYMS).forEach(([cat, syns]) => {
-      if (!dbCategories.includes(cat.toLowerCase())) return;
-      if (syns.some(h => lowerQuery.includes(h))) foundCategories.add(cat);
+    dbCategories.forEach(category => {
+      if (lowerQuery.includes(category)) {
+        foundCategories.add(ucfirst(category));
+      }
+    });
+    Object.entries(CATEGORY_SEARCH_KEYWORDS_MAP).forEach(([category, synonyms]) => {
+      console.log(synonyms.he, lowerQuery)
+      // if (!dbCategories.includes(category.toLowerCase())) return;
+      if (synonyms.he.some(h => lowerQuery.includes(h))) foundCategories.add(category);
     });
     return Array.from(foundCategories);
   }
@@ -199,9 +172,9 @@ export class SearchService {
         foundCategories.add(ucfirst(category));
       }
     });
-    Object.entries(this.CATEGORY_SYNONYMS).forEach(([category, synonyms]) => {
+    Object.entries(CATEGORY_SEARCH_KEYWORDS_MAP).forEach(([category, synonyms]) => {
       if (!dbCategories.includes(category.toLowerCase())) return;
-      synonyms.forEach(synonym => {
+      synonyms.en.forEach(synonym => {
         let testQuery = lowerQuery;
         if (synonym === 'shirt' || synonym === 'shirts') {
           ['t-shirt', 'tshirt', 't shirt'].forEach(ts => {

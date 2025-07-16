@@ -10,70 +10,71 @@
 // Usage: npm run scrape:itaybrands
 
 import axios from 'axios';
-import * as cheerio from 'cheerio';
-import { BaseScraper, Category } from './base-scraper';
+import { BaseScraper } from './base-scraper';
+import { Category as CategoryType } from './base-scraper';
 import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './scraper_utils';
 import * as dotenv from 'dotenv';
+import { Category } from '../category.constants';
 dotenv.config();
 
-const CATEGORIES: Category[] = [
+const CATEGORIES: CategoryType[] = [
   {
     id: 'shirts-men',
-    name: 'Shirts',
+    name: Category.SHIRTS,
     gender: 'Men',
     url: 'https://itaybrands.co.il/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA-%D7%92%D7%91%D7%A8%D7%99%D7%9D',
   },
   {
     id: 'pants',
-    name: 'Pants',
+    name: Category.PANTS,
     gender: 'Men',
     url: 'https://itaybrands.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99%D7%99%D7%9D-%D7%92%D7%91%D7%A8%D7%99%D7%9D'
   },
   {
-    id: 'חewelry',
-    name: 'Jewelry',
+    id: 'jewelry',
+    name: Category.JEWELRY,
     gender: 'Men',
     url: 'https://itaybrands.co.il/collections/%D7%AA%D7%9B%D7%A9%D7%99%D7%98%D7%99%D7%9D'
   },
   {
     id: 't-shirts',
-    name: 'T-Shirts & Vests', 
+    name: Category.T_SHIRTS, 
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA'
   },
   {
     id: 'pants',
-    name: 'Pants',
+    name: Category.PANTS,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99%D7%99%D7%9D'
   },
   {
     id: 'bodysuits',
-    name: 'Bodysuits',
+    name: Category.BODYSUITS,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%91%D7%92%D7%93%D7%99-%D7%92%D7%95%D7%A3',
   },
   {
     id: 'overalls',
-    name: 'Overalls',
+    name: Category.OVERALLS,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%90%D7%95%D7%91%D7%A8%D7%95%D7%9C%D7%99%D7%9D',
   },
   {
     id: 'dresses',
-    name: 'Dresses',
+    name: Category.DRESSES,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%A9%D7%9E%D7%9C%D7%95%D7%AA',
   },
   {
     id: 'skirts',
-    name: 'Skirts',
+    name: Category.SKIRTS,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%97%D7%A6%D7%90%D7%99%D7%95%D7%AA'
   },
   {
-    id: 'jackets-and-coats',
-    name: 'Jackets & Coats',
+    id: 'jackets-coats',
+    name: Category.JACKETS_COATS,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%92%D7%A7%D7%98%D7%99%D7%9D'
   }
@@ -86,11 +87,11 @@ class ItayBrandsScraper extends BaseScraper {
   protected readonly scraperName = 'ItayBrands';
   protected readonly source = 'ItayBrands';
 
-  protected getCategories(): Category[] {
+  protected getCategories(): CategoryType[] {
     return CATEGORIES;
   }
 
-  protected async scrapeCategory(category: Category): Promise<Product[]> {
+  protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     return this.scrapeItayBrandsCategory(category);
   }
 
@@ -153,7 +154,7 @@ class ItayBrandsScraper extends BaseScraper {
     return variantIdToCompareAt;
   }
 
-  private parseItayBrandsVariant(variant: any, category: Category, compareAtMap: Record<string, number>): Product {
+  private parseItayBrandsVariant(variant: any, category: CategoryType, compareAtMap: Record<string, number>): Product {
     // variant: { price: { amount, currencyCode }, product: { title, vendor, ... }, ... }
     const title = variant.product?.title || '';
     const url = variant.product?.url ? `${BASE_URL}/${variant.product.url}` : '';
@@ -191,7 +192,7 @@ class ItayBrandsScraper extends BaseScraper {
     return this.createProduct(product);
   }
 
-  private async scrapeItayBrandsCategory(category: Category): Promise<Product[]> {
+  private async scrapeItayBrandsCategory(category: CategoryType): Promise<Product[]> {
     let page = 1;
     let allProducts: Product[] = [];
     let hasMore = true;
