@@ -138,7 +138,15 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'arket': 'Arket',
   'other stories': '& Other Stories',
   '& other stories': '& Other Stories',
-  'itay brands': 'Itay Brands'
+  'itay brands': 'Itay Brands',
+  'all saints': 'AllSaints',
+  'a.p.c': 'A.P.C',
+  'c.p. company': 'C.P. Company',
+  'dr.martens': 'D.R Martens',
+  'g-star': 'G-Star',
+  'gstar': 'G-Star',
+  'g-star raw': 'G-Star',
+  'gstar raw': 'G-Star',
 };
 
 // --- Hebrew to English Color Mapping ---
@@ -346,7 +354,10 @@ export function normalizeBrandName(brandName: string): string {
   }
   
   // Return original brand name with proper capitalization if no match found
-  return brandName.trim();
+  return brandName
+    .split(/\s+/)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
 }
 
 /**
