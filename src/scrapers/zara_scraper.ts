@@ -14,6 +14,22 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, Category } from './base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './scraper_utils';
 import * as dotenv from 'dotenv';
+import {
+  JEANS_CATEGORY,
+  SHORTS_CATEGORY,
+  SWEATERS_CATEGORY,
+  SHIRTS_CATEGORY,
+  POLO_SHIRTS_CATEGORY,
+  SUNGLASSES_CATEGORY,
+  SWIMWEAR_CATEGORY,
+  OVERSHIRTS_CATEGORY,
+  BAGS_CATEGORY,
+  DRESSES_CATEGORY,
+  PERFUMES_CATEGORY,
+  JACKETS_COATS_CATEGORY,
+  ACCESSORIES_MAIN_CATEGORY,
+  T_SHIRTS_CATEGORY
+} from '../category.constants';
 dotenv.config();
 
 // @ts-ignore
@@ -22,8 +38,8 @@ puppeteer.use((StealthPlugin as any)());
 
 const CATEGORIES: Category[] = [
   {
-    id: 'man-shirts',
-    name: 'T-Shirts & Vests',
+    id: 'man-tshirts',
+    name: T_SHIRTS_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-tshirts-l855.html',
   },
@@ -35,127 +51,127 @@ const CATEGORIES: Category[] = [
   },
   {
     id: 'jeans',
-    name: 'Jeans',
+    name: JEANS_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-jeans-l659.html',
   },
   {
     id: 'shorts',
-    name: 'Shorts',
+    name: SHORTS_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-bermudas-l592.html'
   },
   {
     id: 'sweaters',
-    name: 'Sweaters',
+    name: SWEATERS_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-knitwear-l10702.html'
   },
   {
     id: 'shirts',
-    name: 'Shirts',
+    name: SHIRTS_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-shirts-l737.html'
   },
   {
     id: 'polo-shirts',
-    name: 'Polo Shirts',
+    name: POLO_SHIRTS_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-polos-l733.html'
   },
   {
     id: 'sunglasses',
-    name: 'Sunglasses',
+    name: SUNGLASSES_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-accessories-sunglasses-l558.html'
   },
   {
     id: 'swimwear',
-    name: 'Swimwear',
+    name: SWIMWEAR_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-beachwear-l590.html'
   },
   {
     id: 'overshirts',
-    name: 'Overshirts',
+    name: OVERSHIRTS_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-overshirts-l3174.html'
   },
   {
     id: 'bags',
-    name: 'Bags',
+    name: BAGS_CATEGORY,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-bags-l563.html'
   },
   {
     id: 'dress-sale',
-    name: 'Dresses',
+    name: DRESSES_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/s-woman-dresses-l8887.html'
   },
   {
     id: 'dress-sale',
-    name: 'Dresses',
+    name: DRESSES_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/s-woman-dresses-l8887.html'
   },
   {
     id: 'tshirt-sale',
-    name: 'T-Shirts & Vests',
+    name: JEANS_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/s-woman-tshirts-l10252.html'
   },
   {
     id: 'jeans-sale',
-    name: 'Jeans',
+    name: JEANS_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/s-woman-jeans-l9082.html'
   },
   {
     id: 'tshirts',
-    name: 'T-Shirts & Vests',
+    name: T_SHIRTS_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-tshirts-l1362.html'
   },
   {
     id: 'jeans-sale',
-    name: 'Jeans',
+    name: JEANS_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-jeans-l1119.html'
   },
   {
     id: 'dresses',
-    name: 'Dresses',
+    name: DRESSES_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-dresses-l1066.html'
   },
   {
     id: 'shirts',
-    name: 'Shirts',
+    name: SHIRTS_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-shirts-l1217.html'
   },
   {
     id: 'bags',
-    name: 'Bags',
+    name: BAGS_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-bags-l1024.html'
   },
   {
     id: 'perfumes',
-    name: 'Perfumes',
+    name: PERFUMES_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-beauty-perfumes-l1415.html'
   },
   {
     id: 'jackets-and-coats-sale',
-    name: 'Jackets & Coats',
+    name: JACKETS_COATS_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-outerwear-l1184.html'
   },
   {
     id: 'accessories',
-    name: 'Accessories',
+    name: ACCESSORIES_MAIN_CATEGORY,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-accessories-l1003.html'
   }

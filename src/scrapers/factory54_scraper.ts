@@ -14,41 +14,48 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, Category } from './base-scraper';
 import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './scraper_utils';
 import * as dotenv from 'dotenv';
+import {
+  T_SHIRTS_CATEGORY,
+  SWIMWEAR_CATEGORY,
+  JEANS_CATEGORY,
+  SHOES_MAIN_CATEGORY,
+  ACCESSORIES_MAIN_CATEGORY
+} from '../category.constants';
 dotenv.config();
 
 // --- Category config ---
 const CATEGORIES: Category[] = [
   {
     id: 'men-clothes-tshirt',
-    name: 'T-Shirts & Vests',
+    name: T_SHIRTS_CATEGORY,
     gender: 'Men',
     baseUrl: 'https://www.factory54.co.il/%D7%97%D7%95%D7%9C%D7%A6%D7%AA-%D7%98%D7%99',
     url: 'https://www.factory54.co.il/men-clothes-tshirt',
   },
   {
     id: 'men-clothes-swimwear',
-    name: 'Swimwear',
+    name: SWIMWEAR_CATEGORY,
     gender: 'Men',
     baseUrl: 'https://www.factory54.co.il/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99-%D7%91%D7%92%D7%93-%D7%99%D7%9D',
     url: 'https://www.factory54.co.il/men-clothes-swimwear'
   },
   {
     id: 'men-clothes-guinness',
-    name: 'Jeans',
+    name: JEANS_CATEGORY,
     gender: 'Men',
     baseUrl: 'https://www.factory54.co.il/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99-%D7%92%27%D7%99%D7%A0%D7%A1',
     url: 'https://www.factory54.co.il/men-clothes-guinness'
   },
   {
     id: 'men-shoes',
-    name: 'Shoes',
+    name: SHOES_MAIN_CATEGORY,
     gender: 'Men',
     baseUrl: 'https://www.factory54.co.il/%D7%A0%D7%A2%D7%9C%D7%99-%D7%A1%D7%A0%D7%99%D7%A7%D7%A8%D7%A1',
     url: 'https://www.factory54.co.il/men-shoes'
   },
   {
     id: 'men-accessories',
-    name: 'Accessories',
+    name: ACCESSORIES_MAIN_CATEGORY,
     gender: 'Men',
     url: 'https://www.factory54.co.il/men-accessories',
     baseUrl: 'https://www.factory54.co.il/%D7%AA%D7%99%D7%A7'

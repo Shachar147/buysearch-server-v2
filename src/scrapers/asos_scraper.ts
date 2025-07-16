@@ -15,6 +15,26 @@ import { CookieJar } from 'tough-cookie';
 import { BaseScraper, Category } from './base-scraper';
 import { Product, extractColors, calcSalePercent, prefixHttp, slugToColor, normalizeBrandName } from './scraper_utils';
 import * as dotenv from 'dotenv';
+import {
+  CLOTHING_MAIN_CATEGORY,
+  SHOES_MAIN_CATEGORY,
+  BY_BRAND_CATEGORY,
+  TOPS_MAIN_CATEGORY,
+  DRESSES_CATEGORY,
+  SKIRTS_CATEGORY,
+  SHORTS_CATEGORY,
+  SWIMWEAR_CATEGORY,
+  JEANS_CATEGORY,
+  JACKETS_COATS_CATEGORY,
+  LINGERIE_CATEGORY,
+  JOGGERS_CATEGORY,
+  UNDERWEAR_CATEGORY,
+  BOOTS_CATEGORY,
+  TRAINERS_CATEGORY,
+  SANDALS_CATEGORY,
+  SLIPPERS_CATEGORY,
+  SHIRTS_CATEGORY
+} from '../category.constants';
 dotenv.config();
 
 // --- Type definitions ---
@@ -69,23 +89,23 @@ const TITLE_CATEGORY_KEYWORDS: Record<string, string[]> = {
 
 // --- Static Categories ---
 const MAIN_CATEGORIES: Category[] = [
-  { id: 4209, name: 'Clothing', gender: 'Men' },
-  { id: 4208, name: 'Shoes', gender: 'Men' },
-  { id: 1111, name: 'By Brand', gender: 'Men' },
-  { id: 9999, name: 'Clothing', gender: 'Women'},
-  { id: 8888, name: 'By Brand', gender: 'Women' },
+  { id: 4209, name: CLOTHING_MAIN_CATEGORY, gender: 'Men' },
+  { id: 4208, name: SHOES_MAIN_CATEGORY, gender: 'Men' },
+  { id: 1111, name: BY_BRAND_CATEGORY, gender: 'Men' },
+  { id: 9999, name: CLOTHING_MAIN_CATEGORY, gender: 'Women'},
+  { id: 8888, name: BY_BRAND_CATEGORY, gender: 'Women' },
 ];
 
 const SUBCATEGORIES: Record<number, Category[]> = {
   9999: [
-    { id: 4169, name: 'Tops', gender: 'Women'},
-    { id: 8799, name: 'Dresses', gender: 'Women'},
-    { id: 2639, name: 'Skirts', gender: 'Women'},
-    { id: 9263, name: 'Shorts', gender: 'Women'},
-    { id: 2238, name: 'Swimwear', gender: 'Women'},
-    { id: 3630, name: 'Jeans', gender: 'Women'},
-    { id: 2641, name: 'Jackets & Coats', gender: 'Women'},
-    { id: 6046, name: 'Lingerie & Nightwear', gender: 'Women'},
+    { id: 4169, name: TOPS_MAIN_CATEGORY, gender: 'Women'},
+    { id: 8799, name: DRESSES_CATEGORY, gender: 'Women'},
+    { id: 2639, name: SKIRTS_CATEGORY, gender: 'Women'},
+    { id: 9263, name: SHORTS_CATEGORY, gender: 'Women'},
+    { id: 2238, name: SWIMWEAR_CATEGORY, gender: 'Women'},
+    { id: 3630, name: JEANS_CATEGORY, gender: 'Women'},
+    { id: 2641, name: JACKETS_COATS_CATEGORY, gender: 'Women'},
+    { id: 6046, name: LINGERIE_CATEGORY, gender: 'Women'},
   ],
   8888: [
     { id: 12949, name: 'Abercrombie and Fitch', gender: 'Women'},
@@ -98,18 +118,17 @@ const SUBCATEGORIES: Record<number, Category[]> = {
     { id: 26768, name: 'AllSaints', gender: 'Women' },
   ],
   4209: [ // Clothing
-    { id: 4208, name: 'Jeans', gender: 'Men' }, // V
-    { id: 3606, name: 'Jackets & Coats', gender: 'Men' }, // V
-    { id: 3602, name: 'Shirts', gender: 'Men' }, // V
-    { id: 7616, name: 'T-Shirts & Vests', gender: 'Men' }, // V
-    { id: 14274, name: 'Joggers', gender: 'Men' }, // V
-    { id: 20317, name: 'Underwear', gender: 'Men' }, // V
+    { id: 4208, name: JEANS_CATEGORY, gender: 'Men' }, // V
+    { id: 3606, name: JACKETS_COATS_CATEGORY, gender: 'Men' }, // V
+    { id: 3602, name: SHIRTS_CATEGORY, gender: 'Men' }, // V
+    { id: 7616, name: JOGGERS_CATEGORY, gender: 'Men' }, // V
+    { id: 14274, name: UNDERWEAR_CATEGORY, gender: 'Men' }, // V
   ],
   4208: [ // Shoes
-    { id: 5774, name: 'Boots', gender: 'Men' }, // v
-    { id: 5775, name: 'Trainers', gender: 'Men' }, // V
-    { id: 6593, name: 'Sandals', gender: 'Men' }, // v
-    { id: 14328, name: 'Slippers', gender: 'Men' }, // v
+    { id: 5774, name: BOOTS_CATEGORY, gender: 'Men' }, // v
+    { id: 5775, name: TRAINERS_CATEGORY, gender: 'Men' }, // V
+    { id: 6593, name: SANDALS_CATEGORY, gender: 'Men' }, // v
+    { id: 14328, name: SLIPPERS_CATEGORY, gender: 'Men' }, // v
   ],
   1111: [ // by brand
     { id: 4280, name: 'Polo Ralph Lauren', gender: 'Men' },

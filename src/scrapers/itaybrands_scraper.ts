@@ -10,70 +10,80 @@
 // Usage: npm run scrape:itaybrands
 
 import axios from 'axios';
-import * as cheerio from 'cheerio';
 import { BaseScraper, Category } from './base-scraper';
 import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './scraper_utils';
 import * as dotenv from 'dotenv';
+import {
+  SHIRTS_CATEGORY,
+  PANTS_CATEGORY,
+  JEWELRY_CATEGORY,
+  T_SHIRTS_CATEGORY,
+  BODYSUITS_CATEGORY,
+  OVERALLS_CATEGORY,
+  DRESSES_CATEGORY,
+  SKIRTS_CATEGORY,
+  JACKETS_COATS_CATEGORY
+} from '../category.constants';
 dotenv.config();
 
 const CATEGORIES: Category[] = [
   {
     id: 'shirts-men',
-    name: 'Shirts',
+    name: SHIRTS_CATEGORY,
     gender: 'Men',
     url: 'https://itaybrands.co.il/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA-%D7%92%D7%91%D7%A8%D7%99%D7%9D',
   },
   {
     id: 'pants',
-    name: 'Pants',
+    name: PANTS_CATEGORY,
     gender: 'Men',
     url: 'https://itaybrands.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99%D7%99%D7%9D-%D7%92%D7%91%D7%A8%D7%99%D7%9D'
   },
   {
-    id: 'חewelry',
-    name: 'Jewelry',
+    id: 'jewelry',
+    name: JEWELRY_CATEGORY,
     gender: 'Men',
     url: 'https://itaybrands.co.il/collections/%D7%AA%D7%9B%D7%A9%D7%99%D7%98%D7%99%D7%9D'
   },
   {
     id: 't-shirts',
-    name: 'T-Shirts & Vests', 
+    name: T_SHIRTS_CATEGORY, 
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA'
   },
   {
     id: 'pants',
-    name: 'Pants',
+    name: PANTS_CATEGORY,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99%D7%99%D7%9D'
   },
   {
     id: 'bodysuits',
-    name: 'Bodysuits',
+    name: BODYSUITS_CATEGORY,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%91%D7%92%D7%93%D7%99-%D7%92%D7%95%D7%A3',
   },
   {
     id: 'overalls',
-    name: 'Overalls',
+    name: OVERALLS_CATEGORY,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%90%D7%95%D7%91%D7%A8%D7%95%D7%9C%D7%99%D7%9D',
   },
   {
     id: 'dresses',
-    name: 'Dresses',
+    name: DRESSES_CATEGORY,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%A9%D7%9E%D7%9C%D7%95%D7%AA',
   },
   {
     id: 'skirts',
-    name: 'Skirts',
+    name: SKIRTS_CATEGORY,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%97%D7%A6%D7%90%D7%99%D7%95%D7%AA'
   },
   {
-    id: 'jackets-and-coats',
-    name: 'Jackets & Coats',
+    id: 'jackets-coats',
+    name: JACKETS_COATS_CATEGORY,
     gender: 'Women',
     url: 'https://itaybrands.co.il/collections/%D7%92%D7%A7%D7%98%D7%99%D7%9D'
   }
