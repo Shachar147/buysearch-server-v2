@@ -462,7 +462,7 @@ export function extractColors(title: string, apiColors: string[]): string[] {
  * @returns Normalized brand name
  */
 export function normalizeBrandName(brandName: string): string {
-  if (!brandName) return 'Unknown';
+  if (!brandName || brandName == 'false') return 'Unknown';
   
   const normalizedBrand = brandName.trim().toLowerCase();
   const synonym = BRAND_SYNONYMS[normalizedBrand];
@@ -578,13 +578,15 @@ export async function finishScrapingSession(
   totalUpdated: number,
   startTime: Date,
   scraperName: string,
-  scrapingHistoryService: ScrapingHistoryService
+  scrapingHistoryService: ScrapingHistoryService,
+  totalItems?: number,
+  missingItems?: number
 ): Promise<void> {
   const endTime = new Date();
   const totalSeconds = Math.round((endTime.getTime() - startTime.getTime()) / 1000);
   
   // Finish scraping session
-  await scrapingHistoryService.finishScrapingSession(session.id, totalNew, totalUpdated);
+  await scrapingHistoryService.finishScrapingSession(session.id, totalNew, totalUpdated, totalItems, missingItems);
   
   console.log(`${scraperName}: ${totalNew + totalUpdated} products processed in total.`);
   console.log(`🟢 CREATED: ${totalNew}, 🟡 UPDATED: ${totalUpdated}`);

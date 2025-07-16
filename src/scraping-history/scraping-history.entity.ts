@@ -49,6 +49,19 @@ export class ScrapingHistory {
   updatedItems: number;
 
   @Column({ type: 'int', default: 0 })
+  totalItems: number;
+
+  @Column({ type: 'int', default: 0 })
+  missingItems: number;
+
+  // Ensure totalItems is set to createdItems + updatedItems if not provided
+  // This logic will run after entity is loaded or before insert/update
+  // (TypeORM does not support computed columns in entity, so we use a getter for convenience)
+  get computedTotalItems(): number {
+    return (this.totalItems ?? 0) || ((this.createdItems ?? 0) + (this.updatedItems ?? 0));
+  }
+
+  @Column({ type: 'int', default: 0 })
   progress: number;
 
   @CreateDateColumn()

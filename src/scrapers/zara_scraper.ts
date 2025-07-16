@@ -271,11 +271,13 @@ class ZaraScraper extends BaseScraper {
     if (!title){
         console.error("product with no title", product);
         return undefined;
-    } else {
-        console.log({
-            product
-        })
-    }
+    } 
+    // else {
+    //     console.log({
+    //         product
+    //     })
+    // }
+    
     const url = product.offers.url;
     const images = [product.image];
 

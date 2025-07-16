@@ -51,7 +51,9 @@ export class ScrapingHistoryService {
   async finishScrapingSession(
     id: number,
     createdItems: number,
-    updatedItems: number
+    updatedItems: number,
+    totalItems?: number,
+    missingItems?: number
   ): Promise<ScrapingHistory> {
     const session = await this.scrapingHistoryRepository.findOne({ where: { id } });
     if (!session) {
@@ -67,6 +69,8 @@ export class ScrapingHistoryService {
       totalSeconds,
       createdItems,
       updatedItems,
+      totalItems: totalItems ?? (createdItems + updatedItems),
+      missingItems: missingItems ?? 0,
     });
 
     return this.scrapingHistoryRepository.findOne({ where: { id } });

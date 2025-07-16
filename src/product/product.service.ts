@@ -350,4 +350,22 @@ export class ProductService {
         : [],
     }));
   }
+
+  async getAllUrlsBySource(sourceName: string): Promise<string[]> {
+    const products = await this.productsRepository.createQueryBuilder('product')
+      .leftJoin('product.source', 'source')
+      .where('LOWER(source.name) = :source', { source: sourceName.toLowerCase() })
+      .select(['product.url'])
+      .getMany();
+    return products.map(p => p.url);
+  }
+
+  async getAllUrlsAndIdsBySource(sourceName: string): Promise<{id: number, url: string}[]> {
+    const products = await this.productsRepository.createQueryBuilder('product')
+      .leftJoin('product.source', 'source')
+      .where('LOWER(source.name) = :source', { source: sourceName.toLowerCase() })
+      .select(['product.id', 'product.url'])
+      .getMany();
+    return products.map(p => ({ id: p.id, url: p.url }));
+  }
 } 

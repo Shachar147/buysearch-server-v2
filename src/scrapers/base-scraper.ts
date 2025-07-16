@@ -53,6 +53,7 @@ export abstract class BaseScraper {
   async run(): Promise<void> {
     let totalNew = 0;
     let totalUpdated = 0;
+    const allScrapedUrls: Set<string> = new Set();
     try {
       // Initialize NestJS context
       const { app, productsService, scrapingHistoryService } = await createAppContext();
@@ -81,17 +82,20 @@ export abstract class BaseScraper {
         try {
           const products = await this.scrapeCategory(category);
           console.log(`Found ${products.length} products in ${category.name}`);
-          
+
+          // Collect scraped URLs
+          products.forEach(p => allScrapedUrls.add(p.url));
+
           // Process and save products
           const result = await processProducts(products, this.productsService);
-          
+
           totalNew += result.created;
           totalUpdated += result.updated;
           categoriesScanned = i + 1;
-          
+
           // Calculate progress percentage
           const progressPercentage = Math.round((categoriesScanned / this.totalCategories) * 100);
-          
+
           // Update scraping progress with percentage
           await this.scrapingHistoryService.updateScrapingProgress(
             this.session.id, 
@@ -99,9 +103,9 @@ export abstract class BaseScraper {
             totalUpdated,
             progressPercentage
           );
-          
+
           console.log(`${this.scraperName}: ${result.created} CREATED, ${result.updated} UPDATED for category ${category.name} (${categoriesScanned}/${this.totalCategories} categories completed - ${progressPercentage}%)`);
-          
+
         } catch (error) {
           console.warn(`⚠️  Failed category ${category.name}: ${error.message}`);
           // Still increment progress even if category failed
@@ -119,6 +123,16 @@ export abstract class BaseScraper {
       // Clean up scraper-specific resources
       await this.cleanup();
 
+      // Fetch all DB URLs and IDs for this source
+      const dbUrlIdPairs = await this.productsService.getAllUrlsAndIdsBySource(this.source);
+      const missingIds = dbUrlIdPairs.filter(({ url }) => !allScrapedUrls.has(url)).map(({ id }) => id);
+      const missingItems = missingIds.length;
+      const totalItems = allScrapedUrls.size;
+
+      if (missingIds.length > 0) {
+        console.log(`Missing item DB IDs (not found in scrape):`, missingIds);
+      }
+
       // Finish scraping session
       await finishScrapingSession(
         this.session,
@@ -126,7 +140,9 @@ export abstract class BaseScraper {
         totalUpdated,
         this.startTime,
         this.scraperName,
-        this.scrapingHistoryService
+        this.scrapingHistoryService,
+        totalItems,
+        missingItems
       );
 
       await app.close();
