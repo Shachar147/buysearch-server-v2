@@ -16,12 +16,13 @@ export class ScraperCronService {
   async handleCron() {
     this.logger.log('Running ALL scraper cron jobs...');
     const scrapers = [
-      { name: 'ASOS', script: join(__dirname, 'asos_scraper.js') },
-      { name: 'TerminalX', script: join(__dirname, 'terminalx_scraper.js') },
-      { name: 'Factory54', script: join(__dirname, 'factory54_scraper.js') },
-      { name: 'ItayBrands', script: join(__dirname, 'itaybrands_scraper.js') },
-      { name: 'Zara', script: join(__dirname, 'zara_scraper.js') },
-      { name: 'Story', script: join(__dirname, 'story_scraper.js') },
+      { name: 'ASOS', script: join(__dirname, '../asos_scraper.js') },
+      { name: 'TerminalX', script: join(__dirname, '../terminalx_scraper.js') },
+      { name: 'Factory54', script: join(__dirname, '../factory54_scraper.js') },
+      { name: 'ItayBrands', script: join(__dirname, '../itaybrands_scraper.js') },
+      { name: 'Zara', script: join(__dirname, '../zara_scraper.js') },
+      { name: 'Story', script: join(__dirname, '../story_scraper.js') },
+      { name: 'OneProjectShop', script: join(__dirname, '../oneprojectshop_scraper.js') },
       // Add more scrapers here
     ];
     await Promise.all(scrapers.map(({ name, script }) => {
