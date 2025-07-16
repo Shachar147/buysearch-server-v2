@@ -12,33 +12,15 @@
 import axios, { AxiosInstance } from 'axios';
 import { wrapper } from 'axios-cookiejar-support';
 import { CookieJar } from 'tough-cookie';
-import { BaseScraper, Category } from './base-scraper';
+import { BaseScraper } from './base-scraper';
+import { Category as CategoryType } from './base-scraper';
 import { Product, extractColors, calcSalePercent, prefixHttp, slugToColor, normalizeBrandName } from './scraper_utils';
 import * as dotenv from 'dotenv';
-import {
-  CLOTHING_MAIN_CATEGORY,
-  SHOES_MAIN_CATEGORY,
-  BY_BRAND_CATEGORY,
-  TOPS_MAIN_CATEGORY,
-  DRESSES_CATEGORY,
-  SKIRTS_CATEGORY,
-  SHORTS_CATEGORY,
-  SWIMWEAR_CATEGORY,
-  JEANS_CATEGORY,
-  JACKETS_COATS_CATEGORY,
-  LINGERIE_CATEGORY,
-  JOGGERS_CATEGORY,
-  UNDERWEAR_CATEGORY,
-  BOOTS_CATEGORY,
-  TRAINERS_CATEGORY,
-  SANDALS_CATEGORY,
-  SLIPPERS_CATEGORY,
-  SHIRTS_CATEGORY
-} from '../category.constants';
+import { Category } from '../category.constants';
 dotenv.config();
 
 // --- Type definitions ---
-interface CategoryWithPath extends Category {
+interface CategoryWithPath extends CategoryType {
   path: string[];
 }
 
@@ -88,24 +70,24 @@ const TITLE_CATEGORY_KEYWORDS: Record<string, string[]> = {
 };
 
 // --- Static Categories ---
-const MAIN_CATEGORIES: Category[] = [
-  { id: 4209, name: CLOTHING_MAIN_CATEGORY, gender: 'Men' },
-  { id: 4208, name: SHOES_MAIN_CATEGORY, gender: 'Men' },
-  { id: 1111, name: BY_BRAND_CATEGORY, gender: 'Men' },
-  { id: 9999, name: CLOTHING_MAIN_CATEGORY, gender: 'Women'},
-  { id: 8888, name: BY_BRAND_CATEGORY, gender: 'Women' },
+const MAIN_CATEGORIES: CategoryType[] = [
+  { id: 4209, name: Category.CLOTHING, gender: 'Men' },
+  { id: 4208, name: Category.SHOES, gender: 'Men' },
+  { id: 1111, name: Category.BY_BRAND, gender: 'Men' },
+  { id: 9999, name: Category.CLOTHING, gender: 'Women'},
+  { id: 8888, name: Category.BY_BRAND, gender: 'Women' },
 ];
 
-const SUBCATEGORIES: Record<number, Category[]> = {
+const SUBCATEGORIES: Record<number, CategoryType[]> = {
   9999: [
-    { id: 4169, name: TOPS_MAIN_CATEGORY, gender: 'Women'},
-    { id: 8799, name: DRESSES_CATEGORY, gender: 'Women'},
-    { id: 2639, name: SKIRTS_CATEGORY, gender: 'Women'},
-    { id: 9263, name: SHORTS_CATEGORY, gender: 'Women'},
-    { id: 2238, name: SWIMWEAR_CATEGORY, gender: 'Women'},
-    { id: 3630, name: JEANS_CATEGORY, gender: 'Women'},
-    { id: 2641, name: JACKETS_COATS_CATEGORY, gender: 'Women'},
-    { id: 6046, name: LINGERIE_CATEGORY, gender: 'Women'},
+    { id: 4169, name: Category.TOPS, gender: 'Women'},
+    { id: 8799, name: Category.DRESSES, gender: 'Women'},
+    { id: 2639, name: Category.SKIRTS, gender: 'Women'},
+    { id: 9263, name: Category.SHORTS, gender: 'Women'},
+    { id: 2238, name: Category.SWIMWEAR, gender: 'Women'},
+    { id: 3630, name: Category.JEANS, gender: 'Women'},
+    { id: 2641, name: Category.JACKETS_COATS, gender: 'Women'},
+    { id: 6046, name: Category.LINGERIE, gender: 'Women'},
   ],
   8888: [
     { id: 12949, name: 'Abercrombie and Fitch', gender: 'Women'},
@@ -118,17 +100,17 @@ const SUBCATEGORIES: Record<number, Category[]> = {
     { id: 26768, name: 'AllSaints', gender: 'Women' },
   ],
   4209: [ // Clothing
-    { id: 4208, name: JEANS_CATEGORY, gender: 'Men' }, // V
-    { id: 3606, name: JACKETS_COATS_CATEGORY, gender: 'Men' }, // V
-    { id: 3602, name: SHIRTS_CATEGORY, gender: 'Men' }, // V
-    { id: 7616, name: JOGGERS_CATEGORY, gender: 'Men' }, // V
-    { id: 14274, name: UNDERWEAR_CATEGORY, gender: 'Men' }, // V
+    { id: 4208, name: Category.JEANS, gender: 'Men' }, // V
+    { id: 3606, name: Category.JACKETS_COATS, gender: 'Men' }, // V
+    { id: 3602, name: Category.SHIRTS, gender: 'Men' }, // V
+    { id: 7616, name: Category.JOGGERS, gender: 'Men' }, // V
+    { id: 14274, name: Category.UNDERWEAR, gender: 'Men' }, // V
   ],
   4208: [ // Shoes
-    { id: 5774, name: BOOTS_CATEGORY, gender: 'Men' }, // v
-    { id: 5775, name: TRAINERS_CATEGORY, gender: 'Men' }, // V
-    { id: 6593, name: SANDALS_CATEGORY, gender: 'Men' }, // v
-    { id: 14328, name: SLIPPERS_CATEGORY, gender: 'Men' }, // v
+    { id: 5774, name: Category.BOOTS, gender: 'Men' }, // v
+    { id: 5775, name: Category.TRAINERS, gender: 'Men' }, // V
+    { id: 6593, name: Category.SANDALS, gender: 'Men' }, // v
+    { id: 14328, name: Category.SLIPPERS, gender: 'Men' }, // v
   ],
   1111: [ // by brand
     { id: 4280, name: 'Polo Ralph Lauren', gender: 'Men' },
@@ -184,11 +166,11 @@ class ASOSScraper extends BaseScraper {
     await this.warmCookies();
   }
 
-  protected getCategories(): Category[] {
+  protected getCategories(): CategoryType[] {
     return this.getCategoriesWithPath();
   }
 
-  protected async scrapeCategory(category: Category): Promise<Product[]> {
+  protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     return this.scrapeSingleCategory(category as CategoryWithPath);
   }
 
