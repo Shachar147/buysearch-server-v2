@@ -10,23 +10,27 @@
 // Usage: npm run scrape:terminalx
 
 import axios from 'axios';
-import { BaseScraper, Category } from './base-scraper';
+import { BaseScraper } from './base-scraper';
+import { Category as CategoryType } from './base-scraper';
 import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
+
+// If this is a Node/TS file, import the constant from the shared location or copy the value if not available
+import { Category } from '../category.constants';
 
 // --- Category config ---
 const MEN = 11221;
 const WOMEN = 11220;
 const CATEGORIES = [
-  { id: '17486', name: 'Swimwear', gender: 'Men', baseUrl: 'men/swimwear' },
-  { id: '175', name: 'Jeans', gender: 'Men', baseUrl: 'men/pants/jeans'},
-  { id: '169', name: 'T-Shirts & Vests', gender: 'Men', baseUrl: 'men/shirts/tshirts'},
-  { id: '171', name: 'Shirts', gender: 'Men', baseUrl: 'men/shirts/dress-shirts'},
-  { id: '367', name: 'Boxers', gender: 'Men', baseUrl: 'men/underwear/underpants'},
-  { id: '122', name: 'Dresses', gender: 'Women', baseUrl: 'women/dresses' },
-  { id: '128', name: 'Jeans', gender: 'Women', baseUrl: 'women/pants-skirts/jeans' },
-  { id: '132', name: 'T-Shirts & Vests', gender: 'Women', baseUrl: 'women/tops/tshirts' },
+  { id: '17486', name: Category.SWIMWEAR, gender: 'Men', baseUrl: 'men/swimwear' },
+  { id: '175', name: Category.JEANS, gender: 'Men', baseUrl: 'men/pants/jeans'},
+  { id: '169', name: Category.T_SHIRTS, gender: 'Men', baseUrl: 'men/shirts/tshirts'},
+  { id: '171', name: Category.SHIRTS, gender: 'Men', baseUrl: 'men/shirts/dress-shirts'},
+  { id: '367', name: Category.BOXERS, gender: 'Men', baseUrl: 'men/underwear/underpants'},
+  { id: '122', name: Category.DRESSES, gender: 'Women', baseUrl: 'women/dresses' },
+  { id: '128', name: Category.JEANS, gender: 'Women', baseUrl: 'women/pants-skirts/jeans' },
+  { id: '132', name: Category.T_SHIRTS, gender: 'Women', baseUrl: 'women/tops/tshirts' },
 
   // by brand
   { id: '17345', name: 'Polo Ralph Lauren', gender: 'Men', baseUrl: 'brands/ralph-lauren', additionalFilters: { department_level: { eq: MEN }}},
@@ -51,6 +55,7 @@ const CATEGORIES = [
   { id: '23974', name: 'Prada', gender: 'Women', baseUrl: 'brands/prada', additionalFilters: { department_level: { eq: WOMEN }}},
   { id: '347', name: 'Nike', gender: 'Men', baseUrl: 'brands/nike', additionalFilters: { department_level: { eq: MEN }}},
   { id: '347', name: 'Nike', gender: 'Women', baseUrl: 'brands/nike', additionalFilters: { department_level: { eq: WOMEN }}},
+  { id: '32144', name: 'Skims', gender: 'Women', baseUrl: 'brands/skims', additionalFilters: { department_level: { eq: WOMEN }}},
   // Add more categories here
     // { id: '', name: 'TRENDING / SHEER', gender: 'Women', baseUrl: 'women/trending/sheer-trend' },
     // { id: '', name: 'TRENDING / METALLIC', gender: 'Women', baseUrl: 'women/trending/metallic' },
@@ -143,11 +148,11 @@ class TerminalXScraper extends BaseScraper {
   protected readonly scraperName = 'TerminalX';
   protected readonly source = 'TerminalX';
 
-  protected getCategories(): Category[] {
+  protected getCategories(): CategoryType[] {
     return CATEGORIES;
   }
 
-  protected async scrapeCategory(category: Category): Promise<Product[]> {
+  protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     return this.scrapeTerminalXCategory(category);
   }
 
@@ -208,7 +213,7 @@ class TerminalXScraper extends BaseScraper {
     });
   }
 
-  private async scrapeTerminalXCategory(cat: Category): Promise<Product[]> {
+  private async scrapeTerminalXCategory(cat: CategoryType): Promise<Product[]> {
     let page = 1;
     let totalPages = 1;
     let allProducts: Product[] = [];
@@ -221,7 +226,7 @@ class TerminalXScraper extends BaseScraper {
       this.logProgress(`Scanning ${cat.name} page ${page}/${totalPages} (${items.length} items)`);
       
       allProducts.push(...items.map((item: any) => 
-        this.parseTerminalXProduct(item, [cat.name], cat.gender, (cat as any).baseUrl)
+        this.parseTerminalXProduct(item, [cat.name], cat.gender, (cat as CategoryType).baseUrl)
       ));
       
       page++;

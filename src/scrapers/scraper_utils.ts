@@ -5,6 +5,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../app.module';
 import { ProductService } from '../product/product.service';
 import { ScrapingHistoryService, ScrapingType } from '../scraping-history/scraping-history.service';
+import { CATEGORY_NORMALIZATION_MAP } from '../category.constants';
 
 // --- Common Types ---
 export interface Product {
@@ -71,6 +72,7 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'hollister': 'Hollister',
   'abercrombie': 'Abercrombie & Fitch',
   'abercrombie & fitch': 'Abercrombie & Fitch',
+  'abercrombie and fitch': 'Abercrombie & Fitch',
   'a&f': 'Abercrombie & Fitch',
   'gap': 'Gap',
   'gant': 'Gant',
@@ -137,7 +139,14 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'other stories': '& Other Stories',
   '& other stories': '& Other Stories',
   'itay brands': 'Itay Brands',
-  'all saints': 'AllSaints'
+  'all saints': 'AllSaints',
+  'a.p.c': 'A.P.C',
+  'c.p. company': 'C.P. Company',
+  'dr.martens': 'D.R Martens',
+  'g-star': 'G-Star',
+  'gstar': 'G-Star',
+  'g-star raw': 'G-Star',
+  'gstar raw': 'G-Star',
 };
 
 // --- Hebrew to English Color Mapping ---
@@ -230,141 +239,6 @@ export const HEBREW_COLOR_MAP: Record<string, string> = {
   "אוף ווייט": 'off white'
 };
 
-// --- Category Synonyms Mapping ---
-export const CATEGORY_SYNONYMS: Record<string, string[]> = {
-  'caps': ['Hats'],
-  'כובעים': ['Hats'],
-  'כובע': ['Hats'],
-  "ג'קט": ['Jackets & Coats'],
-  'hats': ['Hats'],
-  't-shirts': ['T-Shirts & Vests'],
-  'tshirts': ['T-Shirts & Vests'],
-  'חולצות': ['Shirts'],
-  'shirts': ['Shirts'],
-  'pants': ['Pants'],
-  'מכנסיים': ['Pants'],
-  'dresses': ['Dresses'],
-  'שמלות': ['Dresses'],
-  'skirts': ['Skirts'],
-  'חצאיות': ['Skirts'],
-  'jackets': ['Jackets & Coats'],
-  'coats': ['Jackets & Coats'],
-  "ג'קטים": ['Jackets & Coats'],
-  'אוברולים': ['Overalls'],
-  'overalls': ['Overalls'],
-  'bodysuit': ['Bodysuits'],
-  'bodysuits': ['Bodysuits'],
-  'בגד גוף': ['Bodysuits'],
-  'בגדי גוף': ['Bodysuits'],
-  'jewlery': ['Jewelry'],
-  'תכשיטים': ['Jewelry'],
-  'אביזרים': ['Accessories'],
-  'תיקים': ['Accessories', 'Bags'],
-  'תיק נסיעה': ['Bags', 'Travel Bags'],
-  'תיקי נסיעה': ['Accessories', 'Bags', 'Travel Bags'],
-  'תיקי גב': ['Accessories', 'Bags', 'Backpacks'],
-  'פאוץ׳': ['Accessories', 'Bags', 'Pouch'],
-  "תיקי פאוץ'": ['Accessories', 'Bags', 'Pouch'],
-  "סנדלים וכפכפים": ['Shoes', 'Sandals', 'Flip Flops'],
-  "סניקרס": ['Shoes', 'Snickers'],
-  "צ'אנקי סניקרס": ['Shoes', 'Snickers'],
-  'תיק לפטופ': ['Bags', 'Laptop Bags'],
-  'תיק ללפטופ': ['Bags', 'Laptop Bags'],
-  'תיק למחשב נייד': ['Bags', 'Laptop Bags'],
-  'תיק למחשב-נייד': ['Bags', 'Laptop Bags'],
-  'תיקי לפטופ': ['Bags', 'Laptop Bags'],
-  'בגדים': ['Clothing'],
-  'טי שרט שרוול ארוך': ['Clothing', 'T-Shirts & Vests'],
-  'טי שרט שרוול קצר': ['Clothing', 'T-Shirts & Vests'],
-  'נעליים': ['Shoes'],
-  "ג'ינסים": ['Jeans'],
-  "תיקי צד": ['Bags', 'Side Bags'],
-  "חגורה": ['Accessories', 'Belts'],
-  "חגורות": ['Accessories', 'Belts'],
-  'ארנק כרטיסים': ['Accessories', 'Wallets'],
-  'ארנקים': ['Accessories', 'Wallets'],
-  "פאוץ'": ['Bags', 'Pouch'],
-  'pouch bags': ['Bags', 'Pouch'],
-  't-shirt': ['Clothing', 'T-Shirts & Vests'],
-  'משקפי שמש': ['Accessories', 'Sunglasses'],
-  'גרב': ['Accessories', 'Socks'],
-  'גרביים': ['Accessories', 'Socks'],
-  'צמידים': ['Accessories', 'Jewelry', 'Bracelets'],
-  'צמיד': ['Accessories', 'Jewelry', 'Bracelets'],
-  'tax free': ['Tax Free'],
-  'שרשרת': ['Accessories', 'Jewelry', 'Necklaces'],
-  'שרשראות': ['Accessories', 'Jewelry', 'Necklaces'],
-  'טבעות': ['Accessories', 'Jewelry', 'Rings'],
-  'בקבוקי ספורט': ['Accessories', 'Sport', 'Bottles'],
-  'אביזרי ספורט': ['Accessories', 'Sport'],
-  'כפפות': ['Accessories', 'Gloves'],
-  'חליפות': ['Suites'],
-  'גוף & וולנס': ['Welness & Body'],
-  'straight': ['Jeans', 'Straight Jeans'],
-  'skinny': ['Jeans', 'Skinny Jeans'],
-  'slim': ['Jeans', 'Slim Jeans'],
-  'נעליים אלגנטיות': ['Shoes', 'Elegant Shoes'],
-  'נעליים שטוחות': ['Shoes'],
-  'מגפי שרוכים': ['Shoes', 'Boots'],
-  'בגדי ים': ['Swimwear'],
-  'בגד ים': ['Swimwear'],
-  "מגפי צ'לסי": ['Shoes', 'Boots'],
-  'מוקסינים': ['Shoes', 'Moccasin Shoes'],
-  'מוקסין': ['Shoes', 'Moccasin Shoes'],
-  'כפכפים': ['Flip Flops'],
-  'סנדלים': ['Sandals'],
-  'ספורט': ['Sport'],
-  'גופיות': ['Tanks'],
-  'sleeveless': ['Tanks'],
-  'גופייה': ['Tanks'],
-  'גופיה': ['Tanks'],
-  'beauty': ['Beauty'],
-  'סריגים': ['Clothing', 'Knitwear'],
-  'סריג רוכסן': ['Clothing', 'Knitwear'],
-  'קרדיגן': ['Clothing', 'Knitwear'],
-  'סווטשירטים': ['Clothing', 'Sweaters'],
-  'סווטשירט': ['Clothing', 'Sweaters'],
-  'סוודרים': ['Clothing', 'Sweaters'],
-  'סווטשירט crew': ['Clothing', 'Sweaters'],
-  'חולצות פולו': ['Clothing', 'T-Shirts & Vests', 'Polo Shirts'],
-  'פולו שרוול קצר': ['Clothing', 'T-Shirts & Vests', 'Polo Shirts'],
-  'polo t-shirts': ['Polo Shirts'],
-  'polo tshirts': ['Polo Shirts'],
-  'נעלי בית': ['Slippers'],
-  'אביזרי נעליים': ['Shoes', 'Accessories'],
-  'clothes': ['Clothing'],
-  'חולצת פולו': ['Polo Shirts'],
-  'הלבשה תחתונה': ['Clothing', 'Lingerie'],
-  'מתנות': ['Gifts'],
-  'טי שירט': ['Clothing', 'T-Shirts & Vests'],
-  'מגפיים': ['Shoes', 'Boots'],
-  'מגפיים אלגנטיות': ['Shoes', 'Boots'],
-  'כפכפי אצבע': ['Shoes', 'Flip Flops'],
-  'נעלי אוקספורד': ['Shoes', 'Oxford Shoes'],
-  'בגדי ספורט': ['Clothing', 'Sport'],
-  'Phonebag': ['Accessories', 'Bags'],
-  'אספדרילים': ['Shoes', 'Espadrilles Shoes'],
-  'אספדריל': ['Shoes', 'Espadrilles Shoes'],
-  'בגד חוף': ['Beachwear', 'Swimwear'],
-  'וסט': ['Clothing', 'T-Shirts & Vests'],
-  'סטרפלס': ['Clothing', 'Strapless'],
-  'מטפחות': ['Accessories', 'Handkerchiefs'],
-  "טישירט": ['Clothing', 'T-Shirts & Vests'],
-  "מכנסיים קצרים": ['Clothing', 'Pants', 'Shorts'],
-  'short jeans': ['Clothing', 'Shorts', 'Jeans'],
-  "אוברסייז": ['Clothing', 'Oversize'],
-  "Oversize": ['Clothing', 'Oversize'],
-  "סוודר": ['Clothing', 'Sweaters'],
-  "קרדיגנים": ['Clothing', 'Cardigans'],
-  "בלייזר": ['Clothing', 'Blazers'],
-  "בלייזרים": ['Clothing', 'Blazers'],
-  'home': ['Home'],
-  'new era': ['New Era']
-  // 'mocha mousse': 'Mocha Mousse',
-  // 'מתנות': 'Gifts',
-  // Add more as needed
-};
-
 // --- Categories to Ignore ---
 export const CATEGORIES_TO_IGNORE = new Set([
   'גברים',
@@ -429,7 +303,7 @@ export function normalizeCategories(categories: string[]): string[] {
   categories.forEach((cat) => {
     if (!cat) return;
     const normalized = cat.trim().toLowerCase();
-    const mapped = CATEGORY_SYNONYMS[normalized] || [cat.trim()];
+    const mapped = CATEGORY_NORMALIZATION_MAP[normalized] || [cat.trim()];
     mapped.forEach((normCat) => {
       if (normCat && !CATEGORIES_TO_IGNORE.has(normCat.toLocaleLowerCase())) {
         resultSet.add(normCat);
@@ -643,7 +517,7 @@ export function extractCategory(title: string): string[] {
   const lowerTitle = title.toLowerCase();
   const foundCategories = new Set<string>();
   // Check for each synonym key and value in the title
-  for (const [key, mappedArr] of Object.entries(CATEGORY_SYNONYMS)) {
+  for (const [key, mappedArr] of Object.entries(CATEGORY_NORMALIZATION_MAP)) {
     if (lowerTitle.includes(key)) {
       mappedArr.forEach((cat) => foundCategories.add(cat));
     }

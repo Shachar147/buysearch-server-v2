@@ -11,19 +11,22 @@
 
 import puppeteer from 'puppeteer-extra';
 import * as cheerio from 'cheerio';
-import { BaseScraper, Category } from './base-scraper';
+import { BaseScraper } from './base-scraper';
+import { Category as CategoryType } from './base-scraper';
+import { Category } from '../category.constants';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 // @ts-ignore
 import * as StealthPlugin from 'puppeteer-extra-plugin-stealth';
+
 puppeteer.use((StealthPlugin as any)());
 
-const CATEGORIES: Category[] = [
+const CATEGORIES: CategoryType[] = [
   {
-    id: 'man-shirts',
-    name: 'T-Shirts & Vests',
+    id: 'man-tshirts',
+    name: Category.T_SHIRTS,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-tshirts-l855.html',
   },
@@ -35,127 +38,127 @@ const CATEGORIES: Category[] = [
   },
   {
     id: 'jeans',
-    name: 'Jeans',
+    name: Category.JEANS,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-jeans-l659.html',
   },
   {
     id: 'shorts',
-    name: 'Shorts',
+    name: Category.SHORTS,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-bermudas-l592.html'
   },
   {
     id: 'sweaters',
-    name: 'Sweaters',
+    name: Category.SWEATERS,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-knitwear-l10702.html'
   },
   {
     id: 'shirts',
-    name: 'Shirts',
+    name: Category.SHIRTS,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-shirts-l737.html'
   },
   {
     id: 'polo-shirts',
-    name: 'Polo Shirts',
+    name: Category.POLO_SHIRTS,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-polos-l733.html'
   },
   {
     id: 'sunglasses',
-    name: 'Sunglasses',
+    name: Category.SUNGLASSES,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-accessories-sunglasses-l558.html'
   },
   {
     id: 'swimwear',
-    name: 'Swimwear',
+    name: Category.SWIMWEAR,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-beachwear-l590.html'
   },
   {
     id: 'overshirts',
-    name: 'Overshirts',
+    name: Category.OVERSHIRTS,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-overshirts-l3174.html'
   },
   {
     id: 'bags',
-    name: 'Bags',
+    name: Category.BAGS,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-bags-l563.html'
   },
   {
     id: 'dress-sale',
-    name: 'Dresses',
+    name: Category.DRESSES,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/s-woman-dresses-l8887.html'
   },
   {
     id: 'dress-sale',
-    name: 'Dresses',
+    name: Category.DRESSES,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/s-woman-dresses-l8887.html'
   },
   {
     id: 'tshirt-sale',
-    name: 'T-Shirts & Vests',
+    name: Category.T_SHIRTS,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/s-woman-tshirts-l10252.html'
   },
   {
     id: 'jeans-sale',
-    name: 'Jeans',
+    name: Category.JEANS,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/s-woman-jeans-l9082.html'
   },
   {
     id: 'tshirts',
-    name: 'T-Shirts & Vests',
+    name: Category.T_SHIRTS,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-tshirts-l1362.html'
   },
   {
     id: 'jeans-sale',
-    name: 'Jeans',
+    name: Category.JEANS,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-jeans-l1119.html'
   },
   {
     id: 'dresses',
-    name: 'Dresses',
+    name: Category.DRESSES,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-dresses-l1066.html'
   },
   {
     id: 'shirts',
-    name: 'Shirts',
+    name: Category.SHIRTS,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-shirts-l1217.html'
   },
   {
     id: 'bags',
-    name: 'Bags',
+    name: Category.BAGS,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-bags-l1024.html'
   },
   {
     id: 'perfumes',
-    name: 'Perfumes',
+    name: Category.PERFUMES,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-beauty-perfumes-l1415.html'
   },
   {
     id: 'jackets-and-coats-sale',
-    name: 'Jackets & Coats',
+    name: Category.JACKETS_COATS,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-outerwear-l1184.html'
   },
   {
     id: 'accessories',
-    name: 'Accessories',
+    name: Category.ACCESSORIES,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-accessories-l1003.html'
   }
@@ -168,11 +171,11 @@ class ZaraScraper extends BaseScraper {
   protected readonly scraperName = 'Zara';
   protected readonly source = 'Zara';
 
-  protected getCategories(): Category[] {
+  protected getCategories(): CategoryType[] {
     return CATEGORIES;
   }
 
-  protected async scrapeCategory(category: Category): Promise<Product[]> {
+  protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     return this.scrapeZaraCategory(category);
   }
 
@@ -265,7 +268,7 @@ class ZaraScraper extends BaseScraper {
     return { colors, price, oldPrice };
   }
 
-  private parseZaraProduct(product: any, category: Category, $: cheerio.CheerioAPI): Product | undefined {
+  private parseZaraProduct(product: any, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
     // product: { name, image, offers, url, ... }
     const title = product.name || '';
     if (!title){
@@ -318,7 +321,7 @@ class ZaraScraper extends BaseScraper {
     return this.createProduct(productJson);
   }
 
-  private async scrapeZaraCategory(category: Category): Promise<Product[]> {
+  private async scrapeZaraCategory(category: CategoryType): Promise<Product[]> {
     let page = 1;
     let allProducts: Product[] = [];
     let hasMore = true;
