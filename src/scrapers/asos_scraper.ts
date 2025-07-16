@@ -88,6 +88,7 @@ const SUBCATEGORIES: Record<number, CategoryType[]> = {
     { id: 3630, name: Category.JEANS, gender: 'Women'},
     { id: 2641, name: Category.JACKETS_COATS, gender: 'Women'},
     { id: 6046, name: Category.LINGERIE, gender: 'Women'},
+    { id: 21867, name: Category.SLEEP_WEAR, gender: 'Women'}
   ],
   8888: [
     { id: 12949, name: 'Abercrombie and Fitch', gender: 'Women'},
@@ -103,14 +104,27 @@ const SUBCATEGORIES: Record<number, CategoryType[]> = {
     { id: 4208, name: Category.JEANS, gender: 'Men' }, // V
     { id: 3606, name: Category.JACKETS_COATS, gender: 'Men' }, // V
     { id: 3602, name: Category.SHIRTS, gender: 'Men' }, // V
-    { id: 7616, name: Category.JOGGERS, gender: 'Men' }, // V
-    { id: 14274, name: Category.UNDERWEAR, gender: 'Men' }, // V
+    { id: 7616, name: Category.T_SHIRTS, gender: 'Men' }, // V
+    { id: 14274, name: Category.JOGGERS, gender: 'Men' }, // V
+    { id: 13210, name: Category.SWIMWEAR, gender: 'Men' }, // V
+    { id: 5668, name: Category.SWEATERS, gender: 'Men' }, // V
+    { id: 7617, name: Category.KNITWEAR, gender: 'Men' }, // V
+    { id: 18797, name: Category.SLEEP_WEAR, gender: 'Men' }, // V
+    { id: 4616, name: Category.POLO_SHIRTS, gender: 'Men'},
+    { id: 16329, name: Category.SOCKS, gender: 'Men'},
+    { id: 20317, name: Category.UNDERWEAR, gender: 'Men'},
+
+    // { id: 7046, name: "Sale", gender: "Women"} <- 50k
+    // { id: 8409, name: "Sale", gender: "Women"} <- 19k
   ],
   4208: [ // Shoes
     { id: 5774, name: Category.BOOTS, gender: 'Men' }, // v
     { id: 5775, name: Category.TRAINERS, gender: 'Men' }, // V
     { id: 6593, name: Category.SANDALS, gender: 'Men' }, // v
     { id: 14328, name: Category.SLIPPERS, gender: 'Men' }, // v
+    { id: 6455, name: Category.BOOTS, gender: 'Women'},
+    { id: 6461, name: Category.HEELS, gender: 'Women'},
+    { id: 6456, name: Category.TRAINERS, gender: 'Women'},
   ],
   1111: [ // by brand
     { id: 4280, name: 'Polo Ralph Lauren', gender: 'Men' },

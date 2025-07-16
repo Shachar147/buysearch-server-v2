@@ -54,6 +54,181 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Men',
     url: 'https://www.factory54.co.il/men-accessories',
     baseUrl: 'https://www.factory54.co.il/%D7%AA%D7%99%D7%A7'
+  },
+  {
+    id: 'men-clothes-poloshirts',
+    name: Category.POLO_SHIRTS,
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-clothes-poloshirts',
+    baseUrl: 'https://www.factory54.co.il/%D7%97%D7%95%D7%9C%D7%A6%D7%94-%D7%A4%D7%95%D7%9C%D7%95'
+  },
+  {
+    id: 'men-clothes-sweatshirts',
+    name: Category.SWEATERS,
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-clothes-sweatshirts',
+    baseUrl: 'https://www.factory54.co.il/%D7%A1%D7%95%D7%95%D7%98%D7%A9%D7%99%D7%A8%D7%98'
+  },
+  {
+    id: 'men-clothes-pants',
+    name: Category.PANTS,
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-clothes-pants',
+    baseUrl: 'https://www.factory54.co.il/%D7%9E%D7%9B%D7%A0%D7%A1%D7%99%D7%99%D7%9D'
+  },
+  {
+    id: 'men-lingerie-boxers',
+    name: Category.LINGERIE,
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men/lingerie/boxers',
+    baseUrl: 'https://www.factory54.co.il/%D7%91%D7%95%D7%A7%D7%A1%D7%A8%D7%99%D7%9D'
+  },
+  {
+    id: 'men-lingerie-pajamas',
+    name: Category.SLEEP_WEAR,
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men/lingerie/pajamas',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'men-gifts',
+    name: Category.GIFTS,
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-gifts',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'men-lifestyle',
+    name: Category.HOME,
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-lifestyle',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-designers-lululemon',
+    name: 'Lulu Melon',
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-designers-lululemon',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-designers-tommyhilfiger',
+    name: 'Tommy Hilfiger',
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-designers-tommyhilfiger',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-designers-poloralphlauren',
+    name: 'Ralph Lauren',
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-designers-poloralphlauren',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-designers-calvinklein',
+    name: 'Calvin Klein',
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-designers-calvinklein',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-clothes-swimwear',
+    name: Category.SWIMWEAR,
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-clothes-swimwear',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-shoes',
+    name: Category.SHOES,
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-shoes',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-bags',
+    name: Category.BAGS,
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-bags',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-accessories',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-lingerie',
+    name: Category.LINGERIE,
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-lingerie',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-lifestyle',
+    name: Category.HOME,
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-lifestyle',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-gifts',
+    name: Category.GIFTS,
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-gifts',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-saless25',
+    name: 'Sale',
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-saless25',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'women-newin',
+    name: 'New',
+    gender: 'Women',
+    url: 'https://www.factory54.co.il/women-newin',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'men-saless25',
+    name: 'Sale',
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-saless25',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'men-designers-poloralphlauren',
+    name: 'Polo Ralph Lauren',
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-designers-poloralphlauren',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'men-designers-tommyhilfiger',
+    name: 'Tommy Hilfiger',
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-designers-tommyhilfiger',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'men-designers-lacoste',
+    name: 'Lacoste',
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-designers-lacoste',
+    baseUrl: 'https://www.factory54.co.il'
+  },
+  {
+    id: 'men-designers-calvinklein',
+    name: 'Calvin Klein',
+    gender: 'Men',
+    url: 'https://www.factory54.co.il/men-designers-calvinklein',
+    baseUrl: 'https://www.factory54.co.il'
   }
   // Add more categories as needed
 ];

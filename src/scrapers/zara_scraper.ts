@@ -74,7 +74,7 @@ const CATEGORIES: CategoryType[] = [
   },
   {
     id: 'swimwear',
-    name: Category.SWIMWEAR,
+    name: Category.BEACHWEAR,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-beachwear-l590.html'
   },
@@ -161,6 +161,66 @@ const CATEGORIES: CategoryType[] = [
     name: Category.ACCESSORIES,
     gender: 'Women',
     url: 'https://www.zara.com/il/he/woman-accessories-l1003.html'
+  },
+  {
+    id: 'shorts-skorts',
+    name: Category.SKIRTS,
+    gender: 'Women',
+    url: 'https://www.zara.com/il/he/woman-shorts-skorts-l1297.html'
+  },
+  {
+    id: 'shorts-denim',
+    name: Category.SHORT_JEANS,
+    gender: 'Women',
+    url: 'https://www.zara.com/il/he/woman-shorts-denim-l1710.html'
+  },
+  {
+    id: 'co-ords',
+    name: Category.SETS,
+    gender: 'Women',
+    url: 'https://www.zara.com/il/he/woman-co-ords-l1061.html'
+  },
+  {
+    id: 'lingerie',
+    name: Category.LINGERIE,
+    gender: 'Women',
+    url: 'https://www.zara.com/il/he/woman-lingerie-l4021.html'
+  },
+  {
+    id: 'pyjamas',
+    name: Category.SLEEP_WEAR,
+    gender: 'Women',
+    url: 'https://www.zara.com/il/he/woman-lingerie-pyjamas-l4024.html'
+  },
+  {
+    id: 'total-look-men',
+    name: Category.SETS,
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/man-total-look-l5490.html'
+  },
+  {
+    id: 'summer-collection-men',
+    name: 'summer essentials',
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/man-summer-collection-l6321.html'
+  },
+  {
+    id: 'accessories-men',
+    name: Category.ACCESSORIES,
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/man-accessories-l537.html'
+  },
+  {
+    id: 'shoes-men',
+    name: Category.SHOES,
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/man-shoes-sandals-l794.html'
+  },
+  {
+    id: 'linen-men',
+    name: 'פשתן',
+    gender: 'Men',
+    url: 'https://www.zara.com/il/he/man-linen-l708.html'
   }
   // Add more categories as needed
 ];

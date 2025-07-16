@@ -35,6 +35,7 @@ export enum Category {
   MIDI_SKIRTS = "Midi Skirts",
   MAXI_SKIRTS = "Maxi Skirts",
   SHORT_JEANS = "Short Jeans",
+  SETS = "Sets",
 
   // 👕 Clothing - Dresses, Outerwear, etc.
   DRESSES_OVERALLS = "Dresses & Overalls",
@@ -66,6 +67,7 @@ export enum Category {
   SNICKERS = "Snickers",
   SNEAKERS = "Sneakers",
   BOOTS = "Boots",
+  HEELS = "Heels",
   SANDALS = "Sandals",
   FLIP_FLOPS = "Flip Flops",
   SLIPPERS = "Slippers",
@@ -280,7 +282,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   'בגדי ים וחוף': [Category.BEACHWEAR],
   "ז'קטים ומעילים": [Category.JACKETS_COATS],
   "פיג'מות": [Category.SLEEP_WEAR],
-
+  "עקבים": [Category.HEELS],
+  "נעלי עקב": [Category.HEELS],
 };
 
 // --- Category Synonyms Map ---
@@ -672,6 +675,14 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.SLEEP_WEAR]: {
     en: ['pajamas', 'sleep wear', 'nightwear', 'night wear', 'nightgown', 'nightdress', 'nightie'],
     he: ["פיג'מה", "פיג'מות", "לבוש לילה", "לבוש שינה", "פיגמה", "פיגמות", 'כותונת', 'כותנות']
+  },
+  [Category.SETS]: {
+    en: ["complete set", "total look"],
+    he: ["סטים תואמים", "מכנס וחולצה"]
+  },
+  [Category.HEELS]: {
+    en: ["heel shoes", "heels"],
+    he: ["נעל עקב", "נעלי עקב", "נעליים עקב", "נעלים עקב", "עקבים"]
   }
 };
 

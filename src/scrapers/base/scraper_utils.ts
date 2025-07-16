@@ -253,6 +253,8 @@ export const CATEGORIES_TO_IGNORE = new Set([
   'נמוכות',
   'גבוהות',
   'sale',
+  'פשתן',
+  'summer essentials',
   'or luzon picks',
   'סטיילינג',
   '10%',
