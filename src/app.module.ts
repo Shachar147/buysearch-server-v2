@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { FavouritesModule } from './favourites/favourites.module';
 import { ScrapingHistoryModule } from './scraping-history/scraping-history.module';
+import { SavedFilterModule } from './saved-filter/saved-filter.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ScrapingHistoryModule } from './scraping-history/scraping-history.modul
     ScheduleModule.forRoot(),
     FavouritesModule,
     ScrapingHistoryModule,
+    SavedFilterModule,
   ],
   controllers: [AppController],
   providers: [AppService, ScraperCronService],
