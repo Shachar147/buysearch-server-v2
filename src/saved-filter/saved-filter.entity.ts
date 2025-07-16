@@ -35,4 +35,7 @@ export class SavedFilter {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  lastUsedAt: Date | null;
 } 

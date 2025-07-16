@@ -14,7 +14,7 @@ export class SavedFilterService {
   async findAllByUserId(userId: number): Promise<SavedFilter[]> {
     return this.savedFilterRepository.find({
       where: { userId },
-      order: { createdAt: 'DESC' },
+      order: { lastUsedAt: 'DESC', createdAt: 'DESC' },
     });
   }
 
@@ -77,5 +77,11 @@ export class SavedFilterService {
     
     const count = await query.getCount();
     return count > 0;
+  }
+
+  async setLastUsed(id: number, userId: number): Promise<SavedFilter> {
+    const savedFilter = await this.findById(id, userId);
+    savedFilter.lastUsedAt = new Date();
+    return this.savedFilterRepository.save(savedFilter);
   }
 } 
