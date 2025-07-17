@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { FavouriteProduct } from './favourite-product.entity';
 import { FavouritesService } from './favourites.service';
 import { FavouritesController } from './favourites.controller';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([FavouriteProduct]), AuthModule],
