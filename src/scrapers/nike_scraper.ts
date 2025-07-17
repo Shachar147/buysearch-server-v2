@@ -236,7 +236,7 @@ class NikeScraper extends BaseScraper {
         colors = [];
       }
       const brand = normalizeBrandName('Nike');
-      const categories = [title, category.name];
+      const categories = [category.name];
       const gender = category.gender;
       const product = this.createProduct({
         title: fullTitle,

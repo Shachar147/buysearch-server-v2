@@ -48,6 +48,8 @@ export class ProductService {
       .leftJoinAndSelect('product.categories', 'category')
       .leftJoinAndSelect('product.colors', 'color')
       .distinct(true);
+    // Only include products from active sources
+    qb.andWhere('source.isActive = true');
 
     if (filters.isFavourite && userId) {
       const favs = await this.favouritesService.getFavourites(userId);

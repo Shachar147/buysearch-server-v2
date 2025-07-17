@@ -12,7 +12,7 @@
 import axios from 'axios';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
+import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 dotenv.config();
@@ -172,7 +172,7 @@ class ItayBrandsScraper extends BaseScraper {
     const salePercent = calcSalePercent(price, oldPrice) ?? 0;
     const currency = variant.price?.currencyCode || 'ILS';
     const brand = normalizeBrandName(variant.product?.vendor || 'Itay Brands');
-    const categories = [category.name, variant.product?.type].filter(Boolean);
+    const categories = [...extractCategory(category.name), ...extractCategory(variant.product?.type)].filter(Boolean);
     const gender = category.gender;
     const product = {
       title,
