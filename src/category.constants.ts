@@ -77,6 +77,7 @@ export enum Category {
   MOCCASINS = "Moccasin Shoes",
   ELEGANT_SHOES = "Elegant Shoes",
   OXFORD_SHOES = "Oxford Shoes",
+  RUNNING_SHOES = "Running Shoes",
 
   // 👜 Accessories
   ACCESSORIES = "Accessories",
@@ -306,6 +307,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'שמלת מידי': [Category.DRESSES, Category.MIDI_DRESSES],
   'welness & body': [Category.WELLNESS],
   'טייץ': [Category.TIGHTS],
+  'legging': [Category.TIGHTS],
+  'leggings': [Category.TIGHTS],
   'טייצים': [Category.TIGHTS],
   'בגדי חוף': [Category.BEACHWEAR],
   'מכנסיים וטייצים': [Category.PANTS],
@@ -1023,6 +1026,10 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.SOCCER_SHOES]: {
     en: ['soccer shoe', 'football shoe', 'messi shoe', 'ronaldo shoe'],
     he: ['נעל כדורגל', 'נעלי כדורגל']
+  },
+  [Category.RUNNING_SHOES]: {
+    en: ['running shoe', 'shoe for running', 'running-shoe'],
+    he: ['נעל ריצה', 'נעלי ריצה', 'נעל-ריצה']
   }
 };
 
