@@ -213,7 +213,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'גרביים': [Category.ACCESSORIES, Category.SOCKS],
   'צמידים': [Category.ACCESSORIES, Category.JEWELRY, Category.BRACELETS],
   'צמיד': [Category.ACCESSORIES, Category.JEWELRY, Category.BRACELETS],
-  'tax free': [],
+  'tax free': ['Tax Free'],
   'שרשרת': [Category.ACCESSORIES, Category.JEWELRY, Category.NECKLACES],
   'שרשראות': [Category.ACCESSORIES, Category.JEWELRY, Category.NECKLACES],
   'טבעות': [Category.ACCESSORIES, Category.JEWELRY, Category.RINGS],
@@ -252,12 +252,12 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'סווטשירט crew': [Category.SWEATERS],
   'חולצות פולו': [Category.T_SHIRTS],
   'פולו שרוול קצר': [Category.T_SHIRTS],
-  'polo t-shirts': [],
-  'polo tshirts': [],
+  'polo t-shirts': [Category.POLO_SHIRTS],
+  'polo tshirts': [Category.POLO_SHIRTS],
   'נעלי בית': [Category.SLIPPERS],
   'אביזרי נעליים': [Category.SHOES, Category.ACCESSORIES],
   'clothes': [],
-  'חולצת פולו': [],
+  'חולצת פולו': [Category.POLO_SHIRTS],
   'הלבשה תחתונה': [Category.LINGERIE],
   'מתנות': [Category.GIFTS],
   'טי שירט': [Category.T_SHIRTS],
@@ -280,13 +280,13 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   "אוברסייז": [Category.OVERSIZE],
   "Oversize": [Category.OVERSIZE],
   "סוודר": [Category.SWEATERS],
-  "קרדיגנים": [],
+  "קרדיגנים": [Category.KNITWEAR],
   "בלייזר": [Category.BLAZERS],
   "בלייזרים": [Category.BLAZERS],
   'home': [Category.HOME],
   'pouch': [Category.POUCH_BAGS],
-  'new era': [],
-  'abercrombie and fitch': [],
+  'new era': ['New Era'],
+  'abercrombie and fitch': ['Abercrombie & Fitch'],
   'חצאית': [Category.SKIRTS],
   'חצאית מיני': [Category.SKIRTS, Category.MINI_SKIRTS],
   'חצאית מקסי': [Category.SKIRTS, Category.MAXI_SKIRTS],
@@ -568,7 +568,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.OVERSHIRTS]: {
     en: ['overshirt', 'overshirts'],
-    he: []
+    he: ['אוברשירט', 'אוברשיירט', 'אוברסייז']
   },
   [Category.BOTTOMS]: {
     en: ['bottom', 'bottoms'],
@@ -688,7 +688,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.STRAPLESS]: {
     en: ['strapless'],
-    he: []
+    he: ['סטרפלס', 'סטרפלפס']
   },
   [Category.UNDERWEAR_LINGERIE]: {
     en: ['underwear', 'lingerie'],
