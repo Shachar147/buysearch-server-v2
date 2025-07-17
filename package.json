@@ -19,7 +19,9 @@
     "scrape:new": "npm-run-all --parallel scrape:factory scrape:itay scrape:zara",
     "scrape:story": "npx ts-node -r tsconfig-paths/register src/scrapers/story_scraper.ts",
     "scrape:chozen": "npx ts-node -r tsconfig-paths/register src/scrapers/chozen_scraper.ts",
-    "scrape:all": "npm-run-all --parallel scrape:asos scrape:terminal scrape:factory scrape:itay scrape:zara scrape:story scrape:oneprojectshop scrape:chozen",
+    "scrape:nike": "npx ts-node -r tsconfig-paths/register src/scrapers/nike_scraper.ts",
+
+    "scrape:all": "npm-run-all --parallel scrape:asos scrape:terminal scrape:factory scrape:itay scrape:zara scrape:story scrape:oneprojectshop scrape:chozen scrape:nike",
     "check:categories": "ts-node --transpile-only scripts/check-db-categories-vs-enum-nest.ts",
     "start": "nest start",
     "start:dev": "nest start --watch",

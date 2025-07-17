@@ -63,6 +63,8 @@ export enum Category {
 
   // 👟 Shoes
   SHOES = "Shoes",
+  BASKETBALL_SHOES = "Basketball Shoes",
+  SOCCER_SHOES = "Soccer Shoes",
   TRAINERS = "Trainers",
   SNICKERS = "Snickers",
   SNEAKERS = "Sneakers",
@@ -1013,6 +1015,14 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.PREGNANCY]: {
     en: ['pregnancy'],
     he: ['הריון', ' לידה ']
+  },
+  [Category.BASKETBALL_SHOES]: {
+    en: ['basketball shoe', 'kyrie shoe', 'kd shoe', 'lebron shoe', 'kevin durant shoe'],
+    he: ['נעלי כדורסל', 'נעל כדורסל']
+  },
+  [Category.SOCCER_SHOES]: {
+    en: ['soccer shoe', 'football shoe', 'messi shoe', 'ronaldo shoe'],
+    he: ['נעל כדורגל', 'נעלי כדורגל']
   }
 };
 
