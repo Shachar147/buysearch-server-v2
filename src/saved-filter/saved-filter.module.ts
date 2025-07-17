@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SavedFilter } from './saved-filter.entity';
 import { SavedFilterService } from './saved-filter.service';
 import { SavedFilterController } from './saved-filter.controller';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([SavedFilter]), AuthModule],
