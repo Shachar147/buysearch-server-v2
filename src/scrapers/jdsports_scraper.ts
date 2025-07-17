@@ -14,6 +14,72 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Men',
     url: 'https://www.jdsports.co.il/collections/men-clothing-shirts',
   },
+  {
+    id: 'men-clothing-vests',
+    name: Category.TANKS,
+    gender: 'Men',
+    url: 'https://www.jdsports.co.il/collections/men-clothing-vests',
+  },
+  {
+    id: 'men-sale',
+    name: 'Sale',
+    gender: 'Men',
+    url: 'https://www.jdsports.co.il/collections/sale-men',
+  },
+  {
+    id: 'men-shoes-sneakers',
+    name: Category.SNICKERS,
+    gender: 'Men',
+    url: 'https://www.jdsports.co.il/collections/men-shoes-sneakers',
+  },
+  {
+    id: 'men-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Men',
+    url: 'https://www.jdsports.co.il/collections/men-accessories',
+  },
+  {
+    id: 'men-clothing-swimwear',
+    name: Category.SWIMWEAR,
+    gender: 'Men',
+    url: 'https://www.jdsports.co.il/collections/men-clothing-swimwear',
+  },
+  {
+    id: 'men-clothing-shorts',
+    name: Category.SHORTS,
+    gender: 'Men',
+    url: 'https://www.jdsports.co.il/collections/men-clothing-shorts',
+  },
+  {
+    id: 'women-clothing-shirts',
+    name: Category.T_SHIRTS,
+    gender: 'Women',
+    url: 'https://www.jdsports.co.il/collections/women-clothing-shirts',
+  },
+  {
+    id: 'women-clothing-sweatshirts-knits',
+    name: Category.SWEATERS,
+    gender: 'Women',
+    url: 'https://www.jdsports.co.il/collections/women-clothing-sweatshirts-knits',
+  },
+  {
+    id: 'women-clothing-coats-jackets',
+    name: Category.JACKETS_COATS,
+    gender: 'Women',
+    url: 'https://www.jdsports.co.il/collections/women-clothing-coats-jackets',
+  },
+  {
+    id: 'women-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Women',
+    url: 'https://www.jdsports.co.il/collections/women-accessories',
+  },
+  {
+    id: 'women-shoes-sneakers',
+    name: Category.SNICKERS,
+    gender: 'Women',
+    url: 'https://www.jdsports.co.il/collections/women-shoes-sneakers',
+  },
 ];
 
 const BASE_URL = 'https://www.jdsports.co.il';
@@ -32,7 +98,10 @@ class JDSportsScraper extends BaseScraper {
     let hasMore = true;
     const MAX_PAGES = 100;
     while (hasMore && page <= MAX_PAGES) {
-      const url = `${category.url}${page > 1 ? `?page=${page}` : ''}`;
+      let url = category.url;
+      if (page > 1) {
+        url += url.includes('?') ? `&page=${page}` : `?page=${page}`;
+      }
       this.logProgress(`Fetching ${url}`);
       const html = await this.fetchJDSportsPage(url);
       const products = this.parseJDSportsProducts(html, category);
