@@ -80,6 +80,12 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://www.jdsports.co.il/collections/women-shoes-sneakers',
   },
+  {
+    id: 'sale-women',
+    name: 'Sale',
+    gender: 'Women',
+    url: 'https://www.jdsports.co.il/collections/sale-women',
+  },
 ];
 
 const BASE_URL = 'https://www.jdsports.co.il';
