@@ -206,7 +206,9 @@ class StoryScraper extends BaseScraper {
       brand = productElem.find('.product-vendor, .card__vendor').text().trim();
     }
     brand = normalizeBrandName(brand || 'Story');
+
     const categories = [category.name];
+
     const gender = category.gender;
     if (!title || !url) return undefined;
     return this.createProduct({

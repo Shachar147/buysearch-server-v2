@@ -5,7 +5,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../../app.module';
 import { ProductService } from '../../product/product.service';
 import { ScrapingHistoryService, ScrapingType } from '../../scraping-history/scraping-history.service';
-import { CATEGORY_NORMALIZATION_MAP } from '../../category.constants';
+import { CATEGORIES_TO_IGNORE, CATEGORY_NORMALIZATION_MAP } from '../../category.constants';
+import { ucfirst } from 'src/search/search.utils';
 
 // --- Common Types ---
 export interface Product {
@@ -62,7 +63,7 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'underarmour': 'Under Armour',
   'calvin klein': 'Calvin Klein',
   'allsaints': 'AllSaints',
-  'ck': 'Calvin Klein',
+  // 'ck': 'Calvin Klein',
   'tommy hilfiger': 'Tommy Hilfiger',
   'tommy': 'Tommy Hilfiger',
   'levi\'s': 'Levi\'s',
@@ -147,6 +148,7 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'gstar': 'G-Star',
   'g-star raw': 'G-Star',
   'gstar raw': 'G-Star',
+  'do it like beckham': 'Do It Like Beckham'
 };
 
 // --- Hebrew to English Color Mapping ---
@@ -242,61 +244,6 @@ export const HEBREW_COLOR_MAP: Record<string, string> = {
   "כחול נייבי": "navy",
 };
 
-// --- Categories to Ignore ---
-export const CATEGORIES_TO_IGNORE = new Set([
-  'גברים',
-  'נשים',
-  'ילדים',
-  'מצחיה',
-  'מצחייה',
-  '(not set)',
-  'נמוכות',
-  'גבוהות',
-  'sale',
-  'פשתן',
-  'summer essentials',
-  'or luzon picks',
-  'סטיילינג',
-  '10%',
-  '20%',
-  '30%',
-  '40%',
-  '50%',
-  '60%',
-  '70%',
-  '80%',
-  '90%',
-  'archive',
-  'wear it like jeremy',
-  'five point four',
-  'run',
-  'שטוחים',
-  'לוגו',
-  'ארוכים',
-  'מודפסים',
-  'חלקים',
-  'לוגומאניה',
-  'אספדרילים',
-  'נעלי אוקספורד',
-  'מגפיים',
-  'מגפי שרוכים',
-  'נעליים שטוחות',
-  'כפכפי אצבע',
-  "מגפי צ'לסי",
-  'וסט',
-  "קז'ואל",
-  'טי שירט שרוול ארוך',
-  'טי שירט שרוול קצר',
-  'men', // <- todo remove,
-  'short jeans', // <- todo remove,
-  'tax free', // todo remove,
-  'italian summer', // todo remove,
-  'mocha mousse', // todo remove,
-  'straight',
-  'back in stock', // todo remove,
-  'crew neck sweaters' // todo remove
-]);
-
 /**
  * Normalize category names using synonyms mapping and ignore unwanted categories
  * @param categories Array of category names (string[])
@@ -308,7 +255,7 @@ export function normalizeCategories(categories: string[]): string[] {
   categories.forEach((cat) => {
     if (!cat) return;
     const normalized = cat.trim().toLowerCase();
-    const mapped = CATEGORY_NORMALIZATION_MAP[normalized] || [cat.trim()];
+    const mapped = CATEGORY_NORMALIZATION_MAP[normalized] || [ucfirst(cat.trim())];
     mapped.forEach((normCat) => {
       if (normCat && !CATEGORIES_TO_IGNORE.has(normCat.toLocaleLowerCase())) {
         resultSet.add(normCat);

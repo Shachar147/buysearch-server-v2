@@ -84,7 +84,6 @@ export enum Category {
   SIDE_BAGS = "Side Bags",
   TRAVEL_BAGS = "Travel Bags",
   POUCH_BAGS = "Pouch Bags",
-  POUCHES = "Pouch bags",
   WALLETS = "Wallets",
   BELTS = "Belts",
   CARD_HOLDERS = "Card Holders",
@@ -117,8 +116,34 @@ export enum Category {
   HOME = "Home",
   HOME_WELLNESS = "Home & Wellness",
 
+  // 💄 Makeup
+  MAKEUP = "Makeup",
+  LIP_PENCIL = "Lip Pencils",
+  BROW_PENCIL = "Brow Pencils",
+  CONCEALER = "Concealers",
+  MAKEUP_REMOVER = "Makeup Removers",
+  HAND_CREAM = "Hand Creams",
+  BODY_CREAM = "Body Creams",
+  EYE_CREAM = "Eye Creams",
+  NIGHT_CREAM = "Night Creams",
+  SUNSCREEN = "Sunscreens",
+  SERUMS = "Serums",
+  BODY_OIL = "Body Oils",
+  MOISTURIZER = "Moisturizers",
+  CREAMS_AND_OILS = "Creams and Oils",
+  HAND_CARE = "Hand Care",
+  MAKEUP_BRUSHES = "Makeup Brushes",
+  LIP_GLOSS = "Lip Gloss",
+  EYE_MAKEUP = "Eye Makeup",
+  FRAMERS = "Primers",
+  FACE_CLEANSER = "Face Cleansers",
+  ENVELOPE_BAG = "Envelope Bag",
+
   // 🎁 Gifts
-  GIFTS = "Gifts"
+  GIFTS = "Gifts",
+  BLACK_FRIDAY = "Black Friday",
+
+  PREGNANCY = "Pregnancy"
 }
 
 /**
@@ -130,6 +155,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   'כובעים': [Category.HATS],
   'כובע': [Category.HATS],
   "ג'קט": [Category.JACKETS_COATS],
+  "בומבר": [Category.JACKETS_COATS],
   'hats': [Category.HATS],
   't-shirt': [Category.T_SHIRTS],
   't-shirts': [Category.T_SHIRTS],
@@ -158,8 +184,11 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   'תיק נסיעה': [Category.BAGS, Category.TRAVEL_BAGS],
   'תיקי נסיעה': [Category.ACCESSORIES, Category.BAGS, Category.TRAVEL_BAGS],
   'תיקי גב': [Category.ACCESSORIES, Category.BAGS, Category.BACKPACKS],
-  'פאוץ׳': [Category.ACCESSORIES, Category.BAGS, Category.POUCHES],
-  "תיקי פאוץ'": [Category.ACCESSORIES, Category.BAGS, Category.POUCHES],
+  "פאוץ'": [Category.ACCESSORIES, Category.BAGS, Category.POUCH_BAGS],
+  "פאוץ": [Category.ACCESSORIES, Category.BAGS, Category.POUCH_BAGS],
+  "פאוצים'": [Category.ACCESSORIES, Category.BAGS, Category.POUCH_BAGS],
+  "פאוצ'ים'": [Category.ACCESSORIES, Category.BAGS, Category.POUCH_BAGS],
+  "תיקי פאוץ'": [Category.ACCESSORIES, Category.BAGS, Category.POUCH_BAGS],
   "סנדלים וכפכפים": [Category.SHOES, Category.SANDALS, Category.FLIP_FLOPS],
   "סניקרס": [Category.SHOES, Category.SNICKERS],
   "צ'אנקי סניקרס": [Category.SHOES, Category.SNICKERS],
@@ -178,8 +207,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   "חגורות": [Category.ACCESSORIES, Category.BELTS],
   'ארנק כרטיסים': [Category.ACCESSORIES, Category.WALLETS, Category.CARD_HOLDERS],
   'ארנקים': [Category.ACCESSORIES, Category.WALLETS],
-  "פאוץ'": [Category.BAGS, Category.POUCHES],
-  'pouch bags': [Category.BAGS, Category.POUCHES],
+  'pouch bags': [Category.BAGS, Category.POUCH_BAGS],
   'משקפי שמש': [Category.ACCESSORIES, Category.SUNGLASSES],
   'גרב': [Category.ACCESSORIES, Category.SOCKS],
   'גרביים': [Category.ACCESSORIES, Category.SOCKS],
@@ -218,6 +246,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   'קרדיגן': [Category.KNITWEAR],
   'סווטשירטים': [Category.SWEATERS],
   'סוויטשירטים': [Category.SWEATERS],
+  'קפוצון': [Category.SWEATERS],
   'סווטשירט': [Category.SWEATERS],
   'סוודרים': [Category.SWEATERS],
   'סווטשירט crew': [Category.SWEATERS],
@@ -243,6 +272,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   'בגד חוף': [Category.BEACHWEAR, Category.SWIMWEAR],
   'וסט': [Category.T_SHIRTS],
   'סטרפלס': [Category.STRAPLESS],
+  'סטרפלפס': [Category.STRAPLESS],
   'מטפחות': [Category.HANDKERCHIEFS],
   "טישירט": [Category.T_SHIRTS],
   "מכנסיים קצרים": [Category.PANTS, Category.SHORTS],
@@ -284,6 +314,231 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, Category[]> = {
   "פיג'מות": [Category.SLEEP_WEAR],
   "עקבים": [Category.HEELS],
   "נעלי עקב": [Category.HEELS],
+  'קרם ידיים': [Category.HAND_CREAM],
+  'קרם גוף': [Category.BODY_CREAM],
+  'קרם עיניים': [Category.EYE_CREAM],
+  'קרם לילה': [Category.NIGHT_CREAM],
+  'קרם הגנה': [Category.SUNSCREEN],
+  'סרומים': [Category.SERUMS],
+  'סרום': [Category.SERUMS],
+  'שמן גוף': [Category.BODY_OIL],
+  'לחות': [Category.MOISTURIZER],
+  'קרמים ושמנים': [Category.CREAMS_AND_OILS],
+  'טיפוח ידיים': [Category.HAND_CARE],
+  'מברשות איפור': [Category.MAKEUP_BRUSHES],
+  'ליפ גלוס': [Category.LIP_GLOSS],
+  'עיניים': [Category.EYE_MAKEUP],
+  'פריימר': [Category.FRAMERS],
+  'ניקוי הפנים': [Category.FACE_CLEANSER],
+  'מארז זוגי': [Category.GIFTS],
+  'מעטפת': [Category.ENVELOPE_BAG],
+  "בלק פריידי": [Category.BLACK_FRIDAY],
+  "בלאק פריידי": [Category.BLACK_FRIDAY],
+  // --- BEGIN user-provided normalization terms ---
+  'בוקסרים': [Category.BOXERS],
+  'עיפרון גבות': [Category.BROW_PENCIL],
+  'Nightwear': [Category.SLEEP_WEAR],
+  'אביזרי תיקים': [Category.ACCESSORIES, Category.BAGS],
+  'טיפוח הגוף': [Category.WELLNESS],
+  'Backpacks': [Category.BACKPACKS],
+  'סקיני': [Category.SKINNY_JEANS],
+  'תיקי כתף': [Category.BAGS, Category.SIDE_BAGS],
+  'הריון ולידה': [Category.PREGNANCY], // Ignore, not a product category for now
+  'תחתונים': [Category.UNDERWEAR],
+  'שפתונים': [Category.LIP_GLOSS],
+  'ווסט': [Category.T_SHIRTS], // Vest for now
+  'צעיפים ומטפחות': [Category.SCARVES, Category.HANDKERCHIEFS],
+  'שמנים': [Category.BODY_OIL],
+  'בישום לגבר': [Category.PERFUMES],
+  'ברמודה': [Category.SHORTS],
+  'פולו שרוול ארוך': [Category.LONG_T_SHIRTS],
+  'סטילטו': [Category.HEELS],
+  'מסיר איפור': [Category.MAKEUP_REMOVER],
+  'לחות וסרומים': [Category.MOISTURIZER, Category.SERUMS],
+  'מכופתרת שרוול ארוך': [Category.SHIRTS, Category.LONG_T_SHIRTS],
+  'סריג CREW': [Category.CREW_NECK_SWEATERS],
+  'חולצות אופנה': [Category.SHIRTS],
+  'Scarves': [Category.SCARVES],
+  'תיקי קלאץ\'': [Category.BAGS],
+  'מעיל ארוך': [Category.JACKETS_COATS],
+  'BLACK FRIDAY': [Category.BLACK_FRIDAY],
+  'מיני': [Category.MINI_SKIRTS, Category.MINI_DRESSES],
+  'מכנסי פוטר': [Category.JOGGERS],
+  'מידי': [Category.MIDI_SKIRTS, Category.MIDI_DRESSES],
+  'עיפרון שפתיים': [Category.LIP_PENCIL],
+  "ג'ינס קצר": [Category.SHORT_JEANS],
+  'אוברול קצר': [Category.OVERALLS],
+  'מגפי בוקרים': [Category.BOOTS],
+  'טיפוח פנים': [Category.WELLNESS],
+  'סנדלי אצבע': [Category.FLIP_FLOPS],
+  'מכנסי טריינינג': [Category.JOGGERS],
+  'עקב': [Category.HEELS],
+  'מותגים': [Category.BY_BRAND],
+  'מעילים': [Category.JACKETS_COATS],
+  'מיני & מארזים': [Category.GIFTS],
+  'ביוטי': [Category.BEAUTY],
+  'חולצות סריג': [Category.KNITWEAR],
+  'מגפי ברך': [Category.BOOTS],
+  'Boxer': [Category.BOXERS],
+  "מכנסי דגמ'ח": [Category.PANTS],
+  'פדורה': [Category.HATS],
+  'ביוטי ובישום': [Category.BEAUTY, Category.PERFUMES],
+  'איפור': [Category.MAKEUP],
+  'Bikini': [Category.SWIMWEAR],
+  'מגפי עקב': [Category.HEELS, Category.BOOTS],
+  'סמקים וברונזרים': [Category.MAKEUP],
+  'Wellness & Body': [Category.WELLNESS],
+  'חזיות': [Category.LINGERIE],
+  'בישום': [Category.PERFUMES],
+  'מכופתרת שרוול קצר': [Category.SHIRTS, Category.LONG_T_SHIRTS],
+  "ג'ינס מתרחב": [Category.JEANS],
+  'בישום לגברים': [Category.PERFUMES],
+  "קפוצ'ון": [Category.SWEATERS],
+  'מחוייטות': [Category.SUITS],
+  'סווטשירט רוכסן': [Category.SWEATERS],
+  'SPORT': [Category.SPORT],
+  'מעיל קצר': [Category.JACKETS_COATS],
+  'עגילים': [Category.JEWELRY],
+  'Long Jumpsuit': [Category.OVERALLS],
+  'שלמים': [Category.SWIMWEAR],
+  'Side Bags': [Category.SIDE_BAGS],
+  'גולף': [Category.SHIRTS],
+  'טיפוח': [Category.WELLNESS],
+  // 'Golf': [Category.SHIRTS],
+  "מכנסי צ'ינו": [Category.PANTS],
+  'בישום לנשים': [Category.PERFUMES],
+  'תיקים, נעליים ואביזרים': [Category.BAGS, Category.SHOES, Category.ACCESSORIES],
+  'שמנים וסרומים': [Category.BODY_OIL, Category.SERUMS],
+  'Espadrilles Shoes': [Category.ESPADRILLES],
+  'פלטפורמה': [Category.HEELS],
+  'תיקי מיני': [Category.BAGS],
+  'קרופ טופ': [Category.TOPS],
+  'שימר': [Category.MAKEUP],
+  "טרנץ'": [Category.JACKETS_COATS],
+  'Bucket': [Category.BUCKET_HATS],
+  // 'בויפרנד': [Category.JEANS],
+  'נעלי כלה': [Category.SHOES],
+  'צעיפים': [Category.SCARVES],
+  'שמלות מקסי': [Category.MAXI_DRESSES],
+  'Travel Bags': [Category.TRAVEL_BAGS],
+  'חגורת לוגו': [Category.BELTS],
+  "ג'ינס": [Category.JEANS],
+  'Heels': [Category.HEELS],
+  'סריג ארוך': [Category.KNITWEAR],
+  'סריג קצר': [Category.KNITWEAR],
+  'מקסי': [Category.MAXI_SKIRTS, Category.MAXI_DRESSES],
+  'מכנסי עור': [Category.PANTS],
+  'תיקי נשיאה': [Category.BAGS],
+  'סריג V': [Category.KNITWEAR],
+  'סווטשרטים': [Category.SWEATERS],
+  'Sets': [Category.SETS],
+  'אביזרי נסיעה': [Category.ACCESSORIES, Category.TRAVEL_BAGS],
+  'פיג\'מות וחלוקים': [Category.SLEEP_WEAR],
+  "ז'קטים": [Category.JACKETS_COATS],
+  'קרופ': [Category.TOPS],
+  'תיקי חוף': [Category.BAGS],
+  'תיקי קרוסבודי': [Category.SIDE_BAGS],
+  'ביקיני': [Category.SWIMWEAR],
+  'שמלות מכופתרות': [Category.DRESSES],
+  'מגפונים': [Category.BOOTS],
+  'טופים': [Category.TOPS],
+  'אייליינר': [Category.EYE_MAKEUP],
+  'BALLERINA SHOES': [Category.SHOES],
+  'פודרה': [Category.MAKEUP],
+  'שמלות חוף': [Category.BEACHWEAR],
+  'שמלות סליפ': [Category.DRESSES],
+  'מחוייטים': [Category.SUITS],
+  'קונסילר': [Category.CONCEALER],
+  'תיקי ערב': [Category.BAGS],
+  'Parfum': [Category.PERFUMES],
+  // --- END user-provided normalization terms ---
+    "sisley paris": [Category.BY_BRAND],
+    "lulu melon": [Category.BY_BRAND],
+    "buyers' picks": [Category.GIFTS],
+    "sapir avisror": [Category.BY_BRAND],
+    "backpacks": [Category.BACKPACKS],
+    "מיול'ס": [Category.SHOES],
+    "צלחות": [Category.HOME],
+    "גיפט קארד": [Category.GIFTS],
+    "שיער": [Category.WELLNESS],
+    "edc - eau de cologne": [Category.PERFUMES],
+    "ספרים": [Category.HOME],
+    "מחטבים": [Category.ACCESSORIES],
+    "מפיצי ריח": [Category.PERFUMES],
+    "סריג crew": [Category.SWEATERS, Category.CREW_NECK_SWEATERS],
+    "אביזרי שיער": [Category.ACCESSORIES],
+    "טקסטיל": [Category.HOME],
+    "scarves": [Category.SCARVES],
+    "ריהוט ונוי לבית": [Category.HOME],
+    "מארז שלישייה": [Category.GIFTS],
+    "edt - eau de toilette": [Category.PERFUMES],
+    "נרות": [Category.HOME],
+    "סבון גוף": [Category.WELLNESS],
+    "בישום לבית": [Category.HOME],
+    "בישום גוף": [Category.PERFUMES],
+    "boxer": [Category.BOXERS],
+    "מכנסי דגמ\"ח": [Category.PANTS],
+    "bikini": [Category.SWIMWEAR],
+    "ספרי עיון": [Category.HOME],
+    "wellness & body": [Category.WELLNESS],
+    "ralph lauren": [Category.BY_BRAND],
+    "מסכות פנים": [Category.WELLNESS],
+    "מחזיקי מפתחות": [Category.ACCESSORIES],
+    "פוך": [Category.HOME],
+    "קערות": [Category.HOME],
+    "חפצי נוי": [Category.HOME],
+    "כוסות": [Category.HOME],
+    "בישום לשיער": [Category.PERFUMES],
+    "מסכות פילינג": [Category.WELLNESS],
+    "ריהוט": [Category.HOME],
+    "sport": [Category.SPORT],
+    "edp - eau de parfum": [Category.PERFUMES],
+    "ספרי שולחן קפה": [Category.HOME],
+    "מסכות ופילינג": [Category.WELLNESS],
+    "long jumpsuit": [Category.OVERALLS],
+    "side bags": [Category.SIDE_BAGS],
+    "golf": [Category.SPORT],
+    "espadrilles shoes": [Category.ESPADRILLES],
+    "bucket": [Category.BUCKET_HATS],
+    "טיפוח שיער": [Category.WELLNESS],
+    "how to style your asics": [Category.GIFTS],
+    "50 shades of brown": [Category.GIFTS],
+    "מסכות": [Category.WELLNESS],
+    "travel bags": [Category.TRAVEL_BAGS],
+    "heels": [Category.HEELS],
+    "fragranced spray": [Category.PERFUMES],
+    "summer club": [Category.GIFTS],
+    "שפתיים": [Category.LIP_PENCIL],
+    "קטורת": [Category.HOME],
+    "סריג v": [Category.SWEATERS],
+    "אירוח": [Category.HOME],
+    "אמבטיה": [Category.HOME],
+    "sets": [Category.SETS],
+    "ג'ל לגבות": [Category.BROW_PENCIL],
+    "ג'ל לניקוי": [Category.MAKEUP_REMOVER],
+    "back to campus": [Category.GIFTS],
+    "מגשים": [Category.HOME],
+    "nadir eliyahou": [Category.BY_BRAND],
+    "פנים": [Category.WELLNESS],
+    "מכנסי 7/8": [Category.PANTS],
+    "קרמיקה": [Category.HOME],
+    "ניחוחות לבית": [Category.HOME],
+    "באלם לניקוי": [Category.MAKEUP_REMOVER],
+    "archive old": [Category.GIFTS],
+    "ballerina shoes": [Category.SHOES],
+    "גבות": [Category.BROW_PENCIL],
+    "ספריי עיון": [Category.HOME],
+    "שעונים": [Category.ACCESSORIES],
+    "לייף סטייל": [Category.HOME],
+    "buyer's picks": [Category.GIFTS],
+    "maskit x gottex": [Category.BY_BRAND],
+    "parfum": [Category.PERFUMES],
+    "כיסוי דרכון": [Category.ACCESSORIES],
+    'קרם יום': [Category.BEAUTY, Category.MAKEUP, Category.CREAMS_AND_OILS],
+    'מזרנים': [Category.SPORT],
+    'כלי הגשה': [Category.HOME],
+    'black friday': [Category.BLACK_FRIDAY],
+    'קרם לצוואר': [Category.BEAUTY, Category.MAKEUP, Category.CREAMS_AND_OILS]
 };
 
 // --- Category Synonyms Map ---
@@ -294,7 +549,7 @@ export type CategorySynonyms = {
 export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.T_SHIRTS]: {
     en: ['t-shirt', 'tshirt', 'tee', 't shirt', 'tank top', 'vest'],
-    he: ['טי שירט', 'טי-שירט', 'טישרט', 'חולצה', 'חולצות', 'טי שירטים', 'טי-שירטים']
+    he: ['טי שירט', 'טי-שירט', 'טישרט', 'חולצה', 'חולצות', 'טי שירטים', 'טי-שירטים', 'ווסט']
   },
   [Category.TOPS]: {
     en: ['top', 'tops'],
@@ -314,7 +569,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.CREW_NECK_SWEATERS]: {
     en: ['crew neck sweater', 'crewneck sweater', 'crew neck', 'crewneck'],
-    he: []
+    he: ['סריג CREW']
   },
   [Category.KNITWEAR]: {
     en: ['knitwear', 'knit', 'knitted'],
@@ -334,19 +589,19 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.JEANS]: {
     en: ['jeans', 'denim', 'pants', 'trousers'],
-    he: ['ג׳ינס', 'גינס', 'ג׳ינסים', 'גינסים', 'דנים', 'מכנס ג׳ינס', 'מכנסי ג׳ינס']
+    he: ["ג'ינסים", "ג'ינס", "גינס", "גינסים", "מכנסי דנים", "מכנס דנים"]
   },
   [Category.SKINNY_JEANS]: {
     en: ['skinny jeans', 'skinny fit jeans'],
-    he: ['סקיני', 'סקיני ג׳ינס', 'סקיני גינס']
+    he: ["סקיני ג'ינס", "סקיני גינס"]
   },
   [Category.SLIM_JEANS]: {
     en: ['slim jeans', 'slim fit jeans'],
-    he: ['סלים', 'סלים ג׳ינס', 'סלים גינס']
+    he: ["סלים ג'ינס", "סלים גינס"]
   },
   [Category.STRAIGHT_JEANS]: {
     en: ['straight jeans', 'straight fit jeans'],
-    he: ['סטרייט', 'סטרייט ג׳ינס', 'סטרייט גינס']
+    he: ["סטרייט ג'ינס", "סטרייט גינס"]
   },
   [Category.PANTS]: {
     en: ['pants', 'trousers', 'slacks'],
@@ -354,7 +609,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.JOGGERS]: {
     en: ['jogger', 'joggers', 'sweatpants'],
-    he: ['ג׳וגר', 'ג׳וגרים', 'ג׳וגרז', 'ג׳וגרזים', 'טרנינג', 'טרנינגים']
+    he: ["ג'וגר", "גוגר", "טרנינג", "סווטפנטס"]
   },
   [Category.TROUSERS]: {
     en: ['trousers', 'pants'],
@@ -378,7 +633,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.SHORT_JEANS]: {
     en: ['short jeans', 'jean shorts', 'denim shorts'],
-    he: ['שורט ג׳ינס', 'שורט גינס', 'שורטים ג׳ינס', 'שורטים גינס']
+    he: ["שורט ג'ינס", 'שורט גינס', "שורטים ג'ינס", 'שורטים גינס']
   },
   [Category.DRESSES_OVERALLS]: {
     en: ['dress', 'dresses', 'overall', 'overalls'],
@@ -402,7 +657,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.JACKETS_COATS]: {
     en: ['jacket', 'coat', 'blazer', 'suit jacket', 'jackets', 'coats', 'outerwear'],
-    he: ['מעיל', 'מעילים', 'ג׳קט', 'ג׳קטים', 'ז׳קט', 'ז׳קטים']
+    he: ["מעיל", "מעילים", "ג'קט", "ג'קטים", "ז'קט", "ז'קטים", "בומבר"]
   },
   [Category.BLAZERS]: {
     en: ['blazer', 'blazers'],
@@ -418,7 +673,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.SWIMWEAR]: {
     en: ['swimwear', 'swimsuit', 'bathing suit', 'bikini', 'trunks'],
-    he: ['בגד ים', 'בגדי ים', 'ביקיני', 'טרנקס']
+    he: ['בגד ים', 'בגדי ים', 'ביקיני', 'טרנקס', 'חוטיני']
   },
   [Category.BEACHWEAR]: {
     en: ['beachwear', 'beach wear'],
@@ -430,7 +685,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.UNDERWEAR]: {
     en: ['underwear', 'briefs', 'undergarments'],
-    he: ['תחתון', 'תחתונים', 'הלבשה תחתונה']
+    he: ['תחתון', 'תחתונים', 'הלבשה תחתונה', 'תחתוני ']
   },
   [Category.BOXERS]: {
     en: ['boxer', 'boxers'],
@@ -450,7 +705,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.UNDERWEAR_LINGERIE]: {
     en: ['underwear', 'lingerie'],
-    he: ['הלבשה תחתונה', 'לנז׳רי']
+    he: ['הלבשה תחתונה', "לנז'יר"]
   },
   [Category.OVERSIZE]: {
     en: ['oversize', 'oversized'],
@@ -534,11 +789,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.POUCH_BAGS]: {
     en: ['pouch bag', 'pouch bags'],
-    he: ['פאוץ׳', 'פאוצ׳ים']
-  },
-  [Category.POUCHES]: {
-    en: ['pouch', 'pouches'],
-    he: ['פאוץ׳', 'פאוצ׳ים']
+    he: ["פאוץ'", "פאוצ'ים", "פאוץ", "פאוצים"]
   },
   [Category.WALLETS]: {
     en: ['wallet', 'wallets'],
@@ -629,7 +880,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
     he: ['יופי', 'קוסמטיקה', 'איפור']
   },
   [Category.PERFUMES]: {
-    en: ['perfume', 'perfumes', 'fragrance', 'fragrances'],
+    en: ['perfume', 'perfumes', 'fragrance', 'fragrances', 'parfum'],
     he: ['בושם', 'בשמים', 'ניחוח', 'ניחוחות']
   },
   [Category.HOME]: {
@@ -683,6 +934,98 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.HEELS]: {
     en: ["heel shoes", "heels"],
     he: ["נעל עקב", "נעלי עקב", "נעליים עקב", "נעלים עקב", "עקבים"]
+  },
+  [Category.MAKEUP]: {
+    en: ['makeup', 'cosmetics', 'make up', 'beauty products', 'foundation', 'concealer', 'blush', 'powder', 'highlighter', 'contour', 'bronzer', 'primer', 'setting spray', 'face makeup'],
+    he: ['איפור', 'קוסמטיקה', 'מייקאפ', 'סומק', 'פודרה', 'היילייטר', 'קונטור', 'ברונזר', 'פריימר', 'ספריי מקבע', 'מייק-אפ', 'מוצרי יופי', 'מוצרי איפור']
+  },
+  [Category.LIP_PENCIL]: {
+    en: ['lip pencil', 'lip liner', 'lip pencils', 'lip liners'],
+    he: ['עיפרון שפתיים', 'עפרון שפתיים', 'עפרונות שפתיים', 'עפרון לשפתיים']
+  },
+  [Category.BROW_PENCIL]: {
+    en: ['brow pencil', 'eyebrow pencil', 'brow pencils', 'eyebrow pencils', 'brow liner', 'brow definers'],
+    he: ['עיפרון גבות', 'עפרון גבות', 'עפרונות גבות', 'עפרון לגבות']
+  },
+  [Category.CONCEALER]: {
+    en: ['concealer', 'concealers', 'cover stick', 'corrector', 'blemish concealer', 'under eye concealer', 'spot concealer'],
+    he: ['קונסילר', 'קונסילרים', 'מסתיר פגמים', 'קונסילר לעיניים', 'קונסילר מתקן', 'קונסילר נקודתי']
+  },
+  [Category.MAKEUP_REMOVER]: {
+    en: ['makeup remover', 'makeup removers', 'cleanser', 'cleansing water', 'micellar water', 'makeup wipes', 'remover wipes', 'eye makeup remover', 'face cleanser'],
+    he: ['מסיר איפור', 'מסירי איפור', 'ניקוי פנים', 'מים מיסלריים', 'מגבוני איפור', 'מסיר איפור לעיניים', 'מסיר איפור לפנים', 'תכשיר ניקוי']
+  },
+  [Category.HAND_CREAM]: {
+    en: ['hand cream', 'hand creams', 'hand moisturizer'],
+    he: ['קרם ידיים', 'קרם לידיים', 'קרם-ידיים', 'קרמי ידיים']
+  },
+  [Category.BODY_CREAM]: {
+    en: ['body cream', 'body creams', 'body moisturizer'],
+    he: ['קרם גוף', 'קרם לגוף', 'קרמים לגוף', 'קרם-גוף']
+  },
+  [Category.EYE_CREAM]: {
+    en: ['eye cream', 'eye creams'],
+    he: ['קרם עיניים', 'קרם לעיניים', 'קרם-עיניים', 'קרמים לעיניים', 'קרמים עיניים']
+  },
+  [Category.NIGHT_CREAM]: {
+    en: ['night cream', 'night creams'],
+    he: ['קרם לילה', 'קרם ללילה', 'קרם-לילה', 'קרמי-לילה']
+  },
+  [Category.SUNSCREEN]: {
+    en: ['sunscreen', 'spf', 'sunblock', 'sun screen', 'spf cream'],
+    he: ['קרם הגנה', 'קרם הגנה מהשמש', 'מסנן קרינה', 'קרם spf', 'קרם הגנה']
+  },
+  [Category.SERUMS]: {
+    en: ['serum', 'serums', 'face serum', 'skin serum'],
+    he: ['סרום', 'סרומים']
+  },
+  [Category.BODY_OIL]: {
+    en: ['body oil', 'body oils'],
+    he: ['שמן גוף', 'שמנים לגוף']
+  },
+  [Category.MOISTURIZER]: {
+    en: ['moisturizer', 'moisturizers', 'hydrating cream'],
+    he: ['לחות', 'קרם לחות']
+  },
+  [Category.CREAMS_AND_OILS]: {
+    en: ['creams and oils', 'cream and oil'],
+    he: ['קרמים ושמנים']
+  },
+  [Category.HAND_CARE]: {
+    en: ['hand care', 'hand treatment'],
+    he: ['טיפוח ידיים']
+  },
+  [Category.MAKEUP_BRUSHES]: {
+    en: ['makeup brush', 'makeup brushes', 'cosmetic brush', 'cosmetic brushes'],
+    he: ['מברשת איפור', 'מברשות איפור']
+  },
+  [Category.LIP_GLOSS]: {
+    en: ['lip gloss', 'lipgloss'],
+    he: ['ליפ גלוס', 'ליפגלוס']
+  },
+  [Category.EYE_MAKEUP]: {
+    en: ['eye makeup', 'eye shadow', 'eyeshadow', 'mascara', 'eyeliner'],
+    he: ['איפור עיניים', 'עיניים', 'צללית', 'מסקרה', 'אייליינר']
+  },
+  [Category.FRAMERS]: {
+    en: ['primer', 'primers', 'makeup primer'],
+    he: ['פריימר', 'פריימרים']
+  },
+  [Category.FACE_CLEANSER]: {
+    en: ['face cleanser', 'facial cleanser', 'face wash', 'facial wash', 'cleanser'],
+    he: ['ניקוי הפנים', 'תכשיר ניקוי', 'סבון פנים']
+  },
+  [Category.ENVELOPE_BAG]: {
+    en: ['envelope bag', 'envelope clutch'],
+    he: ['מעטפת', 'תיק מעטפה']
+  },
+  [Category.BLACK_FRIDAY]: {
+    en: ["black friday", "black-friday", "blackfriday"],
+    he: ["בלאק פריידי", "בלק פריידי", "בלאק פרידי"]
+  },
+  [Category.PREGNANCY]: {
+    en: ['pregnancy'],
+    he: ['הריון', ' לידה ']
   }
 };
 
@@ -692,4 +1035,102 @@ for (const [cat, { en, he }] of Object.entries(CATEGORY_SEARCH_KEYWORDS_MAP) as 
   [...en, ...he].forEach(syn => {
     CATEGORY_KEYWORD_TO_CATEGORY[syn.toLowerCase()] = cat;
   });
-} 
+}
+
+// --- Categories to Ignore ---
+export const CATEGORIES_TO_IGNORE = new Set([
+  'בויפרינד',
+  'עור',
+  'גברים',
+  'נשים',
+  'ילדים',
+  'מצחיה',
+  'מצחייה',
+  '(not set)',
+  'נמוכות',
+  'גבוהות',
+  'sale',
+  'טרנץ',
+  'new',
+  'פשתן',
+  'summer essentials',
+  'or luzon picks',
+  'סטיילינג',
+  '10%',
+  '20%',
+  '30%',
+  '40%',
+  '50%',
+  '60%',
+  '70%',
+  '80%',
+  '90%',
+  'archive',
+  'wear it like jeremy',
+  'five point four',
+  'run',
+  'שטוחים',
+  'לוגו',
+  'ארוכים',
+  'מודפסים',
+  'חלקים',
+  'לוגומאניה',
+  'אספדרילים',
+  'נעלי אוקספורד',
+  'מגפיים',
+  'מגפי שרוכים',
+  'נעליים שטוחות',
+  'כפכפי אצבע',
+  "מגפי צ'לסי",
+  'וסט',
+  "קז'ואל",
+  'טי שירט שרוול ארוך',
+  'טי שירט שרוול קצר',
+  'men', // <- todo remove,
+  'short jeans', // <- todo remove,
+  'tax free', // todo remove,
+  'italian summer', // todo remove,
+  'mocha mousse', // todo remove,
+  'straight',
+  'back in stock', // todo remove,
+  'crew neck sweaters', // todo remove
+  'רוח',
+  'גבות',
+  'מעטפת',
+  'best sellers',
+  'wear your pride',
+  'ישר',
+  'גבר',
+  'חדש',
+  'בינוני',
+  'גבוה',
+  'נמוך',
+  'דקה',
+  'עבה',
+  'ארוך',
+  'קצר',
+  'א-סימטרי',
+  'א-סמטיריות',
+  'רוח',
+  'קרעים',
+  'דלגיות',
+  'מתרחבים',
+  'קנה לפי סוג עור',
+  'לכל סוגי העור',
+  'צמר',
+  'פמוטים',
+  'קיטן',
+  'צבאיים',
+  'הריון ולידה',
+  'מוצרי תינוקות',
+  'pring',
+  'סקיני',
+  'מיני',
+  'מידי',
+  'do it like beckham',
+  'noa taka picks',
+  'spf 50+',
+  "buyers' picks",
+  "מעטפת",
+  'print',
+]); 
