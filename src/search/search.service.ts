@@ -334,7 +334,7 @@ export class SearchService {
       { key: 'JDSports', patterns: [/jdsports/, /ג׳יידי/] },
       { key: 'Story', patterns: [/story/, /סטורי/] },
       { key: 'Chozen', patterns: [/chozen/, /צ׳וזן/, /צוזן/] },
-      { key: 'OneProjectShop', patterns: [/oneprojectshop/, /וואן ?פרוג׳קט/] },
+      { key: 'OneProjectShop', patterns: [/oneprojectshop/, /וואן ?פרוג׳קט/, /ואן פרוג׳קט/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))

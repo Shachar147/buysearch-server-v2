@@ -146,6 +146,36 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://www.nike.com/il/w/womens-accessories-equipment-5e1x6zawwpw',
   },
+  {
+    id: 'mens-jordan-shoes',
+    name: Category.SHOES,
+    gender: 'Men',
+    url: 'https://www.nike.com/il/w/mens-jordan-shoes-37eefznik1zy7ok',
+  },
+  {
+    id: 'mens-jordan-tshirts',
+    name: Category.T_SHIRTS,
+    gender: 'Men',
+    url: 'https://www.nike.com/il/w/mens-jordan-tops-t-shirts-37eefz9om13znik1',
+  },
+  {
+    id: 'womens-jordan-tshirts',
+    name: Category.T_SHIRTS,
+    gender: 'Women',
+    url: 'https://www.nike.com/il/w/womens-jordan-tops-t-shirts-37eefz5e1x6z9om13',
+  },
+  {
+    id: 'womens-jordan-shoes',
+    name: Category.SHOES,
+    gender: 'Women',
+    url: 'https://www.nike.com/il/w/womens-jordan-shoes-37eefz5e1x6zy7ok',
+  },
+  {
+    id: 'mens-new',
+    name: "New",
+    gender: 'Men',
+    url :"https://www.nike.com/il/w/new-3n82y"
+  }
 ];
 
 const BASE_URL = 'https://www.nike.com';
