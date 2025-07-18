@@ -9,10 +9,119 @@ dotenv.config();
 
 const CATEGORIES: CategoryType[] = [
   {
-    id: 'men-shirts',
-    name: Category.SHIRTS,
+    id: 'men-tshirts',
+    name: Category.T_SHIRTS,
     gender: 'Men',
-    url: 'https://www.castro.com/%D7%92%D7%91%D7%A8%D7%99%D7%9D/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA',
+    url: 'https://www.castro.com/גברים/חולצות',
+  },
+  {
+    id: 'men-swimwear',
+    name: Category.SWIMWEAR,
+    gender: 'Men',
+    url: 'https://www.castro.com/גברים/בגד-ים',
+  },
+  {
+    id: 'men-jeans',
+    name: Category.JEANS,
+    gender: 'Men',
+    url: 'https://www.castro.com/גברים/גינס',
+  },
+  {
+    id: 'men-pants',
+    name: Category.PANTS,
+    gender: 'Men',
+    url: 'https://www.castro.com/גברים/מכנסיים',
+  },
+  {
+    id: 'men-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Men',
+    url: 'https://www.castro.com/%D7%92%D7%91%D7%A8%D7%99%D7%9D/%D7%AA%D7%97%D7%AA%D7%95%D7%A0%D7%99%D7%9D-%D7%92%D7%A8%D7%91%D7%99%D7%99%D7%9D',
+  },
+  {
+    id: 'men-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Men',
+    url: 'https://www.castro.com/%D7%92%D7%91%D7%A8%D7%99%D7%9D/%D7%90%D7%A7%D7%A1%D7%A1%D7%95%D7%A8%D7%99%D7%96',
+  },
+  {
+    id: 'men-shoes',
+    name: Category.SHOES,
+    gender: 'Men',
+    url: 'https://www.castro.com/%D7%92%D7%91%D7%A8%D7%99%D7%9D/%D7%A0%D7%A2%D7%9C%D7%99%D7%99%D7%9D',
+  },
+  {
+    id: 'men-accessories',
+    name: Category.SWEATERS,
+    gender: 'Men',
+    url: 'https://www.castro.com/%D7%92%D7%91%D7%A8%D7%99%D7%9D/%D7%A1%D7%A8%D7%99%D7%92%D7%99%D7%9D-%D7%95%D7%A4%D7%95%D7%98%D7%A8%D7%99%D7%9D',
+  },
+  {
+    id: 'men-jackets-coats',
+    name: Category.JACKETS_COATS,
+    gender: 'Men',
+    url: 'https://www.castro.com/%D7%92%D7%91%D7%A8%D7%99%D7%9D/%D7%9E%D7%A2%D7%99%D7%9C%D7%99%D7%9D-%D7%95%D7%92%D7%A7%D7%98%D7%99%D7%9D'
+  },
+  // Women
+  {
+    id: 'women-swim',
+    name: Category.SWIMWEAR,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%91%D7%92%D7%93-%D7%99%D7%9D',
+  },
+  {
+    id: 'women-t-shirts',
+    name: Category.T_SHIRTS,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA',
+  },
+  {
+    id: 'women-dress',
+    name: Category.DRESSES_OVERALLS,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%A9%D7%9E%D7%9C%D7%95%D7%AA',
+  },
+  {
+    id: 'women-skirts',
+    name: Category.SKIRTS,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%97%D7%A6%D7%90%D7%99%D7%95%D7%AA',
+  },
+  {
+    id: 'women-jeans',
+    name: Category.JEANS,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%92%D7%99%D7%A0%D7%A1',
+  },
+  {
+    id: 'women-shoes',
+    name: Category.SHOES,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%A0%D7%A2%D7%9C%D7%99%D7%99%D7%9D',
+  },
+  {
+    id: 'women-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%90%D7%A7%D7%A1%D7%A1%D7%95%D7%A8%D7%99%D7%96',
+  },
+  {
+    id: 'women-sweaters',
+    name: Category.SWEATERS,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%A1%D7%A8%D7%99%D7%92%D7%99%D7%9D-%D7%95%D7%A4%D7%95%D7%98%D7%A8%D7%99%D7%9D',
+  },
+  {
+    id: 'women-jackets',
+    name: Category.JACKETS_COATS,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%9E%D7%A2%D7%99%D7%9C%D7%99%D7%9D-%D7%92%D7%A7%D7%98%D7%99%D7%9D',
+  },
+  {
+    id: 'women-lingerie',
+    name: Category.LINGERIE,
+    gender: 'Women',
+    url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%94%D7%9C%D7%91%D7%A9%D7%94-%D7%AA%D7%97%D7%AA%D7%95%D7%A0%D7%94',
   },
 ];
 
@@ -30,7 +139,7 @@ class CastroScraper extends BaseScraper {
     let page = 1;
     let allProducts: Product[] = [];
     let hasMore = true;
-    const MAX_PAGES = 2;
+    const MAX_PAGES = 20;
     while (hasMore && page <= MAX_PAGES) {
       let url = category.url;
       if (page > 1) {
@@ -52,13 +161,16 @@ class CastroScraper extends BaseScraper {
   }
 
   private async fetchCastroPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setUserAgent(
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
     );
     await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
     const html = await page.content();
+
+    // await new Promise(res => setTimeout(res, 200000)); // Wait 2 seconds
+
     await browser.close();
     return html;
   }
@@ -66,73 +178,48 @@ class CastroScraper extends BaseScraper {
   private async parseCastroProducts(html: string, category: CategoryType): Promise<Product[]> {
     const $ = cheerio.load(html);
     const productCards = $('.product-tile, .product, .product-item');
-    const products: Product[] = [];
+
+    // Extract all product info from the listing page DOM
     const productInfos = productCards.map((_, el) => {
       const elem = $(el);
-      let title = elem.find('h3, h2, .product-title').first().text().trim();
-      if (!title) title = elem.find('a').attr('title') || '';
+      const title = elem.find('h3, h2, .product-title').first().text().trim() || elem.find('a').attr('title') || '';
       let url = elem.find('a').attr('href') || '';
       if (url && !url.startsWith('http')) url = BASE_URL + url;
       let image = elem.find('img').attr('data-src') || elem.find('img').attr('src') || '';
       if (image && image.startsWith('//')) image = 'https:' + image;
-      return { title, url, image };
+      // Price extraction
+      const priceStr = elem.find('.price-wrapper[data-price-type="finalPrice"] .price').first().text().replace(/[₪,]/g, '').trim();
+      const price = priceStr ? parseFloat(priceStr) : null;
+      const oldPriceStr = elem.find('.price-wrapper[data-price-type="oldPrice"] .price').first().text().replace(/[₪,]/g, '').trim();
+      const oldPrice = oldPriceStr ? parseFloat(oldPriceStr) : null;
+      const salePercent = (oldPrice && price && oldPrice > price) ? calcSalePercent(price, oldPrice) : null;
+      // Colors extraction (if present in listing)
+      const colorNames = elem.find('.swatch-option.image .show-text').map((_, c) => $(c).text().trim()).get().filter(Boolean);
+      return { title, url, image, price, oldPrice, salePercent, colorNames };
     }).get();
 
-    // Limit concurrency to 5
-    const concurrency = 5;
-    let idx = 0;
-    async function fetchDetail(info: any) {
-      try {
-        const detailHtml = await (await fetch(info.url)).text();
-        const $$ = cheerio.load(detailHtml);
-        // Price extraction from detail page
-        let price = null, oldPrice = null, salePercent = null;
-        // Only use price from data-price-type="finalPrice"
-        const priceStr = $$('.price-wrapper[data-price-type="finalPrice"] .price').first().text().replace(/[₪,]/g, '').trim();
-        if (priceStr) {
-          price = parseFloat(priceStr);
-        }
-        // Only use oldPrice from data-price-type="oldPrice"
-        const oldPriceStr = $$('.price-wrapper[data-price-type="oldPrice"] .price').first().text().replace(/[₪,]/g, '').trim();
-        if (oldPriceStr) {
-          const parsedOld = parseFloat(oldPriceStr);
-          if (!isNaN(parsedOld) && parsedOld > (price ?? 0)) {
-            oldPrice = parsedOld;
-          }
-        }
-        if (oldPrice && price && oldPrice > price) {
-          salePercent = calcSalePercent(price, oldPrice) ?? 0;
-        }
-        const brand = normalizeBrandName('Castro');
-        const colors = extractColorsWithHebrew(info.title, [], 'castro_scraper');
-        const categories = [category.name];
-        const gender = category.gender;
-        return this.createProduct({
-          title: info.title,
-          url: info.url,
-          images: [info.image].filter(Boolean),
-          colors,
-          isSellingFast: false,
-          price,
-          oldPrice,
-          salePercent,
-          currency: 'ILS',
-          brand,
-          categories,
-          gender,
-        });
-      } catch (e) {
-        return null;
-      }
-    }
-    const results: Product[] = [];
-    while (idx < productInfos.length) {
-      const chunk = productInfos.slice(idx, idx + concurrency);
-      const chunkResults = await Promise.all(chunk.map(info => fetchDetail.call(this, info)));
-      results.push(...chunkResults.filter(Boolean));
-      idx += concurrency;
-    }
-    return results;
+    // Build product objects directly from listing page info
+    const products: Product[] = productInfos.map(info => {
+      const brand = normalizeBrandName('Castro');
+      const colors = extractColorsWithHebrew(info.title, info.colorNames, 'castro_scraper');
+      const categories = [category.name];
+      const gender = category.gender;
+      return this.createProduct({
+        title: info.title,
+        url: info.url,
+        images: [info.image].filter(Boolean),
+        colors,
+        isSellingFast: false,
+        price: info.price,
+        oldPrice: info.oldPrice,
+        salePercent: info.salePercent,
+        currency: 'ILS',
+        brand,
+        categories,
+        gender,
+      });
+    });
+    return products;
   }
 }
 
