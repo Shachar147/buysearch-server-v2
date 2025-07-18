@@ -239,7 +239,11 @@ class CastroScraper extends BaseScraper {
     // Extract all product info from the listing page DOM
     const productInfos = productCards.map((_, el) => {
       const elem = $(el);
-      const title = elem.find('h3, h2, .product-title').first().text().trim() || elem.find('a').attr('title') || '';
+      const title =
+        elem.find('.product-category-name.product-name a').first().text().trim() ||
+        elem.find('h3, h2, .product-title').first().text().trim() ||
+        elem.find('a').attr('title') ||
+        '';
       let url = elem.find('a').attr('href') || '';
       if (url && !url.startsWith('http')) url = BASE_URL + url;
       let image = elem.find('img').attr('data-src') || elem.find('img').attr('src') || '';
@@ -269,7 +273,14 @@ class CastroScraper extends BaseScraper {
         const colors = extractColorsWithHebrew(info.title, info.colorNames, 'castro_scraper');
         const categories = [category.name];
         const gender = category.gender;
-        if (!info.title || !info.url || info.price == undefined) return undefined;
+        if (!info.title || !info.url || info.price == undefined) {
+            console.log("not keeping since title / url / price is empty", {
+                title: info.title,
+                url: info.url,
+                price: info.price
+            });
+            return undefined;
+        }
         return this.createProduct({
           title: info.title,
           url: info.url,
