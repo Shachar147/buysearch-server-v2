@@ -147,7 +147,7 @@ class CastroScraper extends BaseScraper {
       }
       this.logProgress(`Fetching ${url}`);
       const html = await this.fetchCastroPage(url);
-      const products = await this.parseCastroProducts(html, category);
+      const products = (await this.parseCastroProducts(html, category)).filter(Boolean);
       this.logProgress(`Found ${products.length} products in ${category.name} (page ${page})`);
       if (!products.length) break;
       allProducts.push(...products);
@@ -161,7 +161,7 @@ class CastroScraper extends BaseScraper {
   }
 
   private async fetchCastroPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.setUserAgent(
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
@@ -199,26 +199,35 @@ class CastroScraper extends BaseScraper {
     }).get();
 
     // Build product objects directly from listing page info
-    const products: Product[] = productInfos.map(info => {
-      const brand = normalizeBrandName('Castro');
-      const colors = extractColorsWithHebrew(info.title, info.colorNames, 'castro_scraper');
-      const categories = [category.name];
-      const gender = category.gender;
-      return this.createProduct({
-        title: info.title,
-        url: info.url,
-        images: [info.image].filter(Boolean),
-        colors,
-        isSellingFast: false,
-        price: info.price,
-        oldPrice: info.oldPrice,
-        salePercent: info.salePercent,
-        currency: 'ILS',
-        brand,
-        categories,
-        gender,
+    const products: Product[] = productInfos
+      .filter(info => {
+        // Skip if price is 0 and url is missing or empty
+        if ((info.price === 0 || info.price === null) && (!info.url || info.url.trim() === '')) {
+          return false;
+        }
+        return true;
+      })
+      .map(info => {
+        const brand = normalizeBrandName('Castro');
+        const colors = extractColorsWithHebrew(info.title, info.colorNames, 'castro_scraper');
+        const categories = [category.name];
+        const gender = category.gender;
+        if (!info.title || !info.url || info.price == undefined) return undefined;
+        return this.createProduct({
+          title: info.title,
+          url: info.url,
+          images: [info.image].filter(Boolean),
+          colors,
+          isSellingFast: false,
+          price: info.price,
+          oldPrice: info.oldPrice,
+          salePercent: info.salePercent,
+          currency: 'ILS',
+          brand,
+          categories,
+          gender,
+        });
       });
-    });
     return products;
   }
 }

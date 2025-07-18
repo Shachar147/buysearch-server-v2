@@ -100,6 +100,9 @@ export class ProductService {
       qb.orderBy('product.price', 'ASC');
     } else if (filters.sort === 'Price: High to Low') {
       qb.orderBy('product.price', 'DESC');
+    } else if (filters.sort === 'Sale: Highest Percent') {
+      // qb.andWhere('product.salePercent is not NULL')
+      qb.orderBy('product.salePercent', 'DESC').addOrderBy('product.id', 'DESC');
     } else if (filters.sort === 'Created: Newest First') {
       qb.orderBy('product.createdAt', 'DESC');
     } else if (filters.sort === 'Created: Oldest First') {
