@@ -46,6 +46,7 @@
     "@nestjs/platform-express": "^10.4.19",
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/swagger": "^7.4.2",
+    "@nestjs/cli": "^9.0.0",
     "axios": "^1.10.0",
     "axios-cookiejar-support": "^4.0.7",
     "bcryptjs": "^3.0.2",
@@ -63,7 +64,6 @@
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^10.4.19",
     "@nestjs/typeorm": "^11.0.0",
