@@ -553,7 +553,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.TANKS]: {
     en: ['tank', 'tank top', 'tanktop'],
-    he: ['גופיה', 'גופיות']
+    he: ['גופיה', 'גופיות', 'גופיית']
   },
   [Category.SWEATERS]: {
     en: ['sweater', 'sweaters', 'jumper', 'pull', 'pull-over', 'pullover'],
@@ -677,7 +677,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.UNDERWEAR]: {
     en: ['underwear', 'briefs', 'undergarments'],
-    he: ['תחתון', 'תחתונים', 'הלבשה תחתונה', 'תחתוני ']
+    he: ['תחתון', 'תחתונים', 'הלבשה תחתונה', 'תחתוני ', 'תחתוני']
   },
   [Category.BOXERS]: {
     en: ['boxer', 'boxers'],
@@ -733,7 +733,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.FLIP_FLOPS]: {
     en: ['flip flop', 'flip flops', 'thong', 'thongs'],
-    he: ['כפכף', 'כפכפים']
+    he: ['כפכף', 'כפכפים', 'כפכפי ']
   },
   [Category.SLIPPERS]: {
     en: ['slipper', 'slippers'],
@@ -757,7 +757,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.ACCESSORIES]: {
     en: ['accessories', 'jewelry', 'watch', 'sunglasses', 'bag', 'hat', 'hats', 'belt', 'scarf', 'gloves', 'accessory'],
-    he: ['אביזרים', 'אקססוריז', 'אביזר', 'שעון', 'שעונים', 'תיק', 'תיקים', 'כובע', 'כובעים', 'משקפיים', 'משקפי שמש', 'צמיד', 'צמידים', 'שרשרת', 'שרשראות', 'עגיל', 'עגילים', 'טבעת', 'טבעות', 'חגורה', 'חגורות', 'ארנק', 'ארנקים']
+    he: ['אביזרים', 'אקססוריז', 'אביזר', 'שעון', 'שעונים', 'תיק', 'תיקים', 'כובע', 'כובעים', 'משקפיים', 'משקפי שמש', 'צמיד', 'צמידים', 'שרשרת', 'שרשראות', 'עגיל', 'עגילים', 'טבעת', 'טבעות', 'חגורה', 'חגורות', 'ארנק', 'ארנקים', 'נגד מים לטלפון', 'קייס ל']
   },
   [Category.BAGS]: {
     en: ['bag', 'bags', 'handbag', 'handbags'],

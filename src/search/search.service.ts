@@ -326,9 +326,15 @@ export class SearchService {
       { key: 'Factory54', patterns: [/\bfactory\b/, /\bfactory54\b/, /factory 54/, /פקטורי/] },
       { key: 'Terminalx', patterns: [/\bterminal\b/, /\bterminalx\b/, /terminal x/, /טרמינל/, /טרמינל איקס/] },
       { key: 'Asos', patterns: [/\basos\b/, /אסוס/] },
-      { key: 'ItayBrands', patterns: [/\itay b\b/, /איתי בר/] },
-      { key: 'Zara', patterns: [/\zara\b/, /זארה/] },
-
+      { key: 'ItayBrands', patterns: [/\bitay b\b/, /איתי בר/] },
+      { key: 'Zara', patterns: [/\bzara\b/, /זארה/] },
+      { key: 'Gant', patterns: [/\bgant\b/, /גאנט/] },
+      { key: 'Nike', patterns: [/nike/, /נייק/, /נייקי/] },
+      { key: 'Renuar', patterns: [/renuar/, /רנואר/] },
+      { key: 'JDSports', patterns: [/jdsports/, /ג׳יידי/] },
+      { key: 'Story', patterns: [/story/, /סטורי/] },
+      { key: 'Chozen', patterns: [/chozen/, /צ׳וזן/, /צוזן/] },
+      { key: 'OneProjectShop', patterns: [/oneprojectshop/, /וואן ?פרוג׳קט/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))

@@ -9,6 +9,12 @@ dotenv.config();
 
 const CATEGORIES: CategoryType[] = [
   {
+    id: 'mens-tshirts',
+    name: Category.T_SHIRTS,
+    gender: 'Men',
+    url: 'https://www.nike.com/il/w/mens-tops-t-shirts-9om13znik1',
+  },
+  {
     id: 'mens-basketball-shoes',
     name: Category.SHOES,
     gender: 'Men',
