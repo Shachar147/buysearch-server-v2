@@ -14,14 +14,14 @@ const databaseConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: process.env.NODE_ENV !== 'production',
   logging: false,
-  // ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  // extra: process.env.NODE_ENV === 'production'
-  //   ? {
-  //       ssl: {
-  //         rejectUnauthorized: false,
-  //       },
-  //     }
-  //   : {},
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  extra: process.env.NODE_ENV === 'production'
+    ? {
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      }
+    : {},
 };
 
 console.log('Database config:', {
