@@ -44,6 +44,90 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Men',
     url: 'https://www.gant.co.il/product-category/%d7%92%d7%91%d7%a8%d7%99%d7%9d/%d7%94%d7%a0%d7%a2%d7%9c%d7%94-%d7%92%d7%91%d7%a8%d7%99%d7%9d/%d7%9b%d7%9c-%d7%94%d7%a0%d7%a2%d7%9c%d7%99%d7%99%d7%9d-%d7%92%d7%91%d7%a8%d7%99%d7%9d/',
   },
+  {
+    id: 'men-sale',
+    name: 'Sale',
+    gender: 'Men',
+    url: 'https://www.gant.co.il/product-category/sale/sale-men/'
+  },
+  {
+    id: 'women-sale',
+    name: 'Sale',
+    gender: 'Women',
+    url: 'https://www.gant.co.il/product-category/sale/sale-women/'
+  },
+  {
+    id: 'men-new',
+    name: 'New',
+    gender: 'Men',
+    url: 'https://www.gant.co.il/product-category/%d7%92%d7%91%d7%a8%d7%99%d7%9d/new-arrivals-%d7%92%d7%91%d7%a8%d7%99%d7%9d/'
+  },
+  {
+    id: 'men-knitwear',
+    name: Category.KNITWEAR,
+    gender: 'Men',
+    url: 'https://www.gant.co.il/product-category/%d7%92%d7%91%d7%a8%d7%99%d7%9d/%d7%a1%d7%a8%d7%99%d7%92%d7%99%d7%9d-%d7%92%d7%91%d7%a8%d7%99%d7%9d/'
+  },
+  {
+    id: 'men-shorts',
+    name: Category.SHORTS,
+    gender: 'Men',
+    url: 'https://www.gant.co.il/product-category/%d7%92%d7%91%d7%a8%d7%99%d7%9d/%d7%9e%d7%9b%d7%a0%d7%a1%d7%99%d7%99%d7%9d-%d7%a7%d7%a6%d7%a8%d7%99%d7%9d-%d7%92%d7%91%d7%a8%d7%99%d7%9d/'
+  },
+  {
+    id: 'men-jeans',
+    name: Category.JEANS,
+    gender: 'Men',
+    url: 'https://www.gant.co.il/product-category/%d7%92%d7%91%d7%a8%d7%99%d7%9d/%d7%92%d7%99%d7%a0%d7%a1%d7%99%d7%9d-%d7%92%d7%91%d7%a8%d7%99%d7%9d/'
+  },
+  {
+    id: 'women-knitwear',
+    name: Category.KNITWEAR,
+    gender: 'Women',
+    url: 'https://www.gant.co.il/product-category/%d7%a0%d7%a9%d7%99%d7%9d/%d7%a1%d7%a8%d7%99%d7%92%d7%99%d7%9d-%d7%a0%d7%a9%d7%99%d7%9d/'
+  },
+  {
+    id: 'women-tshirts',
+    name: Category.T_SHIRTS,
+    gender: 'Women',
+    url: 'https://www.gant.co.il/product-category/%d7%a0%d7%a9%d7%99%d7%9d/%d7%a1%d7%a8%d7%99%d7%92%d7%99%d7%9d-%d7%a0%d7%a9%d7%99%d7%9d/'
+  },
+  {
+    id: 'women-dresses',
+    name: Category.DRESSES,
+    gender: 'Women',
+    url: 'https://www.gant.co.il/product-category/%d7%a0%d7%a9%d7%99%d7%9d/%d7%a9%d7%9e%d7%9c%d7%95%d7%aa-%d7%a0%d7%a9%d7%99%d7%9d/'
+  },
+  {
+    id: 'women-skirts',
+    name: Category.SKIRTS,
+    gender: 'Women',
+    url: 'https://www.gant.co.il/product-category/%d7%a0%d7%a9%d7%99%d7%9d/%d7%97%d7%a6%d7%90%d7%99%d7%95%d7%aa-%d7%a0%d7%a9%d7%99%d7%9d/'
+  },
+  {
+    id: 'women-pants',
+    name: Category.PANTS,
+    gender: 'Women',
+    url: 'https://www.gant.co.il/product-category/%d7%a0%d7%a9%d7%99%d7%9d/%d7%92%d7%99%d7%a0%d7%a1%d7%99%d7%9d-%d7%95%d7%9e%d7%9b%d7%a0%d7%a1%d7%99%d7%99%d7%9d-%d7%a0%d7%a9%d7%99%d7%9d/'
+  },
+  {
+    id: 'women-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Women',
+    url: 'https://www.gant.co.il/product-category/%d7%a0%d7%a9%d7%99%d7%9d/%d7%90%d7%91%d7%99%d7%96%d7%a8%d7%99%d7%9d-%d7%a0%d7%a9%d7%99%d7%9d/'
+  },
+  {
+    id: 'women-shoes',
+    name: Category.SHOES,
+    gender: 'Women',
+    url: 'https://www.gant.co.il/product-category/%d7%a0%d7%a9%d7%99%d7%9d/%d7%94%d7%a0%d7%a2%d7%9c%d7%94-%d7%a0%d7%a9%d7%99%d7%9d/'
+  },
+  {
+    id: 'home',
+    name: Category.HOME,
+    gender: 'Unisex',
+    url: 'https://www.gant.co.il/product-category/%d7%91%d7%99%d7%aa/new-arrivals-%d7%91%d7%99%d7%aa/'
+  }
 ];
 
 const BASE_URL = 'https://www.gant.co.il';
@@ -60,7 +144,7 @@ class GantScraper extends BaseScraper {
     let page = 1;
     let allProducts: Product[] = [];
     let hasMore = true;
-    const MAX_PAGES = 20; // todo: change to more. 50?
+    const MAX_PAGES = 20;
     while (hasMore && page <= MAX_PAGES) {
       let url = category.url;
       if (page > 1) {

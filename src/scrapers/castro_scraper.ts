@@ -123,6 +123,55 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://www.castro.com/%D7%A0%D7%A9%D7%99%D7%9D/%D7%94%D7%9C%D7%91%D7%A9%D7%94-%D7%AA%D7%97%D7%AA%D7%95%D7%A0%D7%94',
   },
+  // Unisex
+  {
+    id: 'unisex-home',
+    name: Category.HOME,
+    gender: 'Unisex',
+    url: 'https://www.castro.com/%D7%A1%D7%99%D7%99%D7%9C/%D7%91%D7%99%D7%AA'
+  },
+  {
+    id: 'unisex-home-kitchen',
+    name :Category.HOME_KITCHEN,
+    gender: 'Unisex',
+    url: 'https://www.castro.com/%D7%91%D7%99%D7%AA/%D7%9E%D7%98%D7%91%D7%97'
+  },
+  {
+    id: 'unisex-home-sleep',
+    name: Category.HOME_SLEEP,
+    gender: 'Unisex',
+    url: 'https://www.castro.com/%D7%91%D7%99%D7%AA/%D7%97%D7%93%D7%A8-%D7%A9%D7%99%D7%A0%D7%94'
+  },
+  {
+    id: 'unisex-home-decor',
+    name: Category.HOME_DECOR,
+    gender: 'Unisex',
+    url: 'https://www.castro.com/%D7%91%D7%99%D7%AA/%D7%A2%D7%99%D7%A6%D7%95%D7%91'
+  },
+  {
+    id: 'unisex-home-bath',
+    name: Category.HOME_BATH,
+    gender: 'Unisex',
+    url: 'https://www.castro.com/%D7%91%D7%99%D7%AA/%D7%90%D7%91%D7%99%D7%96%D7%A8%D7%99%D7%9D-%D7%9C%D7%90%D7%9E%D7%91%D7%98%D7%99%D7%94'
+  },
+  {
+    id: 'unisex-gifts',
+    name: Category.GIFTS,
+    gender: 'Unisex',
+    url: 'https://www.castro.com/%D7%91%D7%99%D7%AA/%D7%9E%D7%AA%D7%A0%D7%95%D7%AA'
+  },
+  {
+    id: 'unisex-home-kids',
+    name: Category.HOME,
+    gender: 'Unisex',
+    url: 'https://www.castro.com/%D7%91%D7%99%D7%AA/%D7%99%D7%9C%D7%93%D7%99%D7%9D'
+  },
+  {
+    id: 'unisex-home-new-collection',
+    name: Category.HOME,
+    gender: 'Unisex',
+    url: 'https://www.castro.com/%D7%91%D7%99%D7%AA/%D7%A7%D7%95%D7%9C%D7%A7%D7%A6%D7%99%D7%94-%D7%97%D7%93%D7%A9%D7%94'
+  }
 ];
 
 const BASE_URL = 'https://www.castro.com';
@@ -140,6 +189,7 @@ class CastroScraper extends BaseScraper {
     let allProducts: Product[] = [];
     let hasMore = true;
     const MAX_PAGES = 20;
+    let prevProductKeys: Set<string> | null = null;
     while (hasMore && page <= MAX_PAGES) {
       let url = category.url;
       if (page > 1) {
@@ -150,6 +200,13 @@ class CastroScraper extends BaseScraper {
       const products = (await this.parseCastroProducts(html, category)).filter(Boolean);
       this.logProgress(`Found ${products.length} products in ${category.name} (page ${page})`);
       if (!products.length) break;
+      // Check for duplicate page (Castro returns last page for out-of-range queries)
+      const productKeys = new Set(products.map(p => `${p.title}|${p.url}`));
+      if (prevProductKeys && productKeys.size === prevProductKeys.size && [...productKeys].every(k => prevProductKeys.has(k))) {
+        this.logProgress('Detected duplicate page, stopping pagination.');
+        break;
+      }
+      prevProductKeys = productKeys;
       allProducts.push(...products);
       hasMore = products.length > 0;
       page++;

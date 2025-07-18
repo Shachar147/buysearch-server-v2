@@ -304,8 +304,7 @@ export class ProductService {
       // Reload the product to get updated data
       product = await this.findOne(product.id);
     } else {
-      // Create new product
-      product = this.productsRepository.create({
+      const data = {
         title: productData.title,
         url: productData.url,
         images: productData.images,
@@ -319,7 +318,10 @@ export class ProductService {
         source,
         categories,
         colors,
-      });
+      };
+      
+      // Create new product
+      product = this.productsRepository.create(data);
 
       product = await this.productsRepository.save(product);
     }

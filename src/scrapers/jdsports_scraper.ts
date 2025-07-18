@@ -148,7 +148,7 @@ class JDSportsScraper extends BaseScraper {
   private getPrice(elm, selector: string): number | undefined {
     const str = elm.find(selector).first();
     if (str && str.length){
-        const match = str.text().trim().match(/[\d.]+/);
+        const match = str.text().replace(',', '').trim().match(/[\d.]+/);
         return parseFloat(match[0]);
     }
   }

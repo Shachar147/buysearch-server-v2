@@ -117,6 +117,10 @@ export enum Category {
   BEAUTY = "Beauty",
   PERFUMES = "Perfumes",
   HOME = "Home",
+  HOME_KITCHEN = "Home: Kitchen",
+  HOME_SLEEP = "Home: Sleep",
+  HOME_DECOR = "Home: Decor",
+  HOME_BATH = "Home: Bath",
   HOME_WELLNESS = "Home & Wellness",
 
   // 💄 Makeup
@@ -1030,6 +1034,22 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.RUNNING_SHOES]: {
     en: ['running shoe', 'shoe for running', 'running-shoe'],
     he: ['נעל ריצה', 'נעלי ריצה', 'נעל-ריצה']
+  },
+  [Category.HOME_KITCHEN]: {
+    en: ['kitchen', 'spoons', 'forks'],
+    he: ['למטבח', 'צלחת', 'צלחות', 'סכו"ם', 'מזלגות', 'סכינים', 'כפות', 'כפיות', 'כוסות']
+  },
+  [Category.HOME_SLEEP]: {
+    en: ['sleep', 'bedroom', 'bedding', 'duvet', 'pillow', 'sheets', 'blanket', 'quilt', 'linen', 'comforter', 'bed', 'mattress', 'bedspread', 'pillowcase', 'coverlet', 'sleeping'],
+    he: ['שינה', 'חדר שינה', 'מצעים', 'שמיכה', 'כרית', 'סדין', 'שמיכות', 'כיסוי מיטה', 'ציפה', 'מיטה', 'מזרן', 'כיסוי', 'כריות', 'שנת לילה']
+  },
+  [Category.HOME_DECOR]: {
+    en: ['decor', 'decoration', 'design', 'home decor', 'ornament', 'vase', 'picture', 'frame', 'art', 'sculpture', 'candle', 'home styling', 'accessory', 'accessories', 'interior'],
+    he: ['עיצוב', 'דקור', 'דקורציה', 'קישוט', 'ואזה', 'תמונה', 'מסגרת', 'אומנות', 'פיסול', 'נר', 'סטיילינג', 'אביזר', 'אביזרים', 'פנים הבית']
+  },
+  [Category.HOME_BATH]: {
+    en: ['bath', 'bathroom', 'towel', 'towels', 'bathrobe', 'robe', 'shower', 'soap', 'bath mat', 'bathroom accessories', 'washcloth', 'loofah', 'bathroom decor', 'bath accessories'],
+    he: ['אמבטיה', 'מגבת', 'מגבות', 'חלוק', 'מקלחת', 'סבון', 'שטיחון', 'אביזרי אמבטיה', 'רחצה', 'ספוג', 'דקור אמבטיה', 'אביזרי רחצה']
   }
 };
 
