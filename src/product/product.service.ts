@@ -48,6 +48,8 @@ export class ProductService {
       .leftJoinAndSelect('product.categories', 'category')
       .leftJoinAndSelect('product.colors', 'color')
       .distinct(true);
+    // Only include products from active sources
+    qb.andWhere('source.isActive = true');
 
     if (filters.isFavourite && userId) {
       const favs = await this.favouritesService.getFavourites(userId);
@@ -98,6 +100,9 @@ export class ProductService {
       qb.orderBy('product.price', 'ASC');
     } else if (filters.sort === 'Price: High to Low') {
       qb.orderBy('product.price', 'DESC');
+    } else if (filters.sort === 'Sale: Highest Percent') {
+      // qb.andWhere('product.salePercent is not NULL')
+      qb.orderBy('product.salePercent', 'DESC').addOrderBy('product.id', 'DESC');
     } else if (filters.sort === 'Created: Newest First') {
       qb.orderBy('product.createdAt', 'DESC');
     } else if (filters.sort === 'Created: Oldest First') {
@@ -299,8 +304,7 @@ export class ProductService {
       // Reload the product to get updated data
       product = await this.findOne(product.id);
     } else {
-      // Create new product
-      product = this.productsRepository.create({
+      const data = {
         title: productData.title,
         url: productData.url,
         images: productData.images,
@@ -314,7 +318,10 @@ export class ProductService {
         source,
         categories,
         colors,
-      });
+      };
+      
+      // Create new product
+      product = this.productsRepository.create(data);
 
       product = await this.productsRepository.save(product);
     }

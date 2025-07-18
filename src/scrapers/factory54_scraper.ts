@@ -13,7 +13,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
+import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 dotenv.config();
@@ -324,7 +324,8 @@ class Factory54Scraper extends BaseScraper {
     const salePercent = calcSalePercent(price, oldPrice) ?? 0;
     const currency = item.currency || 'ILS';
     const brand = normalizeBrandName(item.item_brand || 'Unknown');
-    const categories = [category.name, item.item_category, item.item_category2, item.item_category3, item.item_category4].filter(Boolean);
+
+    const categories = [category.name, ...extractCategory(item.item_category), ...extractCategory(item.item_category2), ...extractCategory(item.item_category3), ...extractCategory(item.item_category4)].filter(Boolean);
     const gender = category.gender;
 
     const product = {

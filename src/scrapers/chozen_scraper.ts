@@ -300,7 +300,7 @@ class ChozenScraper extends BaseScraper {
     brand = normalizeBrandName(brand || 'Chozen');
     const categories = [category.name];
     const gender = category.gender;
-    if (!title || !url) return undefined;
+    if (!title || !url || price == undefined) return undefined;
     return this.createProduct({
       title,
       url,

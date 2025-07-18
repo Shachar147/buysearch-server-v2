@@ -148,7 +148,8 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'gstar': 'G-Star',
   'g-star raw': 'G-Star',
   'gstar raw': 'G-Star',
-  'do it like beckham': 'Do It Like Beckham'
+  'do it like beckham': 'Do It Like Beckham',
+  'jordan': 'Jordan'
 };
 
 // --- Hebrew to English Color Mapping ---

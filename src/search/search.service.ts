@@ -55,7 +55,7 @@ export class SearchService {
     'new era': ['new era', 'newera', 'ניו ארה', 'ניוארה'],
     'collusion': ['collusion', 'קולוז׳ן', 'קולוזן'],
     'skims': ['סקימס'],
-    'brownie': ['בראוני']
+    'brownie': ['בראוני'],
   };
 
   private HEBREW_COLOR_SYNONYMS = {
@@ -286,10 +286,30 @@ export class SearchService {
     filters.brands = Array.from(foundBrands).filter(Boolean);
 
     // Extract gender
-    if (lowerQuery.includes('men') || lowerQuery.includes('male')) {
-      filters.gender = 'Men';
-    } else if (lowerQuery.includes('women') || lowerQuery.includes('female')) {
+    if (lowerQuery.includes('women') || lowerQuery.includes('female') || lowerQuery.includes("נשים") || lowerQuery.includes("לאישה")) {
       filters.gender = 'Women';
+    } 
+    else if (lowerQuery.includes('men') || lowerQuery.includes('male') || lowerQuery.includes("גברים") || lowerQuery.includes("לגבר")) {
+      filters.gender = 'Men';
+    } else if (
+      lowerQuery.includes('unisex') ||
+      lowerQuery.includes('uni sex') ||
+      lowerQuery.includes('for home') ||
+      lowerQuery.includes('for men and women') ||
+      lowerQuery.includes('for women and men') ||
+      lowerQuery.includes('יוניסקס') ||
+      lowerQuery.includes('יוניסקסי') ||
+      lowerQuery.includes('יוניסקסים') ||
+      lowerQuery.includes('אוניסקס') ||
+      lowerQuery.includes('אוניסקסי') ||
+      lowerQuery.includes('אוניסקסים') ||
+      lowerQuery.includes('לגברים ונשים') ||
+      lowerQuery.includes('לנשים וגברים') ||
+      lowerQuery.includes('גברים נשים') ||
+      lowerQuery.includes('נשים גברים') ||
+      lowerQuery.includes('לבית')
+    ) {
+      filters.gender = 'Unisex';
     }
 
     // Extract general keywords (words that aren't colors, prices, or categories or brands)
@@ -326,8 +346,16 @@ export class SearchService {
       { key: 'Factory54', patterns: [/\bfactory\b/, /\bfactory54\b/, /factory 54/, /פקטורי/] },
       { key: 'Terminalx', patterns: [/\bterminal\b/, /\bterminalx\b/, /terminal x/, /טרמינל/, /טרמינל איקס/] },
       { key: 'Asos', patterns: [/\basos\b/, /אסוס/] },
-      { key: 'ItayBrands', patterns: [/\itay b\b/, /איתי בר/] },
-      { key: 'Zara', patterns: [/\zara\b/, /זארה/] },
+      { key: 'ItayBrands', patterns: [/\bitay b\b/, /איתי בר/] },
+      { key: 'Zara', patterns: [/\bzara\b/, /זארה/] },
+      { key: 'Gant', patterns: [/\bgant\b/, /גאנט/] },
+      { key: 'Nike', patterns: [/nike/, /נייק/, /נייקי/] },
+      { key: 'Renuar', patterns: [/renuar/, /רנואר/] },
+      { key: 'JDSports', patterns: [/jdsports/, /ג׳יידי/] },
+      { key: 'Story', patterns: [/story/, /סטורי/] },
+      { key: 'Chozen', patterns: [/chozen/, /צ׳וזן/, /צוזן/] },
+      { key: 'OneProjectShop', patterns: [/oneprojectshop/, /וואן ?פרוג׳קט/, /ואן פרוג׳קט/] },
+      { key: 'Castro', patterns: [/castro/, /קא?סטרו/] },
 
     ];
     filters.sources = sourceKeywords

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany, JoinTable, Index } from 'typeorm';
 import { Brand } from '../brand/brand.entity';
 import { Category } from '../category/category.entity';
 import { Color } from '../color/color.entity';
@@ -28,6 +28,7 @@ export class Product {
   oldPrice: number;
 
   @Column({ nullable: true })
+  @Index()
   salePercent: number;
 
   @Column()

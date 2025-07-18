@@ -63,6 +63,8 @@ export enum Category {
 
   // 👟 Shoes
   SHOES = "Shoes",
+  BASKETBALL_SHOES = "Basketball Shoes",
+  SOCCER_SHOES = "Soccer Shoes",
   TRAINERS = "Trainers",
   SNICKERS = "Snickers",
   SNEAKERS = "Sneakers",
@@ -75,6 +77,7 @@ export enum Category {
   MOCCASINS = "Moccasin Shoes",
   ELEGANT_SHOES = "Elegant Shoes",
   OXFORD_SHOES = "Oxford Shoes",
+  RUNNING_SHOES = "Running Shoes",
 
   // 👜 Accessories
   ACCESSORIES = "Accessories",
@@ -114,6 +117,10 @@ export enum Category {
   BEAUTY = "Beauty",
   PERFUMES = "Perfumes",
   HOME = "Home",
+  HOME_KITCHEN = "Home: Kitchen",
+  HOME_SLEEP = "Home: Sleep",
+  HOME_DECOR = "Home: Decor",
+  HOME_BATH = "Home: Bath",
   HOME_WELLNESS = "Home & Wellness",
 
   // 💄 Makeup
@@ -304,6 +311,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'שמלת מידי': [Category.DRESSES, Category.MIDI_DRESSES],
   'welness & body': [Category.WELLNESS],
   'טייץ': [Category.TIGHTS],
+  'legging': [Category.TIGHTS],
+  'leggings': [Category.TIGHTS],
   'טייצים': [Category.TIGHTS],
   'בגדי חוף': [Category.BEACHWEAR],
   'מכנסיים וטייצים': [Category.PANTS],
@@ -548,7 +557,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.TANKS]: {
     en: ['tank', 'tank top', 'tanktop'],
-    he: ['גופיה', 'גופיות']
+    he: ['גופיה', 'גופיות', 'גופיית']
   },
   [Category.SWEATERS]: {
     en: ['sweater', 'sweaters', 'jumper', 'pull', 'pull-over', 'pullover'],
@@ -672,7 +681,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.UNDERWEAR]: {
     en: ['underwear', 'briefs', 'undergarments'],
-    he: ['תחתון', 'תחתונים', 'הלבשה תחתונה', 'תחתוני ']
+    he: ['תחתון', 'תחתונים', 'הלבשה תחתונה', 'תחתוני ', 'תחתוני']
   },
   [Category.BOXERS]: {
     en: ['boxer', 'boxers'],
@@ -728,7 +737,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.FLIP_FLOPS]: {
     en: ['flip flop', 'flip flops', 'thong', 'thongs'],
-    he: ['כפכף', 'כפכפים']
+    he: ['כפכף', 'כפכפים', 'כפכפי ']
   },
   [Category.SLIPPERS]: {
     en: ['slipper', 'slippers'],
@@ -752,7 +761,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.ACCESSORIES]: {
     en: ['accessories', 'jewelry', 'watch', 'sunglasses', 'bag', 'hat', 'hats', 'belt', 'scarf', 'gloves', 'accessory'],
-    he: ['אביזרים', 'אקססוריז', 'אביזר', 'שעון', 'שעונים', 'תיק', 'תיקים', 'כובע', 'כובעים', 'משקפיים', 'משקפי שמש', 'צמיד', 'צמידים', 'שרשרת', 'שרשראות', 'עגיל', 'עגילים', 'טבעת', 'טבעות', 'חגורה', 'חגורות', 'ארנק', 'ארנקים']
+    he: ['אביזרים', 'אקססוריז', 'אביזר', 'שעון', 'שעונים', 'תיק', 'תיקים', 'כובע', 'כובעים', 'משקפיים', 'משקפי שמש', 'צמיד', 'צמידים', 'שרשרת', 'שרשראות', 'עגיל', 'עגילים', 'טבעת', 'טבעות', 'חגורה', 'חגורות', 'ארנק', 'ארנקים', 'נגד מים לטלפון', 'קייס ל']
   },
   [Category.BAGS]: {
     en: ['bag', 'bags', 'handbag', 'handbags'],
@@ -1013,6 +1022,34 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.PREGNANCY]: {
     en: ['pregnancy'],
     he: ['הריון', ' לידה ']
+  },
+  [Category.BASKETBALL_SHOES]: {
+    en: ['basketball shoe', 'kyrie shoe', 'kd shoe', 'lebron shoe', 'kevin durant shoe'],
+    he: ['נעלי כדורסל', 'נעל כדורסל']
+  },
+  [Category.SOCCER_SHOES]: {
+    en: ['soccer shoe', 'football shoe', 'messi shoe', 'ronaldo shoe'],
+    he: ['נעל כדורגל', 'נעלי כדורגל']
+  },
+  [Category.RUNNING_SHOES]: {
+    en: ['running shoe', 'shoe for running', 'running-shoe'],
+    he: ['נעל ריצה', 'נעלי ריצה', 'נעל-ריצה']
+  },
+  [Category.HOME_KITCHEN]: {
+    en: ['kitchen', 'spoons', 'forks'],
+    he: ['למטבח', 'צלחת', 'צלחות', 'סכו"ם', 'מזלגות', 'סכינים', 'כפות', 'כפיות', 'כוסות']
+  },
+  [Category.HOME_SLEEP]: {
+    en: ['sleep', 'bedroom', 'bedding', 'duvet', 'pillow', 'sheets', 'blanket', 'quilt', 'linen', 'comforter', 'bed', 'mattress', 'bedspread', 'pillowcase', 'coverlet', 'sleeping'],
+    he: ['שינה', 'חדר שינה', 'מצעים', 'שמיכה', 'כרית', 'סדין', 'שמיכות', 'כיסוי מיטה', 'ציפה', 'מיטה', 'מזרן', 'כיסוי', 'כריות', 'שנת לילה']
+  },
+  [Category.HOME_DECOR]: {
+    en: ['decor', 'decoration', 'design', 'home decor', 'ornament', 'vase', 'picture', 'frame', 'art', 'sculpture', 'candle', 'home styling', 'accessory', 'accessories', 'interior'],
+    he: ['עיצוב', 'דקור', 'דקורציה', 'קישוט', 'ואזה', 'תמונה', 'מסגרת', 'אומנות', 'פיסול', 'נר', 'סטיילינג', 'אביזר', 'אביזרים', 'פנים הבית']
+  },
+  [Category.HOME_BATH]: {
+    en: ['bath', 'bathroom', 'towel', 'towels', 'bathrobe', 'robe', 'shower', 'soap', 'bath mat', 'bathroom accessories', 'washcloth', 'loofah', 'bathroom decor', 'bath accessories'],
+    he: ['אמבטיה', 'מגבת', 'מגבות', 'חלוק', 'מקלחת', 'סבון', 'שטיחון', 'אביזרי אמבטיה', 'רחצה', 'ספוג', 'דקור אמבטיה', 'אביזרי רחצה']
   }
 };
 

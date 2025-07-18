@@ -24,6 +24,11 @@ export class ScraperCronService {
       { name: 'Story', script: join(__dirname, '../story_scraper.js') },
       { name: 'OneProjectShop', script: join(__dirname, '../oneprojectshop_scraper.js') },
       { name: 'Chozen', script: join(__dirname, '../chozen_scraper.js') },
+      { name: 'Nike', script: join(__dirname, '../nike_scraper.js') },
+      { name: 'JDSports', script: join(__dirname, '../jdsports_scraper.js') },
+      { name: 'Gant', script: join(__dirname, '../gant_scraper.js') },
+      { name: 'Renuar', script: join(__dirname, '../renuar_scraper.js') },
+      { name: 'Castro', script: join(__dirname, '../castro_scraper.js') },
       // Add more scrapers here
     ];
     await Promise.all(scrapers.map(({ name, script }) => {
