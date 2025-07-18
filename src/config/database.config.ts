@@ -6,29 +6,20 @@ function getEnv(name: string, fallback: string): string {
 
 const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: 'db.klasiqvayzpgbojzyxbg.supabase.co',
-  port: 5432,
-  username: 'postgres',
-  password: 'f4c5J0URwHIM5iAG',
-  database: 'postgres',
+  url: process.env.DATABASE_URL || 'postgresql://postgres.klasiqvayzpgbojzyxbg:f4c5J0URwHIM5iAG@aws-0-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: process.env.NODE_ENV !== 'production',
   logging: false,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-  extra: process.env.NODE_ENV === 'production'
-    ? {
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      }
-    : {},
+  ssl: true,
+  extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
 };
 
 console.log('Database config:', {
-  host: databaseConfig.host,
-  port: databaseConfig.port,
-  username: databaseConfig.username,
-  database: databaseConfig.database,
+  url: process.env.DATABASE_URL ? 'DATABASE_URL is set' : 'Using default DATABASE_URL',
   ssl: databaseConfig.ssl,
   extra: databaseConfig.extra,
 });

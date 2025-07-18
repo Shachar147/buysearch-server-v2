@@ -4,7 +4,7 @@ import { exec } from 'child_process';
 import { join } from 'path';
 
 const CronExpressionExtended = {
-  TWICE_DAILY: '0 2,12 * * *'
+  TWICE_DAILY: '0 2,10 * * *'
 }
 
 @Injectable()
