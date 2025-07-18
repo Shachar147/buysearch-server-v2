@@ -286,10 +286,30 @@ export class SearchService {
     filters.brands = Array.from(foundBrands).filter(Boolean);
 
     // Extract gender
-    if (lowerQuery.includes('men') || lowerQuery.includes('male')) {
-      filters.gender = 'Men';
-    } else if (lowerQuery.includes('women') || lowerQuery.includes('female')) {
+    if (lowerQuery.includes('women') || lowerQuery.includes('female') || lowerQuery.includes("נשים") || lowerQuery.includes("לאישה")) {
       filters.gender = 'Women';
+    } 
+    else if (lowerQuery.includes('men') || lowerQuery.includes('male') || lowerQuery.includes("גברים") || lowerQuery.includes("לגבר")) {
+      filters.gender = 'Men';
+    } else if (
+      lowerQuery.includes('unisex') ||
+      lowerQuery.includes('uni sex') ||
+      lowerQuery.includes('for home') ||
+      lowerQuery.includes('for men and women') ||
+      lowerQuery.includes('for women and men') ||
+      lowerQuery.includes('יוניסקס') ||
+      lowerQuery.includes('יוניסקסי') ||
+      lowerQuery.includes('יוניסקסים') ||
+      lowerQuery.includes('אוניסקס') ||
+      lowerQuery.includes('אוניסקסי') ||
+      lowerQuery.includes('אוניסקסים') ||
+      lowerQuery.includes('לגברים ונשים') ||
+      lowerQuery.includes('לנשים וגברים') ||
+      lowerQuery.includes('גברים נשים') ||
+      lowerQuery.includes('נשים גברים') ||
+      lowerQuery.includes('לבית')
+    ) {
+      filters.gender = 'Unisex';
     }
 
     // Extract general keywords (words that aren't colors, prices, or categories or brands)
