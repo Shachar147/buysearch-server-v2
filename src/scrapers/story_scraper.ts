@@ -9,7 +9,6 @@
 //
 // Usage: npm run scrape:story
 
-import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
