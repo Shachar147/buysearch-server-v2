@@ -30,6 +30,7 @@ console.log('Database config:', {
   username: databaseConfig.username,
   database: databaseConfig.database,
   ssl: databaseConfig.ssl,
+  extra: databaseConfig.extra,
 });
 
 export { databaseConfig };
