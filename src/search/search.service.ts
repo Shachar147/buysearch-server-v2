@@ -159,7 +159,7 @@ export class SearchService {
       }
     });
     Object.entries(CATEGORY_SEARCH_KEYWORDS_MAP).forEach(([category, synonyms]) => {
-      console.log(synonyms.he, lowerQuery)
+      // console.log(synonyms.he, lowerQuery)
       // if (!dbCategories.includes(category.toLowerCase())) return;
       if (synonyms.he.some(h => lowerQuery.includes(h))) foundCategories.add(category);
     });

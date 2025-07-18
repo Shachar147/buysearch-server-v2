@@ -1037,7 +1037,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.HOME_KITCHEN]: {
     en: ['kitchen', 'spoons', 'forks'],
-    he: ['למטבח', 'צלחת', 'צלחות', 'סכו"ם', 'מזלגות', 'סכינים', 'כפות', 'כפיות', 'כוסות']
+    he: ['למטבח', 'צלחת', 'צלחות', 'סכו"ם', 'מזלגות', 'סכינים', 'כפות', 'כפיות', 'כוסות', 'מטבח']
   },
   [Category.HOME_SLEEP]: {
     en: ['sleep', 'bedroom', 'bedding', 'duvet', 'pillow', 'sheets', 'blanket', 'quilt', 'linen', 'comforter', 'bed', 'mattress', 'bedspread', 'pillowcase', 'coverlet', 'sleeping'],
