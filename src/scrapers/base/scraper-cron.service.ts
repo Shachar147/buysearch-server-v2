@@ -11,7 +11,7 @@ const CronExpressionExtended = {
 export class ScraperCronService {
   private readonly logger = new Logger(ScraperCronService.name);
 
-  @Cron(CronExpressionExtended.TWICE_DAILY)
+  // @Cron(CronExpressionExtended.TWICE_DAILY)
   // @Cron(CronExpression.EVERY_MINUTE) // DEBUG
   async handleCron() {
     this.logger.log('Running ALL scraper cron jobs...');
