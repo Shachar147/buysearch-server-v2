@@ -535,6 +535,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'כלי הגשה': [Category.HOME],
     'קרם לצוואר': [Category.BEAUTY, Category.MAKEUP, Category.CREAMS_AND_OILS],
     'lingerie & nightwear': [Category.LINGERIE, Category.SLEEP_WEAR],
+    'sweatpants': [Category.JOGGERS],
+    'seatpant': [Category.JOGGERS],
 };
 
 // --- Category Synonyms Map ---

@@ -29,6 +29,7 @@ export class ScraperCronService {
       { name: 'Gant', script: join(__dirname, '../gant_scraper.js') },
       { name: 'Renuar', script: join(__dirname, '../renuar_scraper.js') },
       { name: 'Castro', script: join(__dirname, '../castro_scraper.js') },
+      { name: 'Tommy', script: join(__dirname, '../tommy_scraper.js') },
       // { name: 'StockX', script: join(__dirname, '../stockx_scraper.js') }, <- Detcted me as a bot
       // { name: 'Adidas', script: join(__dirname, '../adidas_scraper.js') }, <- Mixing up things
       // Add more scrapers here

@@ -356,6 +356,7 @@ export class SearchService {
       { key: 'Chozen', patterns: [/chozen/, /צ׳וזן/, /צוזן/] },
       { key: 'OneProjectShop', patterns: [/oneprojectshop/, /וואן ?פרוג׳קט/, /ואן פרוג׳קט/] },
       { key: 'Castro', patterns: [/castro/, /קא?סטרו/] },
+      { key: 'Tommy Hilfiger', patterns: [/tommy h/, /טומי ה/] },
 
     ];
     filters.sources = sourceKeywords

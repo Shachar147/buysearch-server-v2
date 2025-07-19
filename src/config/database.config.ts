@@ -18,10 +18,10 @@ const databaseConfig: TypeOrmModuleOptions = {
   },
 };
 
-console.log('Database config:', {
-  url: process.env.DATABASE_URL ? 'DATABASE_URL is set' : 'Using default DATABASE_URL',
-  ssl: databaseConfig.ssl,
-  extra: databaseConfig.extra,
-});
+// console.log('Database config:', {
+//   url: process.env.DATABASE_URL ? 'DATABASE_URL is set' : 'Using default DATABASE_URL',
+//   ssl: databaseConfig.ssl,
+//   extra: databaseConfig.extra,
+// });
 
 export { databaseConfig };
