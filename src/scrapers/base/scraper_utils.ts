@@ -2,11 +2,11 @@
 // =============================================================
 
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../../app.module';
 import { ProductService } from '../../product/product.service';
 import { ScrapingHistoryService, ScrapingType } from '../../scraping-history/scraping-history.service';
 import { CATEGORIES_TO_IGNORE, CATEGORY_NORMALIZATION_MAP } from '../../category.constants';
 import { ucfirst } from '../../search/search.utils';
+import { AppModule } from 'app.module';
 
 // --- Common Types ---
 export interface Product {
