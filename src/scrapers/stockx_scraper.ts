@@ -39,36 +39,35 @@ class StockXScraper extends BaseScraper {
   }
 
   private async fetchStockXPage(url: string, userAgent?: string, viewport?: { width: number, height: number }): Promise<string> {
+    let browser;
     try {
-        const browser = await puppeteer.launch({
+      browser = await puppeteer.launch({
         headless: true,
         args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-blink-features=AutomationControlled',
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+          '--disable-blink-features=AutomationControlled',
         ],
-        });
-        const page = await browser.newPage();
-        if (userAgent) {
-          await page.setUserAgent(userAgent);
-        }
-        if (viewport) {
-          await page.setViewport(viewport);
-        }
-        await page.setExtraHTTPHeaders({
-          'Accept-Language': 'en-US,en;q=0.9',
-        //   'Referer': 'https://www.google.com/',
-          'Connection': 'keep-alive',
-        //   'Upgrade-Insecure-Requests': '1'
-        });
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-        // Wait for images to load (StockX loads real images after a short delay)
-        await new Promise(res => setTimeout(res, 3000));
-        const html = await page.content();
-        await browser.close();
-        return html;
+      });
+      const page = await browser.newPage();
+      if (userAgent) {
+        await page.setUserAgent(userAgent);
+      }
+      if (viewport) {
+        await page.setViewport(viewport);
+      }
+      await page.setExtraHTTPHeaders({
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Connection': 'keep-alive',
+      });
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
+      await new Promise(res => setTimeout(res, 3000));
+      const html = await page.content();
+      return html;
     } catch {
-        return "";
+      return "";
+    } finally {
+      if (browser) await browser.close();
     }
   }
 
