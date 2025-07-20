@@ -10,10 +10,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: [
-      'https://buysearch-frontend.vercel.app',
-      'http://localhost:3000',
-    ],
+    origin: true, // Allow all origins
+    // origin: ['http://192.168.1.248:3000', 'http://localhost:3000', 'https://buysearch-frontend.onrender.com', 'https://buysearch-frontend.vercel.app'],
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization, X-Requested-With, X-HTTP-Method-Override, Origin, Access-Control-Request-Headers, Access-Control-Request-Method',
