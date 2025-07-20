@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { exec } from 'child_process';
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../../app.module';
 import { resolve } from 'path';
+import { AppModule } from 'app.module';
 
 const CronExpressionExtended = {
   TWICE_DAILY: '0 2,10 * * *'
@@ -13,7 +13,7 @@ const CronExpressionExtended = {
 export class ScraperCronService {
   private readonly logger = new Logger(ScraperCronService.name);
 
-  @Cron('32 * * * *')
+  // @Cron('32 * * * *')
   async handleCron() {
     const app = await NestFactory.createApplicationContext(AppModule);
     try {
