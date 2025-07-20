@@ -34,6 +34,7 @@ export class Product {
   @Column()
   currency: string;
 
+  @Index()
   @Column()
   gender: string;
 
@@ -44,12 +45,15 @@ export class Product {
   updatedAt: Date;
 
   // Relationships
+  @Index()
   @ManyToOne(() => Brand, brand => brand.products)
   brand: Brand;
 
+  @Index()
   @ManyToOne(() => Source, source => source.products)
   source: Source;
 
+  @Index()
   @ManyToMany(() => Category, category => category.products)
   @JoinTable({
     name: 'product_categories',
@@ -58,6 +62,7 @@ export class Product {
   })
   categories: Category[];
 
+  @Index()
   @ManyToMany(() => Color, color => color.products)
   @JoinTable({
     name: 'product_colors',
