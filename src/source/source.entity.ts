@@ -18,6 +18,12 @@ export class Source {
   @Column({ default: true })
   isActive: boolean;
 
+  @Column({ nullable: true })
+  scraper_path?: string;
+
+  @Column({ type: 'int', nullable: true })
+  run_at_hour?: number;
+
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 

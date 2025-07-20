@@ -22,7 +22,7 @@ export class ProductController {
     const category = query.category;
     const priceFrom = query.priceFrom;
     const priceTo = query.priceTo;
-    const sort = query.sort || 'Relevance';
+    const sort = query.sort || 'Updated: Newest First';
     const search = query.search;
     const gender = query.gender;
     const isFavourite = query.isFavourite;

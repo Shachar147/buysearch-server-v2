@@ -223,13 +223,13 @@ export class TommyScraper extends BaseScraper {
       let start = 0;
       let hasMore = true;
       let pageNum = 1;
-      const MAX_PAGES = 8;
+      const MAX_PAGES = 15;
       while (hasMore && pageNum <= MAX_PAGES) {
         let url = baseUrl;
         if (pageNum > 1) {
           url = `${baseUrl}?sz=${pageSize}&start=${start}`;
         }
-        this.logProgress(`Fetching ${url}`);
+        this.logProgress(`Fetching page ${pageNum} - ${url}`);
         const html = await this.fetchTommyPage(url);
         const $ = cheerio.load(html);
         const productDivs = $('.product');
