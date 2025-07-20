@@ -9,7 +9,7 @@ dotenv.config();
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ['http://192.168.1.248:3000', 'http://localhost:3000', 'https://buysearch-frontend.onrender.com'],
+    origin: ['http://192.168.1.248:3000', 'http://localhost:3000', 'https://buysearch-frontend.onrender.com', 'https://buysearch-frontend.vercel.app'],
     credentials: true,
   });
 

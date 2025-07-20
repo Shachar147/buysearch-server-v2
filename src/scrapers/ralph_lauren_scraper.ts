@@ -8,6 +8,9 @@ export class RalphLaurenScraper extends BaseScraper {
   protected readonly scraperName = 'Polo Ralph Lauren';
   protected readonly source = 'Polo Ralph Lauren';
 
+  // todo: fix sale price
+  // todo: fix ralph lauren blocking "are you robot"
+
   protected getCategories(): BaseCategory[] {
     return [
       {
