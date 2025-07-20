@@ -241,7 +241,7 @@ export class TommyScraper extends BaseScraper {
           const productTile = $(el).find('.product-tile');
           // Product URL
           const urlPath = productTile.find('.pdpurl').attr('href') || productTile.find('.ds-product-name').attr('href');
-          const url = urlPath ? prefixHttp('usa.tommy.com' + urlPath) : '';
+          const url = (urlPath ? prefixHttp('usa.tommy.com' + urlPath) : '').split('?')[0];
           // Title
           const title = productTile.find('.ds-product-name span[role="heading"]').text().trim();
           // Images (main and alternates)

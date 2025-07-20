@@ -27,6 +27,7 @@
     "scrape:adidas": "npx ts-node -r tsconfig-paths/register src/scrapers/adidas_scraper.ts",
     "scrape:tommy": "npx ts-node -r tsconfig-paths/register src/scrapers/tommy_scraper.ts",
     "scrape:ralph": "npx ts-node -r tsconfig-paths/register src/scrapers/ralph_lauren_scraper.ts",
+    "scrape:alo": "npx ts-node -r tsconfig-paths/register src/scrapers/alo_yoga_scraper.ts",
     "scrape:all": "npm-run-all --parallel scrape:asos scrape:terminal scrape:factory scrape:itay scrape:zara scrape:story scrape:oneprojectshop scrape:chozen scrape:nike scrape:jd scrape:gant scrape:renuar scrape:castro scrape:adidas",
     "scrape:one-by-one": "npm run scrape:asos && npm run scrape:castro && npm run scrape:renuar && npm run scrape:story && npm run scrape:jdsports && npm run scrape:gant && npm run scrape:factory54 && npm run scrape:itaybrands && npm run scrape:chozen && npm run scrape:oneprojectshop && npm run scrape:terminalx && npm run scrape:nike && npm run scrape:adidas",
     "check:categories": "ts-node --transpile-only scripts/check-db-categories-vs-enum-nest.ts",
