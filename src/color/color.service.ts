@@ -69,4 +69,17 @@ export class ColorService {
     
     return colors;
   }
+
+  async findByNames(names: string[]): Promise<Color[]> {
+    return this.colorsRepository
+      .createQueryBuilder('color')
+      .where('color.isActive = true')
+      .andWhere('LOWER(color.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
+      .getMany();
+  }
+
+  async findByNameOrNames(nameOrNames: string): Promise<Color[]> {
+    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
+    return this.findByNames(names);
+  }
 } 
