@@ -184,11 +184,9 @@ class RenuarScraper extends BaseScraper {
         '--disable-features=Geolocation,Notifications'
       ]
     });
-    const page = await browser.newPage();
-
-    // Block geolocation and notifications
-    await page.evaluateOnNewDocument(() => {
-        // Block geolocation
+    try {
+      const page = await browser.newPage();
+      await page.evaluateOnNewDocument(() => {
         navigator.geolocation.getCurrentPosition = function() {
           throw new Error('Geolocation is disabled');
         };
@@ -199,14 +197,15 @@ class RenuarScraper extends BaseScraper {
         // @ts-ignore
         window.Notification = { permission: 'denied' };
       });
-
-    await page.setUserAgent(
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-    );
-    await page.goto(fetchUrl, { waitUntil: 'networkidle2', timeout: 60000 });
-    const html = await page.content();
-    await browser.close();
-    return html;
+      await page.setUserAgent(
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
+      );
+      await page.goto(fetchUrl, { waitUntil: 'networkidle2', timeout: 60000 });
+      const html = await page.content();
+      return html;
+    } finally {
+      await browser.close();
+    }
   }
 
   private parseRenuarProducts(html: string, category: CategoryType): Product[] {

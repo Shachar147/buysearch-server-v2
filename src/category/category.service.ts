@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
-import { PAGINATION_LIMIT } from '../consts';
+import { PAGINATION_LIMIT } from 'src/consts';
 
 @Injectable()
 export class CategoryService {
@@ -73,5 +73,18 @@ export class CategoryService {
     }
     
     return categories;
+  }
+
+  async findByNames(names: string[]): Promise<Category[]> {
+    return this.categoriesRepository
+      .createQueryBuilder('category')
+      .where('category.isActive = true')
+      .andWhere('LOWER(category.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
+      .getMany();
+  }
+
+  async findByNameOrNames(nameOrNames: string): Promise<Category[]> {
+    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
+    return this.findByNames(names);
   }
 } 

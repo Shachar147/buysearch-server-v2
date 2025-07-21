@@ -6,7 +6,7 @@ import { ucfirst } from './search.utils';
 
 import {
   CATEGORY_SEARCH_KEYWORDS_MAP
-} from '../category.constants';
+} from 'src/category.constants';
 import { normalizeBrandName } from '../scrapers/base/scraper_utils';
 
 export interface ParsedFilters {
