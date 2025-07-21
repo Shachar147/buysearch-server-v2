@@ -58,4 +58,17 @@ export class SourceService {
     
     return source;
   }
+
+  async findByNames(names: string[]): Promise<Source[]> {
+    return this.sourcesRepository
+      .createQueryBuilder('source')
+      .where('source.isActive = true')
+      .andWhere('LOWER(source.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
+      .getMany();
+  }
+
+  async findByNameOrNames(nameOrNames: string): Promise<Source[]> {
+    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
+    return this.findByNames(names);
+  }
 } 

@@ -35,6 +35,19 @@ export class BrandService {
     return this.brandsRepository.findOne({ where: { name, isActive: true } });
   }
 
+  async findByNames(names: string[]): Promise<Brand[]> {
+    return this.brandsRepository
+      .createQueryBuilder('brand')
+      .where('brand.isActive = true')
+      .andWhere('LOWER(brand.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
+      .getMany();
+  }
+
+  async findByNameOrNames(nameOrNames: string): Promise<Brand[]> {
+    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
+    return this.findByNames(names);
+  }
+
   async create(createBrandDto: Partial<Brand>): Promise<Brand> {
     const brand = this.brandsRepository.create(createBrandDto);
     return this.brandsRepository.save(brand);

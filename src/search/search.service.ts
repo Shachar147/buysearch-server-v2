@@ -56,6 +56,7 @@ export class SearchService {
     'collusion': ['collusion', 'קולוז׳ן', 'קולוזן'],
     'skims': ['סקימס'],
     'brownie': ['בראוני'],
+    'alo yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה']
   };
 
   private HEBREW_COLOR_SYNONYMS = {
@@ -270,12 +271,14 @@ export class SearchService {
       return str.replace(/&/g, 'and').replace(/\band\b/g, 'and').replace(/\s+/g, ' ').trim();
     }
     const normalizedQuery = lowerQuery.replace(/&/g, 'and').replace(/\band\b/g, 'and').replace(/\s+/g, ' ').trim();
+    // dbBrands.sort()
     dbBrands.forEach(brand => {
       if (normalizedQuery.includes(normalizeBrandStr(brand))) {
         foundBrands.add(ucfirst(brand));
       }
     });
     Object.entries(this.BRAND_SYNONYMS).forEach(([brand, synonyms]) => {
+      // console.log(normalizedQuery,brand, synonyms)
       if (!dbBrands.includes(brand.toLowerCase())) return;
       synonyms.forEach(synonym => {
         if (normalizedQuery.includes(normalizeBrandStr(synonym))) {
