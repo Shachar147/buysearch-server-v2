@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brand } from './brand.entity';
-import { PAGINATION_LIMIT } from 'src/consts';
+import { PAGINATION_LIMIT } from '../consts';
 
 @Injectable()
 export class BrandService {
@@ -33,19 +33,6 @@ export class BrandService {
 
   async findByName(name: string): Promise<Brand | null> {
     return this.brandsRepository.findOne({ where: { name, isActive: true } });
-  }
-
-  async findByNames(names: string[]): Promise<Brand[]> {
-    return this.brandsRepository
-      .createQueryBuilder('brand')
-      .where('brand.isActive = true')
-      .andWhere('LOWER(brand.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
-      .getMany();
-  }
-
-  async findByNameOrNames(nameOrNames: string): Promise<Brand[]> {
-    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
-    return this.findByNames(names);
   }
 
   async create(createBrandDto: Partial<Brand>): Promise<Brand> {

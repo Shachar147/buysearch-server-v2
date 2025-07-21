@@ -108,15 +108,12 @@ class ItayBrandsScraper extends BaseScraper {
 
   private async fetchItayBrandsPage(url: string): Promise<string> {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    try {
-      const page = await browser.newPage();
-      await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
-      await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-      const html = await page.content();
-      return html;
-    } finally {
-      await browser.close();
-    }
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+    const html = await page.content();
+    await browser.close();
+    return html;
   }
 
   /**
