@@ -56,6 +56,7 @@ export class SearchService {
     'collusion': ['collusion', 'קולוז׳ן', 'קולוזן'],
     'skims': ['סקימס'],
     'brownie': ['בראוני'],
+    'alo yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה']
   };
 
   private HEBREW_COLOR_SYNONYMS = {
@@ -277,6 +278,7 @@ export class SearchService {
     });
     Object.entries(this.BRAND_SYNONYMS).forEach(([brand, synonyms]) => {
       if (!dbBrands.includes(brand.toLowerCase())) return;
+      console.log(normalizedQuery, brand, synonyms)
       synonyms.forEach(synonym => {
         if (normalizedQuery.includes(normalizeBrandStr(synonym))) {
           foundBrands.add(normalizeBrandName(ucfirst(brand)));
