@@ -190,7 +190,7 @@ class StyleForRentScraper extends BaseScraper {
                     if (lastImage.startsWith('//')){
                         lastImage = `http:${lastImage}`;
                     }
-                    lastImage = lastImage.split('?')[0]; // split(',').join('%2C');
+                    lastImage = lastImage.split('?')[0].split(',').join('%2C');
                     // console.log(lastImage);
                     images.push(lastImage);
                   }
