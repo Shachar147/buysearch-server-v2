@@ -9,6 +9,7 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index('idx_product_title')
   @Column()
   title: string;
 
@@ -18,12 +19,15 @@ export class Product {
   @Column('simple-array')
   images: string[];
 
+  @Index('idx_product_is_selling_fast')
   @Column()
   isSellingFast: boolean;
 
+  @Index('idx_product_price')
   @Column('decimal', { precision: 10, scale: 2, nullable: true })
   price: number;
 
+  @Index('idx_product_old_price')
   @Column('decimal', { precision: 10, scale: 2, nullable: true })
   oldPrice: number;
 
@@ -31,6 +35,7 @@ export class Product {
   @Index()
   salePercent: number;
 
+  @Index('idx_product_currency')
   @Column()
   currency: string;
 
@@ -38,9 +43,11 @@ export class Product {
   @Column()
   gender: string;
 
+  @Index('idx_product_created_at')
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
+  @Index('idx_product_updated_at')
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
