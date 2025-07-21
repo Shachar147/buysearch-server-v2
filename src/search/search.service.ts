@@ -271,14 +271,15 @@ export class SearchService {
       return str.replace(/&/g, 'and').replace(/\band\b/g, 'and').replace(/\s+/g, ' ').trim();
     }
     const normalizedQuery = lowerQuery.replace(/&/g, 'and').replace(/\band\b/g, 'and').replace(/\s+/g, ' ').trim();
+    // dbBrands.sort()
     dbBrands.forEach(brand => {
       if (normalizedQuery.includes(normalizeBrandStr(brand))) {
         foundBrands.add(ucfirst(brand));
       }
     });
     Object.entries(this.BRAND_SYNONYMS).forEach(([brand, synonyms]) => {
+      // console.log(normalizedQuery,brand, synonyms)
       if (!dbBrands.includes(brand.toLowerCase())) return;
-      console.log(normalizedQuery, brand, synonyms)
       synonyms.forEach(synonym => {
         if (normalizedQuery.includes(normalizeBrandStr(synonym))) {
           foundBrands.add(normalizeBrandName(ucfirst(brand)));
