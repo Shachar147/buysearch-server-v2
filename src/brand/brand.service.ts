@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Brand } from './brand.entity';
-import { PAGINATION_LIMIT } from 'src/consts';
+import { PAGINATION_LIMIT } from '../consts';
 
 @Injectable()
 export class BrandService {

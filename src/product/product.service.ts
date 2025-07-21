@@ -9,7 +9,7 @@ import { SourceService } from '../source/source.service';
 import { Brackets } from 'typeorm';
 import { FavouritesService } from '../favourites/favourites.service';
 import { PriceHistoryService } from '../price-history/price-history.service';
-import { PAGINATION_LIMIT } from 'src/consts';
+import { PAGINATION_LIMIT } from '../consts';
 
 export interface ProductFilters {
   color?: string;
