@@ -29,8 +29,11 @@ export class ProductController {
     const filters: any = { offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender };
     if (isFavourite !== undefined) filters.isFavourite = isFavourite === 'true' || isFavourite === '';
     const userId = filters.isFavourite && req && req.user ? req.user.sub : undefined;
-    return this.productService.findAll({ ...query, sort }, userId);
-  }
+    console.time('findAll Execution Time');
+    const result = await this.productService.findAll({ ...query, sort }, userId);
+    console.timeEnd('findAll Execution Time');
+
+    return result;  }
 
   @Get('by-ids')
   async findByIds(@Query('ids') ids: string) {

@@ -537,6 +537,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'lingerie & nightwear': [Category.LINGERIE, Category.SLEEP_WEAR],
     'sweatpants': [Category.JOGGERS],
     'seatpant': [Category.JOGGERS],
+    'חולצת טי': [Category.T_SHIRTS],
+    'נעלי ': [Category.SHOES],
 };
 
 // --- Category Synonyms Map ---
