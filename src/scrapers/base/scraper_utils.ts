@@ -268,7 +268,7 @@ export function normalizeCategories(categories: string[]): string[] {
 
 // --- Utility Functions ---
 export function extractColors(title: string, apiColors: string[]): string[] {
-  const lowerTitle = title.toLowerCase().replace('tailored', '');
+  const lowerTitle = title.toLowerCase();
   const colorsSet = new Set(apiColors.map(c => c.toLowerCase()));
   
   // Add keyword-based detection

@@ -74,17 +74,4 @@ export class CategoryService {
     
     return categories;
   }
-
-  async findByNames(names: string[]): Promise<Category[]> {
-    return this.categoriesRepository
-      .createQueryBuilder('category')
-      .where('category.isActive = true')
-      .andWhere('LOWER(category.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
-      .getMany();
-  }
-
-  async findByNameOrNames(nameOrNames: string): Promise<Category[]> {
-    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
-    return this.findByNames(names);
-  }
 } 

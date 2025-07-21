@@ -35,19 +35,6 @@ export class ColorService {
     return this.colorsRepository.findOne({ where: { name, isActive: true } });
   }
 
-  async findByNames(names: string[]): Promise<Color[]> {
-    return this.colorsRepository
-      .createQueryBuilder('color')
-      .where('color.isActive = true')
-      .andWhere('LOWER(color.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
-      .getMany();
-  }
-
-  async findByNameOrNames(nameOrNames: string): Promise<Color[]> {
-    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
-    return this.findByNames(names);
-  }
-
   async create(createColorDto: Partial<Color>): Promise<Color> {
     const color = this.colorsRepository.create(createColorDto);
     return this.colorsRepository.save(color);

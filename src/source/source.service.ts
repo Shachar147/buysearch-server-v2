@@ -35,19 +35,6 @@ export class SourceService {
     return this.sourcesRepository.findOne({ where: { name, isActive: true } });
   }
 
-  async findByNames(names: string[]): Promise<Source[]> {
-    return this.sourcesRepository
-      .createQueryBuilder('source')
-      .where('source.isActive = true')
-      .andWhere('LOWER(source.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
-      .getMany();
-  }
-
-  async findByNameOrNames(nameOrNames: string): Promise<Source[]> {
-    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
-    return this.findByNames(names);
-  }
-
   async create(createSourceDto: Partial<Source>): Promise<Source> {
     const source = this.sourcesRepository.create(createSourceDto);
     return this.sourcesRepository.save(source);
