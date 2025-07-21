@@ -245,7 +245,7 @@ class StyleForRentScraper extends BaseScraper {
     //     ? category.name
     //     : 'Style For Rent'
     // );
-    const brand = normalizeBrandName(category.brand) ?? 'Style For Rent';
+    const brand = category.brand ? normalizeBrandName(category.brand) : 'Style For Rent';
 
     // Create product object
     const productJson = {
