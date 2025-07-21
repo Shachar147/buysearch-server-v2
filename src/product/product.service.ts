@@ -86,13 +86,13 @@ export class ProductService {
     qb.where('1=1');
 
     if (brandIds.length) {
-      qb.andWhere('product.brandId IN (:...brandIds)', { brandIds });
+      qb.andWhere('product."brandId" IN (:...brandIds)', { brandIds });
     }
     if (sourceIds.length) {
-      qb.andWhere('product.sourceId IN (:...sourceIds)', { sourceIds });
+      qb.andWhere('product."sourceId" IN (:...sourceIds)', { sourceIds });
     } else if (!filters.source) {
       // If no source filter is passed, only include products from active sources
-      qb.andWhere('product.sourceId IN (SELECT s.id FROM sources s WHERE s."isActive" = true)');
+      qb.andWhere('product."sourceId" IN (SELECT s.id FROM sources s WHERE s."isActive" = true)');
     }
     if (filters.gender) {
       qb.andWhere('LOWER(product.gender) = LOWER(:gender)', { gender: filters.gender });
@@ -108,20 +108,20 @@ export class ProductService {
     }
     if (filters.isOnSale !== undefined) {
       if (filters.isOnSale === 'Yes') {
-        qb.andWhere('product.oldPrice > product.price');
+        qb.andWhere('product."oldPrice" > product.price');
       } else if (filters.isOnSale === 'No') {
-        qb.andWhere('(product.oldPrice <= product.price OR product.oldPrice IS NULL)');
+        qb.andWhere('(product."oldPrice" <= product.price OR product.oldPrice IS NULL)');
       }
     }
     if (filters.salePercent !== undefined) {
-      qb.andWhere('product.salePercent >= :salePercent', { salePercent: filters.salePercent });
+      qb.andWhere('product."salePercent" >= :salePercent', { salePercent: filters.salePercent });
     }
     // For category and color, filter by product IDs in join tables
     if (categoryIds.length) {
-      qb.andWhere(`product.id IN (SELECT pc.productId FROM product_categories pc WHERE pc.categoryId IN (:...categoryIds))`, { categoryIds });
+      qb.andWhere(`product.id IN (SELECT pc."productId" FROM product_categories pc WHERE pc."categoryId" IN (:...categoryIds))`, { categoryIds });
     }
     if (colorIds.length) {
-      qb.andWhere(`product.id IN (SELECT pc.productId FROM product_colors pc WHERE pc.colorId IN (:...colorIds))`, { colorIds });
+      qb.andWhere(`product.id IN (SELECT pc."productId" FROM product_colors pc WHERE pc."colorId" IN (:...colorIds))`, { colorIds });
     }
     // Favourites
     if (filters.isFavourite && userId) {
@@ -182,6 +182,18 @@ export class ProductService {
     // Pagination
     qb.skip(offset).take(limit);
 
+    // // Log the generated query with parameters injected
+    // const [query, parameters] = qb.getQueryAndParameters();
+    // let interpolatedQuery = query;
+    // parameters.forEach((param, i) => {
+    //   const placeholder = new RegExp(`\\$${i + 1}`, 'g');
+    //   const value = typeof param === 'string' ? `'${param}'` : Array.isArray(param) ? param.map(p => typeof p === 'string' ? `'${p}'` : p).join(',') : param;
+    //   interpolatedQuery = interpolatedQuery.replace(placeholder, String(value));
+    // });
+    // console.log('--- EXECUTING QUERY ---');
+    // console.log(interpolatedQuery);
+    // console.log('-----------------------');
+
     // 3. Get product IDs and total
     const [products, total] = await qb.getManyAndCount();
     const productIds = products.map(p => p.id);
@@ -193,8 +205,12 @@ export class ProductService {
       relations: ['brand', 'categories', 'colors', 'source'],
     });
 
+    // Re-order the full products to match the sorted IDs from the first query
+    const productMap = new Map(fullProducts.map(p => [p.id, p]));
+    const sortedFullProducts = products.map(p => productMap.get(p.id)).filter(Boolean);
+
     // 5. Return results
-    const mappedData = fullProducts.map(product => ({
+    const mappedData = sortedFullProducts.map(product => ({
       ...product,
       brand: product.brand ? { id: product.brand.id, name: product.brand.name } : null,
       source: product.source ? { id: product.source.id, name: product.source.name } : null,
