@@ -63,7 +63,7 @@ export class ColorService {
     const colors: Color[] = [];
     
     for (const name of names) {
-      const color = await this.upsert(name);
+      const color = await this.upsert(name) ;
       colors.push(color);
     }
     

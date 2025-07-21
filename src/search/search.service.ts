@@ -56,7 +56,8 @@ export class SearchService {
     'collusion': ['collusion', 'קולוז׳ן', 'קולוזן'],
     'skims': ['סקימס'],
     'brownie': ['בראוני'],
-    'alo yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה']
+    'alo yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה'],
+    'styleforrent': ['styleforrent', 'סטייל פור', 'style for r', 'סטיילפור']
   };
 
   private HEBREW_COLOR_SYNONYMS = {
@@ -234,9 +235,9 @@ export class SearchService {
 
     // Fetch all DB values for brands, categories, colors
     const [brandsRes, categoriesRes, colorsRes] = await Promise.all([
-      this.brandService.findAll(0, 1000),
-      this.categoryService.findAll(0, 1000, ''),
-      this.colorService.findAll(0, 1000),
+      this.brandService.findAll(0, 10000),
+      this.categoryService.findAll(0, 10000, ''),
+      this.colorService.findAll(0, 10000),
     ]);
     const dbBrands = (brandsRes.data || []).map((b: any) => b.name.toLowerCase());
     const dbCategories = (categoriesRes.data || []).map((c: any) => c.name.toLowerCase());

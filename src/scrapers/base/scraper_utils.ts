@@ -275,6 +275,10 @@ export function extractColors(title: string, apiColors: string[]): string[] {
   COLOR_KEYWORDS.forEach((c) => {
     if (lowerTitle.includes(c)) colorsSet.add(c);
   });
+
+  Object.keys(HEBREW_COLOR_MAP).forEach((c) => {
+    if (lowerTitle.includes(c)) colorsSet.add(HEBREW_COLOR_MAP[c]);
+  });
   
   // Add alias-based detection
   for (const [alias, color] of Object.entries(COLOR_ALIASES)) {
