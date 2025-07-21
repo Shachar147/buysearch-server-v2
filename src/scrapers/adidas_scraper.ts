@@ -4,7 +4,6 @@ import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
-import { Category } from '../category.constants';
 dotenv.config();
 
 // todo: fix (right now it mixing up Men, Women, etc) <- and not only shoes...
@@ -12,63 +11,9 @@ dotenv.config();
 const CATEGORIES: CategoryType[] = [
   {
     id: 'men-shoes-outlet',
-    name: Category.SHOES,
+    name: "Sale",
     gender: 'Men',
     url: 'https://www.adidas.co.il/he/men-shoes-outlet',
-  },
-  {
-    id: 'men-shoes',
-    name: Category.SHOES,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-shoes',
-  },
-  {
-    id: 'men-originals-clothing',
-    name: Category.CLOTHING,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-originals-clothing',
-  },
-  {
-    id: 'men-t_shirts',
-    name: Category.T_SHIRTS,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-t_shirts',
-  },
-  {
-    id: 'men-accessories',
-    name: Category.ACCESSORIES,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-accessories',
-  },
-  {
-    id: 'men-swimwear',
-    name: Category.SWIMWEAR,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-swimwear',
-  },
-  {
-    id: 'men-shorts',
-    name: Category.SHORTS,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-shorts',
-  },
-  {
-    id: 'men-hoodies',
-    name: Category.SWEATERS,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-hoodies',
-  },
-  {
-    id: 'men-trousers',
-    name: Category.TROUSERS,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-trousers',
-  },
-  {
-    id: 'men-jackets',
-    name: Category.JACKETS_COATS,
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-jackets',
   },
 ];
 
@@ -88,29 +33,30 @@ class AdidasScraper extends BaseScraper {
 
   private async fetchAdidasPage(url: string): Promise<string> {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const page = await browser.newPage();
+    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+    // Try to accept cookie consent if it appears
     try {
-      const page = await browser.newPage();
-      await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
-      await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-      // Try to accept cookie consent if it appears
-      try {
-        await page.waitForSelector('button', { timeout: 3000 });
-        const buttons = await page.$$('button');
-        for (const btn of buttons) {
-          const text = await page.evaluate(el => el.textContent, btn);
-          if (text && text.includes('אני מאשר')) {
-            await btn.click();
-            await new Promise(res => setTimeout(res, 1000));
-            break;
-          }
+      // Wait for the consent button if it appears (up to 3 seconds)
+      await page.waitForSelector('button', { timeout: 3000 });
+      // Find the button with the text 'אני מאשר/ת' (Hebrew for 'I Accept')
+      const buttons = await page.$$('button');
+      for (const btn of buttons) {
+        const text = await page.evaluate(el => el.textContent, btn);
+        if (text && text.includes('אני מאשר')) {
+          await btn.click();
+          await new Promise(res => setTimeout(res, 1000)); // Wait for modal to close
+          break;
         }
-      } catch (e) {}
-      await new Promise(res => setTimeout(res, 5000));
-      const html = await page.content();
-      return html;
-    } finally {
-      await browser.close();
+      }
+    } catch (e) {
+      // If not found, continue
     }
+    await new Promise(res => setTimeout(res, 5000)); // Wait 5 seconds
+    const html = await page.content();
+    await browser.close();
+    return html;
   }
 
   private parseAdidasProducts(html: string, category: CategoryType): Product[] {

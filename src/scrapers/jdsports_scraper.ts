@@ -124,20 +124,24 @@ class JDSportsScraper extends BaseScraper {
   }
 
   private async fetchJDSportsPage(url: string): Promise<string> {
-    let browser;
     try {
-      browser = await puppeteer.launch({ headless: true });
-      const page = await browser.newPage();
-      await page.setUserAgent(
+        const browser = await puppeteer.launch({ headless: true });
+        const page = await browser.newPage();
+        await page.setUserAgent(
         'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-      );
-      await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-      const html = await page.content();
-      return html;
+        );
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+        const html = await page.content();
+
+        // if (html.includes("product-item")){
+        //     console.log("all good");
+        // } else {
+        //     console.log("oops")
+        // }
+        await browser.close();
+        return html;
     } catch {
-      return "";
-    } finally {
-      if (browser) await browser.close();
+        return "";
     }
   }
 
