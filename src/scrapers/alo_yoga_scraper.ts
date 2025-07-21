@@ -17,7 +17,7 @@ export class AloYogaScraper extends BaseScraper {
       },
       {
         id: 'bras',
-        name: Category.LINGERIE, // Sports bras best fit as LINGERIE
+        name: Category.SPORT, // Sports bras best fit as LINGERIE
         gender: 'Women',
         url: 'https://www.aloyoga.com/he-il/collections/bras',
       },

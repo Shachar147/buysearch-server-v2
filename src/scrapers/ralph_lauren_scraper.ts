@@ -4,12 +4,12 @@ import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
 import { Product, extractColors, calcSalePercent, normalizeBrandName, prefixHttp } from './base/scraper_utils';
 import { Category } from '../category.constants';
 
+// V todo: fix sale price
+// todo: fix ralph lauren blocking "are you robot"
+
 export class RalphLaurenScraper extends BaseScraper {
   protected readonly scraperName = 'Polo Ralph Lauren';
   protected readonly source = 'Polo Ralph Lauren';
-
-  // todo: fix sale price
-  // todo: fix ralph lauren blocking "are you robot"
 
   protected getCategories(): BaseCategory[] {
     return [

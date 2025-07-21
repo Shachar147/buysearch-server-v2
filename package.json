@@ -22,6 +22,7 @@
     "scrape:jd": "npx ts-node -r tsconfig-paths/register src/scrapers/jdsports_scraper.ts",
     "scrape:gant": "npx ts-node -r tsconfig-paths/register src/scrapers/gant_scraper.ts",
     "scrape:renuar": "npx ts-node -r tsconfig-paths/register src/scrapers/renuar_scraper.ts",
+    "scrape:revolve": "npx ts-node -r tsconfig-paths/register src/scrapers/revolve_scraper.ts",
     "scrape:stockx": "npx ts-node -r tsconfig-paths/register src/scrapers/stockx_scraper.ts",
     "scrape:castro": "ts-node src/scrapers/castro_scraper.ts",
     "scrape:adidas": "npx ts-node -r tsconfig-paths/register src/scrapers/adidas_scraper.ts",

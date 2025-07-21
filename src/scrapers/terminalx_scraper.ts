@@ -1,14 +1,3 @@
-// terminalx_scraper.ts – v2 (using BaseScraper)
-// =============================================================
-// Features:
-// - Extends BaseScraper for common functionality
-// - Scans categories (configurable)
-// - Extracts product info (title, url, images, colors, price, brand, categories, gender, source)
-// - Uses both API info and keyword/alias enrichment
-// - Saves to PostgreSQL via ProductService
-//
-// Usage: npm run scrape:terminalx
-
 import axios from 'axios';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';

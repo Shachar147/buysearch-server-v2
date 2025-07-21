@@ -6,15 +6,15 @@ import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, 
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-// todo: fix (right now it mixing up Men, Women, etc) <- and not only shoes...
+// TODO: fix (right now it mixing up Men, Women, etc) <- and not only shoes...
 
 const CATEGORIES: CategoryType[] = [
-  {
-    id: 'men-shoes-outlet',
-    name: "Sale",
-    gender: 'Men',
-    url: 'https://www.adidas.co.il/he/men-shoes-outlet',
-  },
+  // {
+  //   id: 'men-shoes-outlet',
+  //   name: "Sale",
+  //   gender: 'Men',
+  //   url: 'https://www.adidas.co.il/he/men-shoes-outlet',
+  // },
 ];
 
 const BASE_URL = 'https://www.adidas.co.il';

@@ -1,14 +1,3 @@
-// zara_scraper.ts – v1
-// =============================================================
-// Features:
-// - Extends BaseScraper for common functionality
-// - Scans categories (configurable)
-// - Extracts product info (title, url, images, price, brand, categories, gender, source)
-// - Uses HTML parsing (cheerio) to extract data from <script type="application/ld+json">
-// - Saves to PostgreSQL via ProductService
-//
-// Usage: npm run scrape:zara
-
 import puppeteer from 'puppeteer-extra';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';

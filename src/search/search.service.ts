@@ -57,6 +57,7 @@ export class SearchService {
     'skims': ['סקימס'],
     'brownie': ['בראוני'],
     'alo yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה'],
+    'Alo Yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה'],
     'styleforrent': ['styleforrent', 'סטייל פור', 'style for r', 'סטיילפור']
   };
 

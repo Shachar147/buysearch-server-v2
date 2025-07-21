@@ -1,14 +1,3 @@
-// story_scraper.ts – v1
-// =============================================================
-// Features:
-// - Extends BaseScraper for common functionality
-// - Scans categories (configurable)
-// - Extracts product info (title, url, images, price, brand, categories, gender, source)
-// - Uses HTML parsing (cheerio) to extract data
-// - Saves to PostgreSQL via ProductService
-//
-// Usage: npm run scrape:story
-
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
