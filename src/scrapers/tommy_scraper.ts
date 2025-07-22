@@ -7,7 +7,7 @@ import { Category } from '../category.constants';
 // todo: fix
 
 export class TommyScraper extends BaseScraper {
-  protected readonly scraperName = 'Tommy';
+  protected readonly scraperName = 'Tommy Hilfiger';
   protected readonly source = 'Tommy Hilfiger';
 
   protected getCategories(): BaseCategory[] {
