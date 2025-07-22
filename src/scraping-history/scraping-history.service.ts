@@ -122,4 +122,41 @@ export class ScrapingHistoryService {
       order: { startTime: 'DESC' },
     });
   }
+
+  // Get all unique scrapers
+  async getAllScrapers(): Promise<string[]> {
+    const result = await this.scrapingHistoryRepository.createQueryBuilder('sh')
+      .select('DISTINCT sh.scraper', 'scraper')
+      .getRawMany();
+    return result.map((row: { scraper: string }) => row.scraper);
+  }
+
+  // Get all histories for a scraper (no limit, newest first)
+  async getAllHistoryForScraper(scraper: string): Promise<ScrapingHistory[]> {
+    return this.scrapingHistoryRepository.find({
+      where: { scraper },
+      order: { startTime: 'DESC' },
+    });
+  }
+
+  // Get all in-progress sessions for a scraper (newest first)
+  async getInProgressSessions(scraper: string): Promise<ScrapingHistory[]> {
+    return this.scrapingHistoryRepository.find({
+      where: { scraper, status: ScrapingStatus.IN_PROGRESS },
+      order: { startTime: 'DESC' },
+    });
+  }
+
+  // Cancel all but the latest in-progress session for a scraper
+  async cancelOldInProgressSessions(scraper: string): Promise<number[]> {
+    const inProgress = await this.getInProgressSessions(scraper);
+    if (inProgress.length <= 1) return [];
+    // Keep the latest, cancel the rest
+    const toCancel = inProgress.slice(1);
+    const ids = toCancel.map(s => s.id);
+    if (ids.length > 0) {
+      await this.scrapingHistoryRepository.update(ids, { status: ScrapingStatus.FAILED, endTime: new Date() });
+    }
+    return ids;
+  }
 } 

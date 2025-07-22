@@ -6,6 +6,37 @@ import { ScrapingHistory } from './scraping-history.entity';
 export class ScrapingHistoryController {
   constructor(private readonly scrapingHistoryService: ScrapingHistoryService) {}
 
+  @Get('summary')
+  async getScraperSummaries() {
+    const scrapers = await this.scrapingHistoryService.getAllScrapers();
+    const summaries = [];
+    for (const scraper of scrapers) {
+      // Cancel old in-progress scans
+      await this.scrapingHistoryService.cancelOldInProgressSessions(scraper);
+      // Get all history
+      const history = await this.scrapingHistoryService.getAllHistoryForScraper(scraper);
+      // Get current scan (if any)
+      const inProgress = await this.scrapingHistoryService.getInProgressSessions(scraper);
+      const currentScan = inProgress.length > 0 ? inProgress[0] : null;
+      // Calculate rate (items per minute) for current scan
+      let ratePerMinute = null;
+      if (currentScan) {
+        const now = new Date();
+        const start = new Date(currentScan.startTime);
+        const elapsedMinutes = (now.getTime() - start.getTime()) / 60000;
+        const itemsScanned = (currentScan.createdItems || 0) + (currentScan.updatedItems || 0);
+        ratePerMinute = elapsedMinutes > 0 ? (itemsScanned / elapsedMinutes) : null;
+      }
+      summaries.push({
+        scraper,
+        history,
+        currentScan,
+        ratePerMinute,
+      });
+    }
+    return summaries;
+  }
+
   @Get()
   async findAll(@Query('limit') limit?: string): Promise<ScrapingHistory[]> {
     const limitNum = limit ? parseInt(limit, 10) : 50;

@@ -275,7 +275,11 @@ export class SearchService {
     const normalizedQuery = lowerQuery.replace(/&/g, 'and').replace(/\band\b/g, 'and').replace(/\s+/g, ' ').trim();
     // dbBrands.sort()
     dbBrands.forEach(brand => {
-      if (normalizedQuery.includes(normalizeBrandStr(brand))) {
+
+      const exactMatch = (brand.length > 3 && normalizedQuery.includes(normalizeBrandStr(brand)));
+      const containsAsWord = normalizedQuery.includes(` ${normalizeBrandStr(brand)}`) || normalizedQuery.includes(`${normalizeBrandStr(brand)} `);
+
+      if (exactMatch || containsAsWord) {
         foundBrands.add(ucfirst(brand));
       }
     });
@@ -291,7 +295,41 @@ export class SearchService {
     filters.brands = Array.from(foundBrands).filter(Boolean);
 
     // Extract gender
-    if (lowerQuery.includes('women') || lowerQuery.includes('female') || lowerQuery.includes("נשים") || lowerQuery.includes("לאישה")) {
+    if (
+      lowerQuery.includes('women') ||
+      lowerQuery.includes('female') ||
+      lowerQuery.includes('strapless') ||
+      lowerQuery.includes('dress') ||
+      lowerQuery.includes('skirt') ||
+      lowerQuery.includes('blouse') ||
+      lowerQuery.includes('heel') ||
+      lowerQuery.includes('lingerie') ||
+      // lowerQuery.includes('bra') ||
+      lowerQuery.includes('panties') ||
+      lowerQuery.includes('bikini') ||
+      lowerQuery.includes('swimsuit') ||
+      // lowerQuery.includes('gown') ||
+      // lowerQuery.includes('tunic') ||
+      // lowerQuery.includes('camisole') ||
+      lowerQuery.includes('women\'s') ||
+      lowerQuery.includes('ladies') ||
+      lowerQuery.includes('נשים') ||
+      lowerQuery.includes('לאישה') ||
+      lowerQuery.includes('שמלה') ||
+      lowerQuery.includes('חצאית') ||
+      lowerQuery.includes('חזיה') ||
+      lowerQuery.includes('חזייה') ||
+      lowerQuery.includes('חזיות') ||
+      lowerQuery.includes('תחתונים') ||
+      lowerQuery.includes('ביקיני') ||
+      lowerQuery.includes('שמלה') ||
+      lowerQuery.includes('שמלות') ||
+      lowerQuery.includes('עליונית') ||
+      lowerQuery.includes('נעל עקב') ||
+      lowerQuery.includes('נעלי עקב') ||
+      lowerQuery.includes('הלבשה תחתונה') ||
+      lowerQuery.includes('לנשים')
+    ) {
       filters.gender = 'Women';
     } 
     else if (lowerQuery.includes('men') || lowerQuery.includes('male') || lowerQuery.includes("גברים") || lowerQuery.includes("לגבר")) {
