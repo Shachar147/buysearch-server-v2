@@ -3,7 +3,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { exec } from 'child_process';
 import { NestFactory } from '@nestjs/core';
 import { resolve } from 'path';
-import { AppModule } from 'app.module';
+import { AppModule } from '../../../app.module';
 
 const CronExpressionExtended = {
   TWICE_DAILY: '0 2,10 * * *'

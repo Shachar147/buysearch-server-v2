@@ -550,7 +550,9 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'mini dress': [Category.MINI_DRESSES],
     'mini skirt': [Category.MINI_SKIRTS],
     'midi dress': [Category.MIDI_DRESSES],
-    'midi skirt': [Category.MIDI_SKIRTS]
+    'midi skirt': [Category.MIDI_SKIRTS],
+    'Lingerie & Nightwear': [Category.LINGERIE],
+    'creams and oils': [Category.CREAMS_AND_OILS],
 };
 
 // --- Category Synonyms Map ---
