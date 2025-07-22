@@ -443,6 +443,36 @@ export async function processProducts(
   products: Product[],
   productsService: ProductService
 ): Promise<ScrapingResult> {
+  const startTime = Date.now();
+  const totalProducts = products.length;
+
+  try {
+    const result = await productsService.bulkUpsertProducts(products);
+
+    const created = result.created;
+    const updated = result.updated;
+    const totalProcessed = result.total;
+
+    const elapsed = (Date.now() - startTime) / 1000;
+    const rate = totalProcessed / elapsed;
+    // const etaSeconds = rate > 0 ? Math.round((totalProducts - totalProcessed) / rate) : 0;
+    // const etaMinutes = Math.floor(etaSeconds / 60);
+    // const etaSec = etaSeconds % 60;
+
+    console.log(`✅ Bulk upsert done: ${totalProcessed}/${totalProducts} | Added: ${created} | Updated: ${updated} | Time: ${elapsed.toFixed(1)}s` );
+
+    return { created, updated, total: totalProcessed };
+  } catch (error) {
+    console.error(`❌ Bulk upsert failed: ${error.message}`);
+    return { created: 0, updated: 0, total: 0 };
+  }
+}
+
+
+export async function processProductsOld(
+  products: Product[],
+  productsService: ProductService
+): Promise<ScrapingResult> {
   let newProducts = 0;
   let updatedProducts = 0;
   let totalProcessed = 0;

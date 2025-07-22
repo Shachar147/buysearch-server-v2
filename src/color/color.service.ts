@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Color } from './color.entity';
 import { PAGINATION_LIMIT } from '../consts';
 
@@ -59,17 +59,6 @@ export class ColorService {
     return color;
   }
 
-  async upsertMany(names: string[]): Promise<Color[]> {
-    const colors: Color[] = [];
-    
-    for (const name of names) {
-      const color = await this.upsert(name) ;
-      colors.push(color);
-    }
-    
-    return colors;
-  }
-
   async findByNames(names: string[]): Promise<Color[]> {
     return this.colorsRepository
       .createQueryBuilder('color')
@@ -82,4 +71,29 @@ export class ColorService {
     const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
     return this.findByNames(names);
   }
+
+  async upsertManyOld(names: string[]): Promise<Color[]> {
+    const colors: Color[] = [];
+    
+    for (const name of names) {
+      const color = await this.upsert(name) ;
+      colors.push(color);
+    }
+    
+    return colors;
+  }
+
+  async upsertMany(colors: string[]): Promise<Color[]> {
+    const colorObjects: Partial<Color>[] = colors.map(color =>
+      ({ name: color }),
+    );
+  
+    await this.colorsRepository.upsert(colorObjects, ['name']);
+  
+    const names = colorObjects.map(c => c.name).filter(Boolean);
+    return this.colorsRepository.find({
+      where: { name: In(names) },
+    });
+  }
+  
 } 

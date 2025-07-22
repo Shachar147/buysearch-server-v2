@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Source } from './source.entity';
 import { PAGINATION_LIMIT } from '../consts';
 
@@ -71,4 +71,18 @@ export class SourceService {
     const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
     return this.findByNames(names);
   }
+
+  async upsertMany(sources: string[]): Promise<Source[]> {
+    const sourceObjects: Partial<Source>[] = sources.map(source =>
+      ({ name: source }),
+    );
+  
+    await this.sourcesRepository.upsert(sourceObjects, ['name']);
+  
+    const names = sourceObjects.map(s => s.name).filter(Boolean);
+    return this.sourcesRepository.find({
+      where: { name: In(names) },
+    });
+  }
+  
 } 

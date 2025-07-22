@@ -29,6 +29,28 @@ export interface ProductFilters {
   salePercent?: number;
 }
 
+interface ProductInput {
+  title: string;
+  url: string;
+  images: string[];
+  colors: string[];
+  isSellingFast: boolean;
+  price: number | null;
+  oldPrice: number | null;
+  salePercent: number | null;
+  currency: string;
+  brand: string;
+  categories: string[];
+  gender: string;
+  source: string;
+}
+
+export type ScrapingResult = {
+  created: number;
+  updated: number;
+  total: number;
+};
+
 @Injectable()
 export class ProductService {
   constructor(
@@ -416,21 +438,7 @@ export class ProductService {
     await this.productsRepository.delete(id);
   }
 
-  async upsertProduct(productData: {
-    title: string;
-    url: string;
-    images: string[];
-    colors: string[];
-    isSellingFast: boolean;
-    price: number | null;
-    oldPrice: number | null;
-    salePercent: number | null;
-    currency: string;
-    brand: string;
-    categories: string[];
-    gender: string;
-    source: string;
-  }): Promise<{ product: Product; created: boolean; updated: boolean }> {
+  async upsertProduct(productData: ProductInput): Promise<{ product: Product; created: boolean; updated: boolean }> {
     // Upsert brand
     const brand = await this.brandService.upsert(productData.brand);
 
@@ -567,4 +575,137 @@ export class ProductService {
       .getMany();
     return products.map(p => ({ id: p.id, url: p.url }));
   }
+
+  async bulkUpsertProducts(products: ProductInput[]): Promise<ScrapingResult> {
+    // Deduplicate input products by url, keep first occurrence only
+    const seenUrls = new Set<string>();
+    const uniqueProducts = products.filter(p => {
+      if (seenUrls.has(p.url)) return false;
+      seenUrls.add(p.url);
+      return true;
+    });
+
+    // Optional: Log duplicates if you want
+    const duplicatesCount = products.length - uniqueProducts.length;
+    if (duplicatesCount > 0) {
+      console.warn(`Ignored ${duplicatesCount} duplicate products by URL.`);
+    }
+
+    const uniqueBrands = [...new Set(uniqueProducts.map(p => p.brand))];
+    const uniqueSources = [...new Set(uniqueProducts.map(p => p.source))];
+    const uniqueColors = [...new Set(uniqueProducts.flatMap(p => p.colors))];
+    const uniqueCategoryGenderPairs = [
+      ...new Set(uniqueProducts.flatMap(p => p.categories.map(cat => `${p.gender}|${cat}`)))
+    ];
+  
+    const [brands, sources, colors, categories] = await Promise.all([
+      this.brandService.upsertMany(uniqueBrands), // returns name → Brand map
+      this.sourceService.upsertMany(uniqueSources),
+      this.colorService.upsertMany(uniqueColors),
+      this.categoryService.upsertManyFromPairs(uniqueCategoryGenderPairs)
+    ]);
+  
+    const brandMap = new Map(brands.map(b => [b.name, b]));
+    const sourceMap = new Map(sources.map(s => [s.name, s]));
+    const colorMap = new Map(colors.map(c => [c.name, c]));
+    const categoryMap = new Map(categories.map(c => [`${c.gender}|${c.name}`, c]));
+  
+    const urls = uniqueProducts.map(p => p.url);
+    const existingProducts = await this.productsRepository.find({
+      where: { url: In(urls) },
+      relations: ['categories', 'colors', 'brand', 'source']
+    });
+    const existingMap = new Map(existingProducts.map(p => [p.url, p]));
+  
+    const productsToSave: Product[] = [];
+    const priceHistoryMap: { productId: number; price: number | null }[] = [];
+  
+    let newCount = 0;
+    let updatedCount = 0;
+
+    // Check for duplicate URLs in input products
+    const urlCounts = uniqueProducts.reduce((acc, p) => {
+      acc[p.url] = (acc[p.url] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const duplicateUrls = Object.entries(urlCounts)
+      .filter(([url, count]) => count > 1)
+      .map(([url]) => url);
+    
+    if (duplicateUrls.length > 0) {
+      console.warn(`Warning: Found duplicate URLs in input products:`, duplicateUrls);
+    }
+  
+    for (const input of uniqueProducts) {
+      const existing = existingMap.get(input.url);
+  
+      const brand = brandMap.get(input.brand);
+      const source = sourceMap.get(input.source);
+      const colorEntities = input.colors.map(c => colorMap.get(c));
+      const categoryEntities = input.categories.map(cat => categoryMap.get(`${input.gender}|${cat}`));
+  
+      if (existing) {
+        const shouldUpdate = 
+          existing.title !== input.title ||
+          JSON.stringify(existing.images) !== JSON.stringify(input.images) ||
+          existing.isSellingFast !== input.isSellingFast ||
+          existing.price !== input.price ||
+          existing.oldPrice !== input.oldPrice ||
+          existing.salePercent !== input.salePercent ||
+          existing.currency !== input.currency ||
+          existing.gender !== input.gender ||
+          existing.brand?.id !== brand?.id ||
+          existing.source?.id !== source?.id;
+  
+        if (shouldUpdate) {
+          Object.assign(existing, {
+            title: input.title,
+            images: input.images,
+            isSellingFast: input.isSellingFast,
+            price: input.price,
+            oldPrice: input.oldPrice,
+            salePercent: input.salePercent,
+            currency: input.currency,
+            gender: input.gender,
+            brand,
+            source
+          });
+          updatedCount++;
+          productsToSave.push(existing);
+        }
+  
+        existing.colors = colorEntities;
+        existing.categories = categoryEntities;
+  
+        const oldMin = existing.price ?? existing.oldPrice;
+        const newMin = input.price ?? input.oldPrice;
+        if (oldMin !== newMin) {
+          priceHistoryMap.push({ productId: existing.id, price: newMin });
+        }
+      } else {
+        const newProduct = this.productsRepository.create({
+          ...input,
+          brand,
+          source,
+          colors: colorEntities,
+          categories: categoryEntities,
+        });
+        newCount++;
+        productsToSave.push(newProduct);
+      }
+    }
+  
+    // Save in chunks (optional: 100-200 at a time)
+    await this.productsRepository.save(productsToSave, { chunk: 100 });
+  
+    // Save price history
+    await this.priceHistoryService.addMany(priceHistoryMap);
+  
+    return {
+      created: newCount,
+      updated: updatedCount,
+      total: uniqueProducts.length
+    };
+  }  
 } 
