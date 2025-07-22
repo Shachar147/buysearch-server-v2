@@ -147,16 +147,25 @@ export class ScrapingHistoryService {
     });
   }
 
-  // Cancel all but the latest in-progress session for a scraper
   async cancelOldInProgressSessions(scraper: string): Promise<number[]> {
     const inProgress = await this.getInProgressSessions(scraper);
-    if (inProgress.length <= 1) return [];
-    // Keep the latest, cancel the rest
-    const toCancel = inProgress.slice(1);
+    const now = new Date();
+    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
+  
+    const toCancel = inProgress.filter((session, index) =>
+      index > 0 || // not the latest
+      new Date(session.startTime) < twelveHoursAgo // started > 12 hours ago
+    );
+  
     const ids = toCancel.map(s => s.id);
+  
     if (ids.length > 0) {
-      await this.scrapingHistoryRepository.update(ids, { status: ScrapingStatus.FAILED, endTime: new Date() });
+      await this.scrapingHistoryRepository.update(ids, {
+        status: ScrapingStatus.FAILED,
+        endTime: new Date()
+      });
     }
+  
     return ids;
   }
 } 

@@ -9,16 +9,20 @@ export class ScrapingHistoryController {
   @Get('summary')
   async getScraperSummaries() {
     const scrapers = await this.scrapingHistoryService.getAllScrapers();
-    const summaries = [];
-    for (const scraper of scrapers) {
+
+    const summaries = await Promise.all(scrapers.map(async (scraper) => {
       // Cancel old in-progress scans
       await this.scrapingHistoryService.cancelOldInProgressSessions(scraper);
-      // Get all history
-      const history = await this.scrapingHistoryService.getAllHistoryForScraper(scraper);
-      // Get current scan (if any)
-      const inProgress = await this.scrapingHistoryService.getInProgressSessions(scraper);
+
+      // Get all history and in-progress sessions in parallel
+      const [history, inProgress] = await Promise.all([
+        this.scrapingHistoryService.getAllHistoryForScraper(scraper),
+        this.scrapingHistoryService.getInProgressSessions(scraper),
+      ]);
+
       const currentScan = inProgress.length > 0 ? inProgress[0] : null;
-      // Calculate rate (items per minute) for current scan
+
+      // Calculate rate (items per minute)
       let ratePerMinute = null;
       if (currentScan) {
         const now = new Date();
@@ -27,15 +31,18 @@ export class ScrapingHistoryController {
         const itemsScanned = (currentScan.createdItems || 0) + (currentScan.updatedItems || 0);
         ratePerMinute = elapsedMinutes > 0 ? (itemsScanned / elapsedMinutes) : null;
       }
-      summaries.push({
+
+      return {
         scraper,
         history,
         currentScan,
         ratePerMinute,
-      });
-    }
+      };
+    }));
+
     return summaries;
   }
+
 
   @Get()
   async findAll(@Query('limit') limit?: string): Promise<ScrapingHistory[]> {
