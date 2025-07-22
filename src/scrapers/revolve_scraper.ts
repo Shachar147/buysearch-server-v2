@@ -51,16 +51,6 @@ const CATEGORIES: BaseCategory[] = [
     url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=bags%2Fbr%2F2df9df&s=c&c=Bags&navsrc=subAccessories&lazyLoadedPlp=false'
   },
   {
-    id: 'women-bestsellers',
-    name: 'New',
-    gender: 'Women',
-    url: '  {
-    id: 'women-shoes',
-    name: Category.SHOES,
-    gender: 'Women',
-    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=shoes%2Fbr%2F3f40a9&s=c&c=Shoes&navsrc=subShoes&lazyLoadedPlp=false'
-  },
-  {
     id: 'women-dresses',
     name: Category.DRESSES,
     gender: 'Women',
