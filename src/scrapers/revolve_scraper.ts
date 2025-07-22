@@ -13,6 +13,76 @@ const CATEGORIES: BaseCategory[] = [
     url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=sale%2Fall-sale-items%2Fbr%2F54cc7b&s=d&c=All+Sale+Items&n=s&navsrc=subSale&lazyLoadedPlp=false'
     // url: 'https://www.revolve.com/r/Brands.jsp?aliasURL=sale/all-sale-items/br/54cc7b&navsrc=subSale&n=s&s=d&c=All+Sale+Items',
   },
+  {
+    id: 'women-shoes',
+    name: Category.SHOES,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=shoes%2Fbr%2F3f40a9&s=c&c=Shoes&navsrc=subShoes&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-dresses',
+    name: Category.DRESSES,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=dresses%2Fbr%2Fa8e981&s=c&c=Dresses&navsrc=subDresses&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-skirts',
+    name: Category.SKIRTS,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=skirts%2Fbr%2F8b6a66&s=c&c=Skirts&navsrc=subclothing&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-tops',
+    name: Category.TOPS,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=tops%2Fbr%2Fdb773d&s=c&c=Tops&navsrc=subclothing&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-loungewear',
+    name: Category.SLEEP_WEAR,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=loungewear%2Fbr%2F97c04e&s=c&c=Loungewear&navsrc=subclothing&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-bags',
+    name: Category.ACCESSORIES,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=bags%2Fbr%2F2df9df&s=c&c=Bags&navsrc=subAccessories&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-bestsellers',
+    name: 'New',
+    gender: 'Women',
+    url: '  {
+    id: 'women-shoes',
+    name: Category.SHOES,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=shoes%2Fbr%2F3f40a9&s=c&c=Shoes&navsrc=subShoes&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-dresses',
+    name: Category.DRESSES,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=dresses%2Fbr%2Fa8e981&s=c&c=Dresses&navsrc=subDresses&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-skirts',
+    name: Category.SKIRTS,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=skirts%2Fbr%2F8b6a66&s=c&c=Skirts&navsrc=subclothing&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-tops',
+    name: Category.TOPS,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=tops%2Fbr%2Fdb773d&s=c&c=Tops&navsrc=subclothing&lazyLoadedPlp=false'
+  },
+  {
+    id: 'women-loungewear',
+    name: Category.SLEEP_WEAR,
+    gender: 'Women',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=loungewear%2Fbr%2F97c04e&s=c&c=Loungewear&navsrc=subclothing&lazyLoadedPlp=false'
+  },
   // ------- Men --------------
   {
     id: 'men-polo-ralph-lauren',

@@ -545,6 +545,12 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'נעלי ': [Category.SHOES],
     "ג׳ינס סיאל": [Category.JEANS],
     "ג'ינס סיאל": [Category.JEANS],
+    'maxi dress': [Category.DRESSES, Category.MAXI_DRESSES],
+    'maxi skirt': [Category.SKIRTS, Category.MAXI_SKIRTS],
+    'mini dress': [Category.DRESSES, Category.MINI_DRESSES],
+    'mini skirt': [Category.SKIRTS, Category.MINI_SKIRTS],
+    'midi dress': [Category.DRESSES, Category.MIDI_DRESSES],
+    'midi skirt': [Category.SKIRTS, Category.MIDI_SKIRTS]
 };
 
 // --- Category Synonyms Map ---
