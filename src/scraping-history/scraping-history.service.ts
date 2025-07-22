@@ -142,7 +142,7 @@ export class ScrapingHistoryService {
     return results.map((r) => {
 
        // Calculate rate (items per minute)
-       const now = new Date();
+       const now = r.endTime ?? new Date();
        const start = new Date(r.startTime);
        const elapsedMinutes = (now.getTime() - start.getTime()) / 60000;
        const itemsScanned = (r.createdItems || 0) + (r.updatedItems || 0);
