@@ -6,6 +6,7 @@ import { Source } from '../source/source.entity';
 
 @Entity('products')
 export class Product {
+  @Index()
   @PrimaryGeneratedColumn()
   id: number;
 

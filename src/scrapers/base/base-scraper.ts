@@ -167,6 +167,35 @@ export abstract class BaseScraper {
   }
 
   /**
+   * Run the scraper with signal handling: marks session as failed if interrupted (SIGINT/SIGTERM)
+   */
+  public async runWithSignalHandling() {
+    let interrupted = false;
+    const handleInterrupt = async () => {
+      if (interrupted) return;
+      interrupted = true;
+      console.error('\nScraper interrupted. Marking session as failed...');
+      try {
+        if (this.scrapingHistoryService && this.session) {
+          await this.scrapingHistoryService.failScrapingSession(
+            this.session.id,
+            0, // created
+            0  // updated
+          );
+          console.error('Session marked as failed.');
+        }
+      } catch (err) {
+        console.error('Failed to mark session as failed:', err);
+      } finally {
+        process.exit(1);
+      }
+    };
+    process.on('SIGINT', handleInterrupt);
+    process.on('SIGTERM', handleInterrupt);
+    await this.run();
+  }
+
+  /**
    * Helper method to create a product object with common fields
    */
   protected createProduct(data: {
