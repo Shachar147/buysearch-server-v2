@@ -553,6 +553,15 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'midi skirt': [Category.MIDI_SKIRTS],
     'Lingerie & Nightwear': [Category.LINGERIE],
     'creams and oils': [Category.CREAMS_AND_OILS],
+    'backpack': [Category.BAGS],
+    ' belt': [Category.BELTS],
+    'fp cap': [Category.HATS],
+    'panama hat': [Category.HATS],
+    'necklace': [Category.JEWELRY],
+    ' ring': [Category.JEWELRY],
+    'bracelet': [Category.JEWELRY],
+    'earrings': [Category.JEWELRY],
+    'toilette': [Category.PERFUMES],
 };
 
 // --- Category Synonyms Map ---
