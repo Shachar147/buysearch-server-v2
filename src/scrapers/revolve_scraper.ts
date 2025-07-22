@@ -13,6 +13,7 @@ const CATEGORIES: BaseCategory[] = [
     url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=sale%2Fall-sale-items%2Fbr%2F54cc7b&s=d&c=All+Sale+Items&n=s&navsrc=subSale&lazyLoadedPlp=false'
     // url: 'https://www.revolve.com/r/Brands.jsp?aliasURL=sale/all-sale-items/br/54cc7b&navsrc=subSale&n=s&s=d&c=All+Sale+Items',
   },
+  // ------- Men --------------
   {
     id: 'men-polo-ralph-lauren',
     name: Category.BY_BRAND,
@@ -23,12 +24,50 @@ const CATEGORIES: BaseCategory[] = [
     // url: 'https://www.revolve.com/r/Brands.jsp?aliasURL=mens/polo-ralph-lauren/br/e06df7&navsrc=subdesigners_top&n=s&s=b&c=olo+Ralph+Lauren',
   },
   {
+    id: 'men-all-saints',
+    name: Category.BY_BRAND,
+    brand: 'AllSaints',
+    gender: 'Men',
+    // url: 'https://www.revolve.com/mens/allsaints/br/c9c85e/?dessrc=myindex',
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Fallsaints%2Fbr%2Fc9c85e&s=b&c=ALLSAINTS&d=Mens&dessrc=myindex&lazyLoadedPlp=false'
+  },
+  {
     id: 'men-sale',
     name: "Sale",
     gender: "Men",
     // url: "https://www.revolve.com/mens/sale/all-sale-items/br/650eb6/?navsrc=subSale"
     url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Fsale%2Fall-sale-items%2Fbr%2F650eb6&s=d&c=All+Sale+Items&d=Mens&n=s&navsrc=subSale&lazyLoadedPlp=false'
     // url: 'https://www.revolve.com/r/Brands.jsp?aliasURL=mens/sale/all-sale-items/br/650eb6&navsrc=subSale&n=s&s=d&c=All+Sale+Items',
+  },
+  {
+    id: 'men-accessories',
+    name: Category.ACCESSORIES,
+    gender: "Men",
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Faccessories%2Fbr%2F8ad9de&s=c&c=Accessories&d=Mens&navsrc=subAccessories&lazyLoadedPlp=false',
+  },
+  {
+    id: 'men-shoes',
+    name: Category.SHOES,
+    gender: "Men",
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Fshoes%2Fbr%2Fb05f2e&s=c&c=Shoes&d=Mens&navsrc=subShoes&lazyLoadedPlp=false',
+  },
+  {
+    id: 'men-tshirts',
+    name: Category.T_SHIRTS,
+    gender: "Men",
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Ftshirts%2Fbr%2Fe90f7b&s=c&c=T-Shirts&d=Mens&navsrc=subClothing&lazyLoadedPlp=false',
+  },
+  {
+    id: 'men-knitwear',
+    name: Category.KNITWEAR,
+    gender: "Men",
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Fclothing-sweaters-knits%2Fbr%2F1bd505&sc=Sweaters+%26+Knits&s=c&c=Clothing&d=Mens&navsrc=subClothing&lazyLoadedPlp=false',
+  },
+  {
+    id: 'men-lounge',
+    name: Category.SLEEP_WEAR,
+    gender: "Men",
+    url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Fclothing-lounge%2Fbr%2F625b8c&sc=Lounge&s=c&c=Clothing&d=Mens&navsrc=left&lazyLoadedPlp=false',
   }
 ];
 

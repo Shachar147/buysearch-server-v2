@@ -87,4 +87,29 @@ export class CategoryService {
     const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
     return this.findByNames(names);
   }
+
+  // examples: ['women|dresses', 'men|t-shirts']
+  async upsertManyFromPairs(pairs: string[]): Promise<Category[]> {
+    const categoryObjects: Partial<Category>[] = pairs.map(pair => {
+      const [gender, name] = pair.split('|');
+      return {
+        name: name.trim(),
+        gender: gender.trim(),
+        isActive: true,
+      };
+    });
+
+    // Use name + gender as upsert conflict keys
+    await this.categoriesRepository.upsert(categoryObjects, ['name', 'gender']);
+
+    // Return updated/inserted categories
+    const conditions = categoryObjects.map(c => ({
+      name: c.name,
+      gender: c.gender,
+    }));
+
+    return this.categoriesRepository.find({
+      where: conditions,
+    });
+  }
 } 

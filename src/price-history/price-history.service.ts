@@ -35,4 +35,19 @@ export class PriceHistoryService {
       .getRawMany();
     return result.map((row: any) => Number(row.productId));
   }
+
+  async addMany(entries: { productId: number; price: number | null }[]): Promise<void> {
+    if (!entries.length) return;
+  
+    const now = new Date();
+  
+    const records = entries.map(entry => ({
+      productId: entry.productId,
+      price: entry.price ?? 0, // or throw if price is required
+      date: now,
+    }));
+  
+    await this.repo.insert(records);
+  }
+  
 } 

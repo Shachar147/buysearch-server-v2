@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Brand } from './brand.entity';
 import { PAGINATION_LIMIT } from '../consts';
 
@@ -71,4 +71,20 @@ export class BrandService {
     
     return brand;
   }
+
+  async upsertMany(brands: string[]): Promise<Brand[]> {
+    const brandObjects: Partial<Brand>[] = brands.map(brand =>
+      ({ name: brand })
+    );
+  
+    // Perform bulk upsert on `name`
+    await this.brandsRepository.upsert(brandObjects, ['name']);
+  
+    // Fetch and return all upserted brands
+    const names = brandObjects.map(b => b.name).filter(Boolean);
+    return this.brandsRepository.find({
+      where: { name: In(names) },
+    });
+  }
+
 } 
