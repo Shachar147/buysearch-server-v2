@@ -1,16 +1,24 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { ScrapingHistoryService } from './scraping-history.service';
 import { ScrapingHistory } from './scraping-history.entity';
+import { SourceService } from '../source/source.service';
 
 @Controller('scraping-history')
 export class ScrapingHistoryController {
-  constructor(private readonly scrapingHistoryService: ScrapingHistoryService) {}
+  constructor(
+    private readonly scrapingHistoryService: ScrapingHistoryService,
+    private readonly sourceService: SourceService,
+  ) {}
 
   @Get('summary')
   async getScraperSummaries() {
     const scrapers = await this.scrapingHistoryService.getAllScrapers();
+    // Filter out scrapers whose source is not active
+    const activeSources = await this.sourceService.findByNames(scrapers);
+    const activeSourceNames = new Set(activeSources.map(s => s.name.toLowerCase()));
+    const filteredScrapers = scrapers.filter(scraper => activeSourceNames.has(scraper.toLowerCase()));
 
-    const summaries = await Promise.all(scrapers.map(async (scraper) => {
+    const summaries = await Promise.all(filteredScrapers.map(async (scraper) => {
       // Cancel old in-progress scans
       await this.scrapingHistoryService.cancelOldInProgressSessions(scraper);
 
