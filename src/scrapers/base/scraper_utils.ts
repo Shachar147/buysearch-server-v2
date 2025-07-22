@@ -446,7 +446,10 @@ export async function processProducts(
   let newProducts = 0;
   let updatedProducts = 0;
   let totalProcessed = 0;
-  
+  const totalProducts = products.length;
+  const startTime = Date.now();
+  let lastLoggedPercent = 0;
+
   for (const product of products) {
     try {
       const result = await productsService.upsertProduct(product);
@@ -456,6 +459,19 @@ export async function processProducts(
         updatedProducts++;
       }
       totalProcessed++;
+      // Progress logging every 100 products or every 10%
+      const percent = Math.floor((totalProcessed / totalProducts) * 100);
+      const shouldLog = totalProcessed % 100 === 0 || percent >= lastLoggedPercent + 10;
+      if (shouldLog || totalProcessed === totalProducts) {
+        lastLoggedPercent = percent;
+        const elapsed = (Date.now() - startTime) / 1000; // seconds
+        const rate = totalProcessed / elapsed; // products per second
+        const remaining = totalProducts - totalProcessed;
+        const etaSeconds = rate > 0 ? Math.round(remaining / rate) : 0;
+        const etaMinutes = Math.floor(etaSeconds / 60);
+        const etaSec = etaSeconds % 60;
+        console.log(`Progress: ${totalProcessed}/${totalProducts} (${percent}%) | Added: ${newProducts} | Updated: ${updatedProducts} | ETA: ${etaMinutes}m ${etaSec}s`);
+      }
     } catch (error) {
       console.warn(`⚠️  Failed to save product ${product.url}: ${error.message}`);
     }

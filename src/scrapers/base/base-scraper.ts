@@ -70,6 +70,11 @@ export abstract class BaseScraper {
 
       // Get categories to scrape
       const categories = this.getCategories();
+      // Shuffle categories
+      for (let i = categories.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [categories[i], categories[j]] = [categories[j], categories[i]];
+      }
       this.totalCategories = categories.length;
       console.log(`Found ${categories.length} categories to scan.`);
 
@@ -87,6 +92,7 @@ export abstract class BaseScraper {
           products.forEach(p => allScrapedUrls.add(p.url));
 
           // Process and save products
+          console.log(`Start adding these products to BuySearch...`);
           const result = await processProducts(products, this.productsService);
 
           totalNew += result.created;

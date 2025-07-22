@@ -11,6 +11,7 @@ const CATEGORIES: BaseCategory[] = [
     gender: 'Women',
     // url: 'https://www.revolve.com/sale/all-sale-items/br/54cc7b/?navsrc=subSale',
     url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=sale%2Fall-sale-items%2Fbr%2F54cc7b&s=d&c=All+Sale+Items&n=s&navsrc=subSale&lazyLoadedPlp=false'
+    // url: 'https://www.revolve.com/r/Brands.jsp?aliasURL=sale/all-sale-items/br/54cc7b&navsrc=subSale&n=s&s=d&c=All+Sale+Items',
   },
   {
     id: 'men-polo-ralph-lauren',
@@ -19,6 +20,7 @@ const CATEGORIES: BaseCategory[] = [
     gender: 'Men',
     // url: 'https://www.revolve.com/mens/polo-ralph-lauren/br/e06df7/?navsrc=subdesigners_top',
     url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Fpolo-ralph-lauren%2Fbr%2Fe06df7&s=b&c=Polo+Ralph+Lauren&d=Mens&navsrc=subdesigners_top&lazyLoadedPlp=false'
+    // url: 'https://www.revolve.com/r/Brands.jsp?aliasURL=mens/polo-ralph-lauren/br/e06df7&navsrc=subdesigners_top&n=s&s=b&c=olo+Ralph+Lauren',
   },
   {
     id: 'men-sale',
@@ -26,6 +28,7 @@ const CATEGORIES: BaseCategory[] = [
     gender: "Men",
     // url: "https://www.revolve.com/mens/sale/all-sale-items/br/650eb6/?navsrc=subSale"
     url: 'https://www.revolve.com/r/BrandsContent.jsp?aliasURL=mens%2Fsale%2Fall-sale-items%2Fbr%2F650eb6&s=d&c=All+Sale+Items&d=Mens&n=s&navsrc=subSale&lazyLoadedPlp=false'
+    // url: 'https://www.revolve.com/r/Brands.jsp?aliasURL=mens/sale/all-sale-items/br/650eb6&navsrc=subSale&n=s&s=d&c=All+Sale+Items',
   }
 ];
 
@@ -46,7 +49,7 @@ export class RevolveScraper extends BaseScraper {
   protected async scrapeCategory(category: BaseCategory): Promise<Product[]> {
     const allProducts: Product[] = [];
     let page = 1;
-    const maxPages = 80;
+    const maxPages = 250; // todo change to much higher value
     let prevPageUrls: string[] = [];
 
     while (page <= maxPages) {
@@ -149,32 +152,50 @@ export class RevolveScraper extends BaseScraper {
 
     let price: number | null = null;
     let oldPrice: number | null = null;
+    let currency = 'ILS';
 
     const priceContainer = $el.find('.js-plp-prices-div');
     const isOnSale = priceContainer.find('.price--on-sale').length > 0;
 
+    let priceText = '';
     if (isOnSale) {
-        const priceText = priceContainer.find('.price__sale.js-plp-price').text().trim();
+        priceText = priceContainer.find('.price__sale.js-plp-price').text().trim();
         const oldPriceText = priceContainer.find('s.price__retail.js-plp-price-retail').text().trim();
         
         if (priceText) {
-          const match = priceText.replace(/[\$,]/g, '').match(/\d+(\.\d+)?/);
+          const match = priceText.replace(/[$,]/g, '').match(/\d+(\.\d+)?/);
           if (match) price = parseFloat(match[0]);
+          // Extract currency symbol (e.g., $)
+          const currencyMatch = priceText.match(/[^\d.,\s]+/);
+          if (currencyMatch) {
+            currency = currencyMatch[0].trim();
+            if (currency === '$') currency = 'USD';
+            // Add more mappings if needed
+          }
         }
         if (oldPriceText) {
-          const match = oldPriceText.replace(/[\$,]/g, '').match(/\d+(\.\d+)?/);
+          const match = oldPriceText.replace(/[$,]/g, '').match(/\d+(\.\d+)?/);
           if (match) oldPrice = parseFloat(match[0]);
         }
     } else {
-        const priceText = priceContainer.find('.js-plp-price').text().trim();
-         if (priceText) {
-          const match = priceText.replace(/[\$,]/g, '').match(/\d+(\.\d+)?/);
+        priceText = priceContainer.find('.js-plp-price, .plp_price.price__retail').text().trim();
+        if (priceText) {
+          const match = priceText.replace(/[$,]/g, '').match(/\d+(\.\d+)?/);
           if (match) price = parseFloat(match[0]);
+          // Extract currency symbol (e.g., $)
+          const currencyMatch = priceText.match(/[^\d.,\s]+/);
+          if (currencyMatch) {
+            currency = currencyMatch[0].trim();
+            if (currency === '$') currency = 'USD';
+            // Add more mappings if needed
+          }
         }
     }
     
     const salePercent = calcSalePercent(price, oldPrice);
     const colors = extractColors(title, []);
+
+    if (!title || !url || !price) return;
 
     return this.createProduct({
       title,
@@ -184,7 +205,7 @@ export class RevolveScraper extends BaseScraper {
       price,
       oldPrice,
       salePercent,
-      currency: 'USD',
+      currency,
       brand: category.brand || brand,
       categories: [category.name],
       gender: category.gender,
