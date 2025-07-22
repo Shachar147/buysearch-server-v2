@@ -133,9 +133,25 @@ export class ScrapingHistoryService {
 
   // Get all histories for a scraper (no limit, newest first)
   async getAllHistoryForScraper(scraper: string): Promise<ScrapingHistory[]> {
-    return this.scrapingHistoryRepository.find({
+    const results = await this.scrapingHistoryRepository.find({
       where: { scraper },
       order: { startTime: 'DESC' },
+    });
+
+    // @ts-ignore
+    return results.map((r) => {
+
+       // Calculate rate (items per minute)
+       const now = new Date();
+       const start = new Date(r.startTime);
+       const elapsedMinutes = (now.getTime() - start.getTime()) / 60000;
+       const itemsScanned = (r.createdItems || 0) + (r.updatedItems || 0);
+       const ratePerMinute = elapsedMinutes > 0 ? (itemsScanned / elapsedMinutes) : null;
+
+       return {
+        ...r,
+        ratePerMinute
+       };
     });
   }
 
@@ -150,11 +166,11 @@ export class ScrapingHistoryService {
   async cancelOldInProgressSessions(scraper: string): Promise<number[]> {
     const inProgress = await this.getInProgressSessions(scraper);
     const now = new Date();
-    const twelveHoursAgo = new Date(now.getTime() - 12 * 60 * 60 * 1000);
+    const oneHourAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000);
   
     const toCancel = inProgress.filter((session, index) =>
       index > 0 || // not the latest
-      new Date(session.startTime) < twelveHoursAgo // started > 12 hours ago
+      new Date(session.updatedAt) < oneHourAgo // last update > 4 hours ago
     );
   
     const ids = toCancel.map(s => s.id);

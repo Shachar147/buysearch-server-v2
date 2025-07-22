@@ -159,7 +159,7 @@ class JDSportsScraper extends BaseScraper {
     const products: Product[] = [];
     productCards.each((_, el) => {
       const elem = $(el);
-      console.log(elem.html());
+      // console.log(elem.html());
       const title = elem.find('.product-item-meta').find('h2').find('a').text();
       let image = elem.find(".product-item__primary-image").attr("src");
       image = image ? `http:${image}` : image;
@@ -193,9 +193,9 @@ class JDSportsScraper extends BaseScraper {
         categories,
         gender,
       });
-      console.log({
-        product
-      })
+      // console.log({
+      //   product
+      // })
       products.push(product);
     });
     return products;

@@ -577,6 +577,7 @@ export class ProductService {
   }
 
   async bulkUpsertProducts(products: ProductInput[]): Promise<ScrapingResult> {
+    console.log(`[bulkUpsertProducts] Received ${products.length} products`);
     // Deduplicate input products by url, keep first occurrence only
     const seenUrls = new Set<string>();
     const uniqueProducts = products.filter(p => {
@@ -585,11 +586,11 @@ export class ProductService {
       return true;
     });
 
-    // Optional: Log duplicates if you want
     const duplicatesCount = products.length - uniqueProducts.length;
     if (duplicatesCount > 0) {
-      console.warn(`Ignored ${duplicatesCount} duplicate products by URL.`);
+      console.warn(`[bulkUpsertProducts] Ignored ${duplicatesCount} duplicate products by URL.`);
     }
+    console.log(`[bulkUpsertProducts] Unique products: ${uniqueProducts.length}`);
 
     const uniqueBrands = [...new Set(uniqueProducts.map(p => p.brand))];
     const uniqueSources = [...new Set(uniqueProducts.map(p => p.source))];
@@ -597,6 +598,7 @@ export class ProductService {
     const uniqueCategoryGenderPairs = [
       ...new Set(uniqueProducts.flatMap(p => p.categories.map(cat => `${p.gender}|${cat}`)))
     ];
+    console.log(`[bulkUpsertProducts] Brands: ${uniqueBrands.length}, Sources: ${uniqueSources.length}, Colors: ${uniqueColors.length}, Category-Gender pairs: ${uniqueCategoryGenderPairs.length}`);
   
     const [brands, sources, colors, categories] = await Promise.all([
       this.brandService.upsertMany(uniqueBrands), // returns name → Brand map
@@ -616,6 +618,7 @@ export class ProductService {
       relations: ['categories', 'colors', 'brand', 'source']
     });
     const existingMap = new Map(existingProducts.map(p => [p.url, p]));
+    console.log(`[bulkUpsertProducts] Found ${existingProducts.length} existing products in DB`);
   
     const productsToSave: Product[] = [];
     const priceHistoryMap: { productId: number; price: number | null }[] = [];
@@ -634,17 +637,18 @@ export class ProductService {
       .map(([url]) => url);
     
     if (duplicateUrls.length > 0) {
-      console.warn(`Warning: Found duplicate URLs in input products:`, duplicateUrls);
+      console.warn(`[bulkUpsertProducts] Warning: Found duplicate URLs in input products:`, duplicateUrls);
     }
   
-    for (const input of uniqueProducts) {
+    for (let i = 0; i < uniqueProducts.length; i++) {
+      const input = uniqueProducts[i];
       const existing = existingMap.get(input.url);
-  
+
       const brand = brandMap.get(input.brand);
       const source = sourceMap.get(input.source);
       const colorEntities = input.colors.map(c => colorMap.get(c));
       const categoryEntities = input.categories.map(cat => categoryMap.get(`${input.gender}|${cat}`));
-  
+
       if (existing) {
         const shouldUpdate = 
           existing.title !== input.title ||
@@ -657,7 +661,7 @@ export class ProductService {
           existing.gender !== input.gender ||
           existing.brand?.id !== brand?.id ||
           existing.source?.id !== source?.id;
-  
+
         if (shouldUpdate) {
           Object.assign(existing, {
             title: input.title,
@@ -674,10 +678,10 @@ export class ProductService {
           updatedCount++;
           productsToSave.push(existing);
         }
-  
+
         existing.colors = colorEntities;
         existing.categories = categoryEntities;
-  
+
         const oldMin = existing.price ?? existing.oldPrice;
         const newMin = input.price ?? input.oldPrice;
         if (oldMin !== newMin) {
@@ -694,6 +698,10 @@ export class ProductService {
         newCount++;
         productsToSave.push(newProduct);
       }
+      // Periodic progress log
+      if ((i + 1) % 1000 === 0) {
+        console.log(`[bulkUpsertProducts] Progress: ${i + 1}/${uniqueProducts.length} processed, New: ${newCount}, Updated: ${updatedCount}`);
+      }
     }
   
     // Save in chunks (optional: 100-200 at a time)
@@ -702,10 +710,8 @@ export class ProductService {
     // Save price history
     await this.priceHistoryService.addMany(priceHistoryMap);
   
-    return {
-      created: newCount,
-      updated: updatedCount,
-      total: uniqueProducts.length
-    };
+    // After all upserts
+    console.log(`[bulkUpsertProducts] New: ${newCount}, Updated: ${updatedCount}, Total processed: ${uniqueProducts.length}`);
+    return { created: newCount, updated: updatedCount, total: uniqueProducts.length };
   }  
 } 
