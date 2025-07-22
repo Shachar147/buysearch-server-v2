@@ -27,6 +27,7 @@ export interface ProductFilters {
   source?: string;
   isOnSale?: string;
   salePercent?: number;
+  withPriceChange?: boolean;
 }
 
 interface ProductInput {
@@ -150,7 +151,7 @@ export class ProductService {
       const favs = await this.favouritesService.getFavourites(userId);
       const favIds = favs.map((f: any) => f.productId);
       if (!favIds.length) {
-        return { total: 0, offset: 0, limit: filters.limit || 20, hasNextPage: false, data: [] };
+        return { total: 0, offset: 0, limit, hasNextPage: false, data: [] };
       }
       qb.andWhere('product.id IN (:...favIds)', { favIds });
     }
@@ -183,6 +184,15 @@ export class ProductService {
         qb.andWhere('product.price >= :from AND product.price <= :to', { from: range.from, to: range.to });
       }
     }
+    // price change
+    if (filters.withPriceChange) {
+      const ids = await this.priceHistoryService.getProductIdsWithPriceChange();
+      if (!ids.length) {
+        return { total: 0, offset: 0, limit: filters.limit || 20, hasNextPage: false, data: [] };
+      }
+      qb.andWhere('product.id IN (:...ids)', { ids });
+    }
+
     // Sorting
     if (filters.sort === 'Price: Low to High') {
       qb.orderBy('product.price', 'ASC');
@@ -360,7 +370,8 @@ export class ProductService {
     if (filters.gender) {
       qb.andWhere('LOWER(product.gender) = LOWER(:gender)', { gender: filters.gender });
     }
-    if ((filters as any).withPriceChange) {
+
+    if (filters.withPriceChange) {
       const ids = await this.priceHistoryService.getProductIdsWithPriceChange();
       if (!ids.length) {
         return { total: 0, offset: 0, limit: filters.limit || 20, hasNextPage: false, data: [] };
