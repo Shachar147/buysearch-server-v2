@@ -1,7 +1,7 @@
 import puppeteer from 'puppeteer';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
-import { Product, calcSalePercent, extractColors, normalizeBrandName, extractCategory } from './base/scraper_utils';
+import { Product, calcSalePercent, extractColors, normalizeBrandName } from './base/scraper_utils';
 import { Category } from '../category.constants';
 
 const CATEGORIES: BaseCategory[] = [
