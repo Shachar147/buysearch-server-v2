@@ -271,7 +271,7 @@ class NikeScraper extends BaseScraper {
       if (colors.length === 0) {
         colors = [];
       }
-      const brand = normalizeBrandName('Nike');
+      const brand = fullTitle.toLocaleLowerCase().includes("jordan") ? 'Jordan' : 'Nike';
       const categories = [category.name];
       const gender = category.gender;
       const product = this.createProduct({

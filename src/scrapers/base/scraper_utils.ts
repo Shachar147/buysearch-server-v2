@@ -51,6 +51,7 @@ export const COLOR_ALIASES: Record<string, string> = {
 
 // --- Brand Synonyms Mapping ---
 export const BRAND_SYNONYMS: Record<string, string> = {
+  'jordan': 'Jordan',
   'ralph lauren': 'Polo Ralph Lauren',
   // 'polo': 'Polo Ralph Lauren',
   'polo ralph': 'Polo Ralph Lauren',
