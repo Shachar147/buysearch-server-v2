@@ -7,8 +7,6 @@ import * as dotenv from 'dotenv';
 import { Category } from 'src/category.constants';
 dotenv.config();
 
-// TODO: fix (right now it mixing up Men, Women, etc) <- and not only shoes...
-
 const CATEGORIES: CategoryType[] = [
   {
     id: 'men-shoes-outlet',
