@@ -4,17 +4,24 @@ import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
+import { Category } from 'src/category.constants';
 dotenv.config();
 
 // TODO: fix (right now it mixing up Men, Women, etc) <- and not only shoes...
 
 const CATEGORIES: CategoryType[] = [
-  // {
-  //   id: 'men-shoes-outlet',
-  //   name: "Sale",
-  //   gender: 'Men',
-  //   url: 'https://www.adidas.co.il/he/men-shoes-outlet',
-  // },
+  {
+    id: 'men-shoes-outlet',
+    name: Category.SHOES,
+    gender: 'Men',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=outlet-men-shoes&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Doutlet-men-shoes%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  },
+  {
+    id: 'men-shoes-outlet',
+    name: Category.SHOES,
+    gender: 'Men',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=men-shoes&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dmen-shoes%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  },
 ];
 
 const BASE_URL = 'https://www.adidas.co.il';
@@ -195,18 +202,17 @@ class AdidasScraper extends BaseScraper {
     let page = 0;
     let allProducts: Product[] = [];
     let hasMore = true;
-    const PAGE_SIZE = 24;
-    const MAX_PAGES = 30;
+    const PAGE_SIZE = 1000;
+    const MAX_PAGES = 3;
     while (hasMore && page < MAX_PAGES) {
       let url;
       // Extract cgid from the category URL (everything after 'https://www.adidas.co.il/he/')
-      const cgid = category.url.replace('https://www.adidas.co.il/he/', '');
       if (page === 0) {
         url = category.url;
       } else {
         // Use the AJAX endpoint for pagination, with dynamic cgid
         const start = page * PAGE_SIZE;
-        url = `https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=${cgid}&pmin=0.01&start=${start}&sz=${PAGE_SIZE}`;
+        url = category.url.replace('&start=0&sz=1000', `&start=${start}&sz=${PAGE_SIZE}`);
       }
       this.logProgress(`Fetching ${url}`);
       const html = await this.fetchAdidasPage(url);

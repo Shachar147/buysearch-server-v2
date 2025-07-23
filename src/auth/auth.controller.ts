@@ -105,4 +105,53 @@ export class AuthController {
       favouritesCount: favCounts[u.id] || 0,
     }));
   }
+
+  @UseGuards(UserGuard)
+  @Get('stats/sources')
+  async getSourceStats() {
+    const rows = await this.entityManager.query(`
+      SELECT s.id, s.name,
+        SUM(CASE WHEN p.gender = 'Men' THEN 1 ELSE 0 END) as men,
+        SUM(CASE WHEN p.gender = 'Women' THEN 1 ELSE 0 END) as women,
+        SUM(CASE WHEN p.gender = 'Unisex' THEN 1 ELSE 0 END) as unisex
+      FROM sources s
+      LEFT JOIN products p ON p."sourceId" = s.id
+      GROUP BY s.id, s.name
+      ORDER BY s.id
+    `);
+    return rows;
+  }
+
+  @UseGuards(UserGuard)
+  @Get('stats/categories')
+  async getCategoryStats() {
+    const rows = await this.entityManager.query(`
+      SELECT c.name,
+        SUM(CASE WHEN p.gender = 'Men' THEN 1 ELSE 0 END) as men,
+        SUM(CASE WHEN p.gender = 'Women' THEN 1 ELSE 0 END) as women,
+        SUM(CASE WHEN p.gender = 'Unisex' THEN 1 ELSE 0 END) as unisex
+      FROM categories c
+      LEFT JOIN product_categories pc ON pc."categoryId" = c.id
+      LEFT JOIN products p ON p.id = pc."productId"
+      GROUP BY c.name
+      ORDER BY c.name
+    `);
+    return rows;
+  }
+
+  @UseGuards(UserGuard)
+  @Get('stats/brands')
+  async getBrandStats() {
+    const rows = await this.entityManager.query(`
+      SELECT b.name,
+        SUM(CASE WHEN p.gender = 'Men' THEN 1 ELSE 0 END) as men,
+        SUM(CASE WHEN p.gender = 'Women' THEN 1 ELSE 0 END) as women,
+        SUM(CASE WHEN p.gender = 'Unisex' THEN 1 ELSE 0 END) as unisex
+      FROM brands b
+      LEFT JOIN products p ON p."brandId" = b.id
+      GROUP BY b.name
+      ORDER BY b.name
+    `);
+    return rows;
+  }
 } 
