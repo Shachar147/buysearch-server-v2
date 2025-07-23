@@ -339,7 +339,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'סרומים': [Category.SERUMS],
   'סרום': [Category.SERUMS],
   'שמן גוף': [Category.BODY_OIL],
-  'לחות': [Category.MOISTURIZER],
+  'קרם לחות': [Category.MOISTURIZER],
   'קרמים ושמנים': [Category.CREAMS_AND_OILS],
   'טיפוח ידיים': [Category.HAND_CARE],
   'מברשות איפור': [Category.MAKEUP_BRUSHES],
