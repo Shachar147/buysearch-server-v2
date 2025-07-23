@@ -32,4 +32,19 @@ export class FavouritesService {
     const fav = await this.favouritesRepository.findOne({ where: { userId, productId } });
     return !!fav;
   }
+
+  async getFavouritesCountForAllUsers(): Promise<Record<number, number>> {
+    const rows = await this.favouritesRepository
+      .createQueryBuilder('fav')
+      .select('fav.userId', 'userId')
+      .addSelect('COUNT(*)', 'count')
+      .groupBy('fav.userId')
+      .getRawMany();
+    const result: Record<number, number> = {};
+    for (const row of rows) {
+      result[Number(row.userId)] = Number(row.count);
+    }
+    console.log('result', result);
+    return result;
+  }
 } 

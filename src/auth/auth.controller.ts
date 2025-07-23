@@ -4,10 +4,16 @@ import { Response } from 'express';
 import { ApiBody } from '@nestjs/swagger';
 import { UserService } from '../user/user.service';
 import { UserGuard } from './user.guard';
+import { EntityManager } from 'typeorm';
+import { InjectEntityManager } from '@nestjs/typeorm';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private readonly userService: UserService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+    @InjectEntityManager() private readonly entityManager: EntityManager,
+  ) {}
 
   @Post('register')
   @ApiBody({
@@ -80,12 +86,23 @@ export class AuthController {
   @Get('users')
   async getAllUsers() {
     const users = await this.userService.findAll();
+    // Use injected entityManager for raw query
+    const rows = await this.entityManager.query(`
+      SELECT "userId", COUNT(*) as count
+      FROM favourite_products
+      GROUP BY "userId"
+    `);
+    const favCounts: Record<number, number> = {};
+    for (const row of rows) {
+      favCounts[Number(row.userId)] = Number(row.count);
+    }
     return users.map(u => ({
       id: u.id,
       username: u.username,
       createdAt: u.createdAt,
       lastLoginAt: u.lastLoginAt,
       totalSearches: u.totalSearches,
+      favouritesCount: favCounts[u.id] || 0,
     }));
   }
 } 
