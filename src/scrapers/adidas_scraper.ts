@@ -20,6 +20,36 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Men',
     url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=men-shoes&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dmen-shoes%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
   },
+  {
+    id: 'women-shoes-outlet',
+    name: Category.SHOES,
+    gender: 'Women',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=women-shoes&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dwomen-shoes%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  },
+  {
+    id: 'women-clothing',
+    name: Category.CLOTHING,
+    gender: 'Women',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=women-clothing&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dwomen-clothing%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  },
+  { 
+    id: 'men-clothing',
+    name: Category.CLOTHING,
+    gender: 'Men',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=men-clothing&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dmen-clothing%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  },
+  {
+    id: 'men-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Men',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=men-accessories&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dmen-accessories%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  },
+  {
+    id: 'women-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Women',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=women-accessories&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dwomen-accessories%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  }
 ];
 
 const BASE_URL = 'https://www.adidas.co.il';

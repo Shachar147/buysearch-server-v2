@@ -1,15 +1,3 @@
-// itaybrands_scraper.ts – v1
-// =============================================================
-// Features:
-// - Extends BaseScraper for common functionality
-// - Scans categories (configurable)
-// - Extracts product info (title, url, images, colors, price, brand, categories, gender, source, variants)
-// - Uses HTML parsing (cheerio) to extract data from meta.products and DOM
-// - Saves to PostgreSQL via ProductService
-//
-// Usage: npm run scrape:itaybrands
-
-import axios from 'axios';
 import puppeteer from 'puppeteer';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';

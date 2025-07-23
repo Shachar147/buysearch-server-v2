@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
-import { Product, calcSalePercent, extractColors } from './base/scraper_utils';
+import { Product, calcSalePercent, extractColors, normalizeBrandName } from './base/scraper_utils';
 import { Category } from '../category.constants';
 import puppeteer from 'puppeteer';
 
@@ -237,7 +237,7 @@ export class RevolveScraper extends BaseScraper {
     const title = $el.find('.product-name.js-plp-name').text().trim();
     if (!title) return undefined;
 
-    const brand = $el.find('.product-brand.js-plp-brand').text().trim();
+    let brand = $el.find('.product-brand.js-plp-brand').text().trim();
     if (!brand) return undefined;
 
     const relativeUrl = $el.find('a.js-plp-pdp-link').attr('href');
@@ -306,7 +306,7 @@ export class RevolveScraper extends BaseScraper {
       oldPrice,
       salePercent,
       currency,
-      brand: category.brand || brand,
+      brand: category.brand || normalizeBrandName(brand),
       categories: [category.name],
       gender: category.gender,
     });

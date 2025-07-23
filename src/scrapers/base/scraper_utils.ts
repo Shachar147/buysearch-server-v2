@@ -299,6 +299,10 @@ export function normalizeBrandName(brandName: string): string {
   const normalizedBrand = brandName.trim().toLowerCase();
   const synonym = BRAND_SYNONYMS[normalizedBrand];
   
+  if (brandName.toLocaleLowerCase().includes('adidas')) {
+    return 'Adidas';
+  }
+
   if (synonym) {
     return synonym;
   }

@@ -58,7 +58,9 @@ export class SearchService {
     'brownie': ['בראוני'],
     'alo yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה'],
     'Alo Yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה'],
-    'styleforrent': ['styleforrent', 'סטייל פור', 'style for r', 'סטיילפור']
+    'styleforrent': ['styleforrent', 'סטייל פור', 'style for r', 'סטיילפור'],
+    'lululemon': ['lululemon', 'lulu l', 'לולולמון', 'לולו למון'],
+    'gant': ['gant', 'גנט', 'גאנט']
   };
 
   private HEBREW_COLOR_SYNONYMS = {
@@ -401,8 +403,13 @@ export class SearchService {
       { key: 'Castro', patterns: [/castro/, /קא?סטרו/] },
       { key: 'Tommy Hilfiger', patterns: [/tommy h/, /טומי ה/] },
       { key: 'Alo Yoga', patterns: [/alo y/, /אלו י/, /האלו י/, /הלו י/] },
-      { key: 'Revolve', patterns: [/revolv/, /ריבולב/, /ריוולב/, /ריוולו/, /ריולב/] }
-
+      { key: 'Revolve', patterns: [/revolv/, /ריבולב/, /ריוולב/, /ריוולו/, /ריולב/] },
+      { key: 'Lululemon', patterns: [/lululemon/, /לולולמון/, /לולו למון/] },
+      { key: 'Primark', patterns: [/primark/, /פרימרק/] },
+      { key: 'Adidas', patterns: [/adidas/, /אדידס/] },
+      { key: 'Polo Ralph Lauren', patterns: [/polo ralph lauren/, /פולו ראלפ לורנ/, /פולו ראלפ לורן/, /פולו ראלף לאורן/] },
+      { key: 'Revolve', patterns: [/revolv/, /ריבולב/, /ריוולב/, /ריוולו/, /ריולב/] },
+      { key: 'StyleForRent', patterns: [/styleforrent/, /סטייל פור/, /סטיילפור/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))

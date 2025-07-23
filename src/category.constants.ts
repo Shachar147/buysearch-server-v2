@@ -122,6 +122,7 @@ export enum Category {
   HOME_DECOR = "Home: Decor",
   HOME_BATH = "Home: Bath",
   HOME_WELLNESS = "Home & Wellness",
+  HOME_LIVING_ROOM = "Home: Living Room",
 
   // 💄 Makeup
   MAKEUP = "Makeup",
@@ -1077,6 +1078,10 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.HOME_BATH]: {
     en: ['bath', 'bathroom', 'towel', 'towels', 'bathrobe', 'robe', 'shower', 'soap', 'bath mat', 'bathroom accessories', 'washcloth', 'loofah', 'bathroom decor', 'bath accessories'],
     he: ['אמבטיה', 'מגבת', 'מגבות', 'חלוק', 'מקלחת', 'סבון', 'שטיחון', 'אביזרי אמבטיה', 'רחצה', 'ספוג', 'דקור אמבטיה', 'אביזרי רחצה']
+  },
+  [Category.HOME_LIVING_ROOM]: {
+    en: ['living room', 'living room decor', 'living room accessories', 'living room design', 'living room furniture', 'living room styling', 'living room accessories', 'living room decor', 'living room design', 'living room furniture', 'living room styling'],
+    he: ['ריהוט לסלון', 'ריהוט סלון']
   }
 };
 
