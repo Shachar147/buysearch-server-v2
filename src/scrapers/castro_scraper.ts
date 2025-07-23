@@ -185,18 +185,30 @@ class CastroScraper extends BaseScraper {
   }
 
   protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
-    let page = 1;
+    let page = 0;
     let allProducts: Product[] = [];
     let hasMore = true;
     const MAX_PAGES = 20;
     let prevProductKeys: Set<string> | null = null;
     while (hasMore && page <= MAX_PAGES) {
+      // Use the AJAX endpoint for faster scraping
       let url = category.url;
-      if (page > 1) {
-        url += url.includes('?') ? `&p=${page}` : `?p=${page}`;
-      }
+      url += url.includes('?') ? `&p=${page}&ajax=1` : `?p=${page}&ajax=1`;
       this.logProgress(`Fetching ${url}`);
-      const html = await this.fetchCastroPage(url);
+      let html = '';
+      try {
+        const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
+        const json = await res.json();
+        if (json && json.html && json.html.products_list) {
+          html = json.html.products_list;
+        } else {
+          // fallback to old method if JSON or products_list is missing
+          html = await this.fetchCastroPage(url);
+        }
+      } catch (e) {
+        this.logWarning(`Failed to fetch AJAX Castro page, falling back to old method: ${e}`);
+        html = await this.fetchCastroPage(url);
+      }
       const products = (await this.parseCastroProducts(html, category)).filter(Boolean);
       this.logProgress(`Found ${products.length} products in ${category.name} (page ${page})`);
       if (!products.length) break;
@@ -210,9 +222,8 @@ class CastroScraper extends BaseScraper {
       allProducts.push(...products);
       hasMore = products.length > 0;
       page++;
-      if (hasMore) {
-        // await new Promise(res => setTimeout(res, 2000)); // Wait 2 seconds
-      }
+      // Optionally add a delay if needed
+      // if (hasMore) await new Promise(res => setTimeout(res, 500));
     }
     return allProducts;
   }
@@ -281,7 +292,7 @@ class CastroScraper extends BaseScraper {
             });
             return undefined;
         }
-        return this.createProduct({
+        const p = {
           title: info.title,
           url: info.url,
           images: [info.image].filter(Boolean),
@@ -294,7 +305,9 @@ class CastroScraper extends BaseScraper {
           brand,
           categories,
           gender,
-        });
+        };
+
+        return this.createProduct(p);
       });
     return products;
   }

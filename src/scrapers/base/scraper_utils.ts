@@ -454,6 +454,8 @@ export async function processProducts(
   const startTime = Date.now();
   let lastLoggedPercent = 0;
 
+  // todo: use bulkUpsertProducts instead of upsertProduct
+
   for (const product of products) {
     try {
       const result = await productsService.upsertProduct(product);
