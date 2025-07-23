@@ -154,4 +154,14 @@ export class AuthController {
     `);
     return rows;
   }
+
+  @UseGuards(UserGuard)
+  @Get('stats/total-products')
+  async getTotalProducts() {
+    const rows = await this.entityManager.query(`
+      SELECT COUNT(*) as total
+      FROM products
+    `);
+    return rows[0];
+  }
 } 
