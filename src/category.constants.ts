@@ -50,7 +50,8 @@ export enum Category {
   SUITS = "Suits",
   SWIMWEAR = "Swimwear",
   BEACHWEAR = "Beachwear",
-  BEACHWEAR_SWIMWEAR = "Beachwear & Swimwear",
+  SARONGS = "Sarongs",
+  BEACHWEAR_SWIMWEAR = "Beachwear & Swimwear", // todo remove! combine with BEACHWEAR
   UNDERWEAR = "Underwear",
   BOXERS = "Boxers",
   SOCKS = "Socks",
@@ -563,6 +564,16 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'bracelet': [Category.JEWELRY],
     'earrings': [Category.JEWELRY],
     'toilette': [Category.PERFUMES],
+    'skirt': [Category.SKIRTS],
+    'sarong': [Category.SARONGS],
+    'onesie': [Category.OVERALLS],
+    'charms': [Category.JEWELRY],
+    'slippers': [Category.SLIPPERS],
+    'lingerie': [Category.LINGERIE],
+    'ואנזי': [Category.OVERALLS],
+    'cover up': [Category.BEACHWEAR],
+    'cover-up': [Category.BEACHWEAR],
+    'cover-ups': [Category.BEACHWEAR],
 };
 
 // --- Category Synonyms Map ---
@@ -1082,6 +1093,10 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.HOME_LIVING_ROOM]: {
     en: ['living room', 'living room decor', 'living room accessories', 'living room design', 'living room furniture', 'living room styling', 'living room accessories', 'living room decor', 'living room design', 'living room furniture', 'living room styling'],
     he: ['ריהוט לסלון', 'ריהוט סלון']
+  },
+  [Category.SARONGS]: {
+    en: ['sarong', 'sarongs'],
+    he: ['סרוגן', 'סרוגנים']
   }
 };
 
