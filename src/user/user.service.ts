@@ -32,4 +32,12 @@ export class UserService {
     const isValid = await bcrypt.compare(password, user.passwordHash);
     return isValid ? user : null;
   }
+
+  async updateLastLoginAt(userId: number): Promise<void> {
+    await this.usersRepository.update(userId, { lastLoginAt: new Date() });
+  }
+
+  async incrementTotalSearches(userId: number): Promise<void> {
+    await this.usersRepository.increment({ id: userId }, 'totalSearches', 1);
+  }
 } 

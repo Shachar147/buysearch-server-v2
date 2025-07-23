@@ -26,7 +26,8 @@ export class ProductController {
     const search = query.search;
     const gender = query.gender;
     const isFavourite = query.isFavourite;
-    const filters: any = { offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender };
+    const withPriceChange = query.withPriceChange;
+    const filters: any = { offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender, withPriceChange };
     if (isFavourite !== undefined) filters.isFavourite = isFavourite === 'true' || isFavourite === '';
     const userId = filters.isFavourite && req && req.user ? req.user.sub : undefined;
     console.time('findAll Execution Time');

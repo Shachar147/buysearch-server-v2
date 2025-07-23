@@ -97,7 +97,7 @@ export class RalphLaurenScraper extends BaseScraper {
     await page.setExtraHTTPHeaders({
       'Accept-Language': 'en-US,en;q=0.9',
     });
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 20000 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
     const html = await page.content();
     await new Promise(resolve => setTimeout(resolve, 1000 * 3)); // wait between pages
     await browser.close();

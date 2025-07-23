@@ -32,6 +32,10 @@ export class AuthController {
     } catch (e: any) {
       if (e.code === 'userAlreadyExist') {
         res.status(409).json({ status: 'error', error: 'userAlreadyExist' });
+      } else if (e.code === 'usernameTooShort') {
+        res.status(400).json({ status: 'error', error: 'usernameTooShort' });
+      } else if (e.code === 'passwordTooShort') {
+        res.status(400).json({ status: 'error', error: 'passwordTooShort' });
       } else {
         res.status(500).json({ status: 'error', error: 'internal' });
       }
