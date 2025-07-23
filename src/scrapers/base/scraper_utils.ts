@@ -447,6 +447,28 @@ export async function processProducts(
   products: Product[],
   productsService: ProductService
 ): Promise<ScrapingResult> {
+  const totalProducts = products.length;
+  const startTime = Date.now();
+
+  // Use bulkUpsertProducts for efficiency
+  try {
+    const result = await productsService.bulkUpsertProducts(products);
+    const elapsed = (Date.now() - startTime) / 1000;
+    const rate = result.total / elapsed;
+    console.log(`Bulk upsert: ${result.total} products processed in ${elapsed.toFixed(1)}s (${rate.toFixed(2)} products/sec)`);
+    // Progress logging (single log for bulk)
+    console.log(`Progress: ${result.total}/${totalProducts} (100%) | Added: ${result.created} | Updated: ${result.updated}`);
+    return result;
+  } catch (error) {
+    console.warn(`⚠️  Failed to bulk upsert products: ${error.message}`);
+    return { created: 0, updated: 0, total: 0 };
+  }
+}
+
+export async function processProductsOld(
+  products: Product[],
+  productsService: ProductService
+): Promise<ScrapingResult> {
   let newProducts = 0;
   let updatedProducts = 0;
   let totalProcessed = 0;
