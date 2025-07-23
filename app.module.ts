@@ -30,6 +30,7 @@ import { SavedFilterModule } from './src/saved-filter/saved-filter.module';
     FavouritesModule,
     ScrapingHistoryModule,
     SavedFilterModule,
+    UserModule
   ],
   controllers: [AppController],
   providers: [AppService, ScraperCronService],

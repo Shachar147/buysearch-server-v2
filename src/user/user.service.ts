@@ -40,4 +40,8 @@ export class UserService {
   async incrementTotalSearches(userId: number): Promise<void> {
     await this.usersRepository.increment({ id: userId }, 'totalSearches', 1);
   }
+
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.find({ order: { createdAt: 'DESC' } });
+  }
 } 

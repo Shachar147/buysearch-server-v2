@@ -1,11 +1,13 @@
-import { Controller, Post, Body, Res, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, Res, UnauthorizedException, Get, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Response } from 'express';
 import { ApiBody } from '@nestjs/swagger';
+import { UserService } from '../user/user.service';
+import { UserGuard } from './user.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService, private readonly userService: UserService) {}
 
   @Post('register')
   @ApiBody({
@@ -72,5 +74,18 @@ export class AuthController {
     } catch (e) {
       throw new UnauthorizedException('Invalid credentials');
     }
+  }
+
+  @UseGuards(UserGuard)
+  @Get('users')
+  async getAllUsers() {
+    const users = await this.userService.findAll();
+    return users.map(u => ({
+      id: u.id,
+      username: u.username,
+      createdAt: u.createdAt,
+      lastLoginAt: u.lastLoginAt,
+      totalSearches: u.totalSearches,
+    }));
   }
 } 
