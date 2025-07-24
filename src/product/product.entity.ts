@@ -10,6 +10,7 @@ export class Product {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index()
   @Column()
   title: string;
 
