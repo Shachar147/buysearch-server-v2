@@ -574,6 +574,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'cover up': [Category.BEACHWEAR],
     'cover-up': [Category.BEACHWEAR],
     'cover-ups': [Category.BEACHWEAR],
+    'trunks': [Category.BOXERS],
 };
 
 // --- Category Synonyms Map ---
@@ -723,7 +724,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
     he: ['תחתון', 'תחתונים', 'הלבשה תחתונה', 'תחתוני ', 'תחתוני']
   },
   [Category.BOXERS]: {
-    en: ['boxer', 'boxers'],
+    en: ['boxer', 'boxers', 'trunk', 'trunks'],
     he: ['בוקסר', 'בוקסרים']
   },
   [Category.SOCKS]: {
