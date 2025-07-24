@@ -18,6 +18,11 @@ export class ScraperCronService {
   // @Cron(CronExpression.EVERY_HOUR)
   @Cron('30 * * * *')
   async handleCron() {
+    if (process.env.NODE_ENV === 'production') {
+      // Optionally log
+      return;
+    }
+    
     const app = await NestFactory.createApplicationContext(AppModule);
     try {
       const scrapingHistoryService = app.get(ScrapingHistoryService);
