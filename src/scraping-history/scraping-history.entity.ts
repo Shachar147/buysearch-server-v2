@@ -26,7 +26,7 @@ export class ScrapingHistory {
   })
   type: ScrapingType;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamptz' })
   startTime: Date;
 
   @Column({ 
@@ -36,7 +36,7 @@ export class ScrapingHistory {
   })
   status: ScrapingStatus;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamptz', nullable: true })
   endTime: Date;
 
   @Column({ type: 'int', nullable: true })

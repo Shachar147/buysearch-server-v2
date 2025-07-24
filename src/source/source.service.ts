@@ -60,6 +60,7 @@ export class SourceService {
   }
 
   async findByNames(names: string[]): Promise<Source[]> {
+    if (!names || names.length === 0) return [];
     return this.sourcesRepository
       .createQueryBuilder('source')
       .where('source.isActive = true')
