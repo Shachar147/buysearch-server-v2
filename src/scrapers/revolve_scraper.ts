@@ -242,7 +242,7 @@ export class RevolveScraper extends BaseScraper {
 
     const relativeUrl = $el.find('a.js-plp-pdp-link').attr('href');
     if (!relativeUrl) return undefined;
-    const url = 'https://www.revolve.com' + relativeUrl;
+    const url = 'https://www.revolve.com' + relativeUrl.split('?')[0];
     
     const images: string[] = [];
     const mainImgSrc = $el.find('img.js-plp-image').attr('src');
