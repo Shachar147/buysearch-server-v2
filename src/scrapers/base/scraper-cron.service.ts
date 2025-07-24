@@ -4,6 +4,8 @@ import { exec } from 'child_process';
 import { NestFactory } from '@nestjs/core';
 import { resolve } from 'path';
 import { AppModule } from '../../../app.module';
+import { SourceService } from 'src/source/source.service';
+import { ScrapingHistoryService } from 'src/scraping-history/scraping-history.service';
 
 const CronExpressionExtended = {
   TWICE_DAILY: '0 2,10 * * *'
@@ -13,8 +15,88 @@ const CronExpressionExtended = {
 export class ScraperCronService {
   private readonly logger = new Logger(ScraperCronService.name);
 
-  // @Cron('32 * * * *')
+  // @Cron(CronExpression.EVERY_HOUR)
+  @Cron('30 * * * *')
   async handleCron() {
+    const app = await NestFactory.createApplicationContext(AppModule);
+    try {
+      const scrapingHistoryService = app.get(ScrapingHistoryService);
+      const sourceService = app.get(SourceService);
+
+      this.logger.log('Starting cron job: checking scraper status and launching as needed.');
+
+      // 1. Get all active scrapers
+      const scrapers = await scrapingHistoryService.getAllScrapers();
+      this.logger.log(`Found ${scrapers.length} scrapers in DB.`);
+      const activeSources = await sourceService.findByNames(scrapers);
+      this.logger.log(`Found ${activeSources.length} active sources.`);
+      const activeSourceNames = new Set(activeSources.map(s => s.name.toLowerCase()));
+      const filteredScrapers = scrapers.filter(scraper => activeSourceNames.has(scraper.toLowerCase()));
+      this.logger.log(`Filtered to ${filteredScrapers.length} scrapers with active sources.`);
+
+      // 2. Get all summaries (history, inProgress, etc.)
+      const summaries = await Promise.all(filteredScrapers.map(async (scraper) => {
+        await scrapingHistoryService.cancelOldInProgressSessions(scraper);
+        const [history, inProgress] = await Promise.all([
+          scrapingHistoryService.getAllHistoryForScraper(scraper),
+          scrapingHistoryService.getInProgressSessions(scraper),
+        ]);
+        const currentScan = inProgress.length > 0 ? inProgress[0] : null;
+        return {
+          scraper,
+          history,
+          currentScan,
+          updatedAt: currentScan?.updatedAt || history[0]?.updatedAt || new Date(0),
+        };
+      }));
+
+      // 3. Count running scrapers
+      const running = summaries.filter(s => s.currentScan && s.currentScan.status === 'in_progress');
+      const runningCount = running.length;
+      this.logger.log(`Currently running scrapers: ${runningCount}.`);
+      if (running.length) {
+        this.logger.log('Running scrapers: ' + running.map(r => r.scraper).join(', '));
+      }
+
+      // 4. If less than 1, start more (oldest updatedAt first)
+      if (runningCount < 1) {
+        const toStart = 1 - runningCount;
+        this.logger.log(`Need to start ${toStart} more scrapers.`);
+        // Find scrapers not running, sort by oldest updatedAt
+        const notRunning = summaries
+          .filter(s => !s.currentScan || s.currentScan.status !== 'in_progress')
+          .sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime())
+          .slice(0, toStart);
+
+        if (notRunning.length > 0) {
+          const s = notRunning[0];
+          this.logger.log('Scraper to start: ' + s.scraper);
+          const source = activeSources.find(src => src.name.toLowerCase() === s.scraper.toLowerCase());
+          if (source && source.scraper_path) {
+            const absPath = require('path').resolve(__dirname, source.scraper_path);
+            this.logger.log(`Starting scraper: ${s.scraper} (${absPath})`);
+            exec('node ' + absPath + ' --cron', { cwd: process.cwd() }, (error, stdout, stderr) => {
+              if (error) this.logger.error(`[${s.scraper}] Error: ${error.message}`);
+              if (stderr) this.logger.error(`[${s.scraper}] Stderr: ${stderr}`);
+              if (stdout) this.logger.log(`[${s.scraper}] Stdout: ${stdout}`);
+            });
+          } else {
+            this.logger.warn(`No valid source or scraper_path for ${s.scraper}. Skipping.`);
+          }
+        } else {
+          this.logger.log('No scrapers to start.');
+        }
+      } else {
+        this.logger.log('No additional scrapers need to be started.');
+      }
+    } finally {
+      this.logger.log('Cron job finished. Closing app context.');
+      await app.close();
+    }
+  }
+
+  // @Cron('32 * * * *')
+  async handleCronOld() {
     const app = await NestFactory.createApplicationContext(AppModule);
     try {
       const sourceRepo = app.get('SourceRepository'); // or use getRepositoryToken(Source) if needed

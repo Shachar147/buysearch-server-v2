@@ -715,7 +715,7 @@ export class ProductService {
       }
     }
   
-    // Save in chunks (optional: 100-200 at a time)
+    // Save in chunks (optional: 100 at a time)
     await this.productsRepository.save(productsToSave, { chunk: 100 });
   
     // Save price history
