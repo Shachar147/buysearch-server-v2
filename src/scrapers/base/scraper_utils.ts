@@ -51,6 +51,14 @@ export const COLOR_ALIASES: Record<string, string> = {
 
 // --- Brand Synonyms Mapping ---
 export const BRAND_SYNONYMS: Record<string, string> = {
+  'ysl': 'Saint Laurent',
+  'yves saint laurent': 'Saint Laurent',
+  'san laurent': 'Saint Laurent',
+  'sun laurent': 'Saint Laurent',
+  'yves s': 'Saint Laurent',
+  'איב סאן': 'Saint Laurent',
+  'סאן לורן': 'Saint Laurent',
+  'סאן לורנט': 'Saint Laurent',
   'jordan': 'Jordan',
   'ralph lauren': 'Polo Ralph Lauren',
   // 'polo': 'Polo Ralph Lauren',
@@ -285,7 +293,7 @@ export function extractColors(title: string, apiColors: string[]): string[] {
     if (lowerTitle.includes(alias)) colorsSet.add(color);
   }
   
-  return Array.from(colorsSet);
+  return Array.from(colorsSet).filter((c) => c.trim().length > 0);
 }
 
 /**
@@ -371,7 +379,7 @@ export function extractColorsWithHebrew(title: string, apiColors: string[], sour
   // Combine both sets
   const allColors = new Set([...convertedApiColors, ...titleColors]);
   
-  return Array.from(allColors);
+  return Array.from(allColors).filter((c) => c.trim().length > 0);;
 }
 
 export function calcSalePercent(price: number | null, oldPrice: number | null): number | null {

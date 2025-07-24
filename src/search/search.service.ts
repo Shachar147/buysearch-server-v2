@@ -60,7 +60,8 @@ export class SearchService {
     'Alo Yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה'],
     'styleforrent': ['styleforrent', 'סטייל פור', 'style for r', 'סטיילפור'],
     'lululemon': ['lululemon', 'lulu l', 'לולולמון', 'לולו למון'],
-    'gant': ['gant', 'גנט', 'גאנט']
+    'gant': ['gant', 'גנט', 'גאנט'],
+    'saint laurent': ['yves saint laurent', 'ysl', 'איב סאן', 'סאן לורן', 'סאן לורנט', 'san laurent', 'sun laurent', 'yves s']
   };
 
   private HEBREW_COLOR_SYNONYMS = {

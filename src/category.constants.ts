@@ -233,9 +233,9 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'חליפות': [Category.SUITS],
   'חליפת': [Category.SUITS],
   'גוף & וולנס': [Category.WELLNESS],
-  'straight': [Category.JEANS, Category.STRAIGHT_JEANS],
-  'skinny': [Category.JEANS, Category.SKINNY_JEANS],
-  'slim': [Category.JEANS, Category.SLIM_JEANS],
+  // 'straight': [Category.JEANS, Category.STRAIGHT_JEANS], <- causing tshirts to appears as jeans
+  // 'skinny': [Category.JEANS, Category.SKINNY_JEANS],  <- causing tshirts to appears as jeans
+  // 'slim': [Category.JEANS, Category.SLIM_JEANS],  <- causing tshirts to appears as jeans
   'נעליים אלגנטיות': [Category.ELEGANT_SHOES],
   'נעליים שטוחות': [Category.SHOES],
   'מגפי שרוכים': [Category.BOOTS],

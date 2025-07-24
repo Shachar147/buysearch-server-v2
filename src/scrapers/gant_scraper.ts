@@ -5,6 +5,7 @@ import { Category as CategoryType } from './base/base-scraper';
 import { Product, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
+import { ucfirst } from 'src/search/search.utils';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [
@@ -294,7 +295,8 @@ class GantScraper extends BaseScraper {
         price = Math.round((oldPrice * (100 - salePercent)) / 100);
       }
       const brand = normalizeBrandName('Gant');
-      const colors = extractColorsWithHebrew(title, [], 'gant_scraper');
+      const apiColors = Array.from(elem.find('.colors_wrapper a')).map((link) => ucfirst($(link).attr('title')?.toLocaleLowerCase()))
+      const colors = extractColorsWithHebrew(title, apiColors, 'gant_scraper');
       const categories = [category.name];
       const gender = category.gender;
       const product = this.createProduct({
