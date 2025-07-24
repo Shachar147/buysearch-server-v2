@@ -118,12 +118,24 @@ export enum Category {
   BEAUTY = "Beauty",
   PERFUMES = "Perfumes",
   HOME = "Home",
+  HOME_FURNITURE = "Home: Furniture",
   HOME_KITCHEN = "Home: Kitchen",
   HOME_SLEEP = "Home: Sleep",
+  HOME_CARPETS = "Home: Carpets",
+  HOME_LIGHTING = "Home: Lighting",
+  HOME_CURTAINS = "Home: Curtains",
+  HOME_PILLOWS = "Home: Pillows",
+  HOME_BLANKETS = "Home: Blankets",
   HOME_DECOR = "Home: Decor",
   HOME_BATH = "Home: Bath",
   HOME_WELLNESS = "Home & Wellness",
   HOME_LIVING_ROOM = "Home: Living Room",
+  HOME_TABLES = 'Tables',
+  HOME_CHAIRS = 'Chairs',
+  HOME_BAR_CHAIRS = 'Bar Chairs',
+  HOME_SOFAS = 'Sofas',
+  HOME_CONSOLES = 'Consoles',
+  HOME_MIRRORS = "HOME_MIRRORS",
 
   // 💄 Makeup
   MAKEUP = "Makeup",
@@ -152,7 +164,7 @@ export enum Category {
   GIFTS = "Gifts",
   BLACK_FRIDAY = "Black Friday",
 
-  PREGNANCY = "Pregnancy"
+  PREGNANCY = "Pregnancy",
 }
 
 /**
@@ -282,7 +294,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'אספדרילים': [Category.ESPADRILLES],
   'אספדריל': [Category.ESPADRILLES],
   'בגד חוף': [Category.BEACHWEAR, Category.SWIMWEAR],
-  'וסט': [Category.T_SHIRTS],
+  // 'וסט': [Category.T_SHIRTS], <- causing 'סט שולחן וסט...' to be on t-shirts even though it's kitchen set
   'סטרפלס': [Category.STRAPLESS],
   'סטרפלפס': [Category.STRAPLESS],
   'מטפחות': [Category.HANDKERCHIEFS],
@@ -575,6 +587,35 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'cover-up': [Category.BEACHWEAR],
     'cover-ups': [Category.BEACHWEAR],
     'trunks': [Category.BOXERS],
+    'consoles': [Category.HOME_CONSOLES],
+    'bar chairs': [Category.HOME_BAR_CHAIRS],
+    'tables': [Category.HOME_TABLES],
+    'chairs': [Category.HOME_CHAIRS],
+    'sofas': [Category.HOME_SOFAS],
+    'שולחן': [Category.HOME_TABLES],
+    'כיסא': [Category.HOME_CHAIRS],
+    'ספות': [Category.HOME_SOFAS],
+    'קונסולה': [Category.HOME_CONSOLES],
+    'כיסא בר': [Category.HOME_BAR_CHAIRS],
+    'שולחנות': [Category.HOME_TABLES],
+    'כיסאות': [Category.HOME_CHAIRS],
+    'ספאות': [Category.HOME_SOFAS],
+    'קונסולות': [Category.HOME_CONSOLES],
+    'כיסאות בר': [Category.HOME_BAR_CHAIRS],
+    'שטיח': [Category.HOME_CARPETS],
+    'מראה': [Category.HOME_MIRRORS],
+    'וילון': [Category.HOME_CURTAINS],
+    'כרית': [Category.HOME_PILLOWS],
+    'שמיכה': [Category.HOME_BLANKETS],
+    'שמיכות': [Category.HOME_BLANKETS],
+    'שמיכת ספה': [Category.HOME_BLANKETS],
+    'כריות': [Category.HOME_PILLOWS],
+    'מראות': [Category.HOME_MIRRORS],
+    'מראה ': [Category.HOME_MIRRORS],
+    'מראת ': [Category.HOME_MIRRORS],
+    'מנורת ': [Category.HOME_LIGHTING],
+    'מנורות': [Category.HOME_LIGHTING],
+    'מנורה': [Category.HOME_LIGHTING],
 };
 
 // --- Category Synonyms Map ---
@@ -1098,6 +1139,54 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.SARONGS]: {
     en: ['sarong', 'sarongs'],
     he: ['סרוגן', 'סרוגנים']
+  },
+  [Category.HOME_TABLES]: {
+    en: ['table', 'tables'],
+    he: ['שולחנות', 'שולחן']
+  },
+  [Category.HOME_CHAIRS]: {
+    en: ['chair', 'chairs'],
+    he: ['כיסא', 'כיסאות']
+  },
+  [Category.HOME_BAR_CHAIRS]: {
+    en: ['bar chair', 'bar chairs'],
+    he: ['כיסא בר', 'כיסאות בר']
+  },
+  [Category.HOME_SOFAS]: {
+    en: ['sofa', 'sofas'],
+    he: ['ספות', 'ספא']
+  },
+  [Category.HOME_CONSOLES]: {
+    en: ['console', 'consoles'],
+    he: ['קונסולה', 'קונסולות']
+  },
+  [Category.HOME_FURNITURE]: {
+    en: ['furniture', 'home furniture'],
+    he: ['ריהוט', 'ריהוט ביתי', 'ריהוט בית']
+  },
+  [Category.HOME_CARPETS]: {
+    en: ['carpet', 'carpets'],
+    he: ['שטיח', 'שטיחים']
+  },
+  [Category.HOME_LIGHTING]: {
+    en: ['lighting', 'light', 'lights'],
+    he: ['תאורה', 'מנורות']
+  },
+  [Category.HOME_CURTAINS]: {
+    en: ['curtain', 'curtains'],
+    he: ['וילון', 'וילונות']
+  },
+  [Category.HOME_PILLOWS]: {
+    en: ['pillow', 'pillows'],
+    he: ['כרית', 'כריות']
+  },
+  [Category.HOME_BLANKETS]: {
+    en: ['blanket', 'blankets'],
+    he: ['שמיכה', 'שמיכות']
+  },
+  [Category.HOME_MIRRORS]: {
+    en: ['mirror', 'mirrors'],
+    he: ['מראה', 'מראות']
   }
 };
 

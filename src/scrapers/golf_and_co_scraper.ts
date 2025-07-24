@@ -4,6 +4,9 @@ import { calcSalePercent, extractColors, Product } from './base/scraper_utils';
 import { Category } from '../category.constants';
 import puppeteer from 'puppeteer';
 
+// NOTE: if there's a range (min, max), we currently take the max.
+// we can change it by using minPrice and oldminPrice
+
 export class GolfAndCoScraper extends BaseScraper {
   protected readonly scraperName = 'Golf & Co';
   protected readonly source = 'Golf & Co';
@@ -115,6 +118,9 @@ export class GolfAndCoScraper extends BaseScraper {
         let oldPrice = oldPriceText && oldPriceText != '' ? parseFloat(oldPriceText) : null;
         let salePercent = oldPrice ? calcSalePercent(price, oldPrice) : null;
 
+
+        // NOTE: if there's a range (min, max), we currently take the max.
+        // we can change it by using minPrice and oldminPrice
         if (!price){
             priceText = $(el).find('span[data-price-type="maxPrice"]').first().text().replace(/[^\d.]/g, '');
             oldPriceText = $(el).find('span[data-price-type="oldmaxPrice"]').first().text().replace(/[^\d.]/g, '');
