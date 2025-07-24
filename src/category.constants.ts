@@ -616,6 +616,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'מנורת ': [Category.HOME_LIGHTING],
     'מנורות': [Category.HOME_LIGHTING],
     'מנורה': [Category.HOME_LIGHTING],
+    'כותונת לילה': [Category.SLEEP_WEAR],
+    'טופ כותנה': [Category.TOPS],
 };
 
 // --- Category Synonyms Map ---
