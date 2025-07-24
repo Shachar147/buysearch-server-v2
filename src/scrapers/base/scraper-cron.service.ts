@@ -21,8 +21,10 @@ export class ScraperCronService {
     if (process.env.NODE_ENV === 'production') {
       // Optionally log
       return;
+    } else {
+      console.log("Dev Mode, starting cron job");
     }
-    
+
     const app = await NestFactory.createApplicationContext(AppModule);
     try {
       const scrapingHistoryService = app.get(ScrapingHistoryService);
