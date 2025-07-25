@@ -1,11 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { exec } from 'child_process';
+import { exec, spawn } from 'child_process';
 import { NestFactory } from '@nestjs/core';
 import { resolve } from 'path';
 import { AppModule } from '../../../app.module';
 import { SourceService } from 'src/source/source.service';
 import { ScrapingHistoryService } from 'src/scraping-history/scraping-history.service';
+
+const MAX_PARALLEL_SCRAPERS = 2;
 
 const CronExpressionExtended = {
   TWICE_DAILY: '0 2,10 * * *'
@@ -16,10 +18,12 @@ export class ScraperCronService {
   private readonly logger = new Logger(ScraperCronService.name);
 
   // @Cron(CronExpression.EVERY_HOUR)
-  @Cron('30 * * * *')
+  // @Cron('0,15,30,45 * * * *')
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
     if (process.env.NODE_ENV === 'production') {
       // Optionally log
+      console.log("Production Mode, skipping cron job");
       return;
     } else {
       console.log("Dev Mode, starting cron job");
@@ -65,9 +69,9 @@ export class ScraperCronService {
         this.logger.log('Running scrapers: ' + running.map(r => r.scraper).join(', '));
       }
 
-      // 4. If less than 1, start more (oldest updatedAt first)
-      if (runningCount < 1) {
-        const toStart = 1 - runningCount;
+      // 4. If less than MAX_PARALLEL_SCRAPERS, start more (oldest updatedAt first)
+      if (runningCount < MAX_PARALLEL_SCRAPERS) {
+        const toStart = MAX_PARALLEL_SCRAPERS - runningCount;
         this.logger.log(`Need to start ${toStart} more scrapers.`);
         // Find scrapers not running, sort by oldest updatedAt
         const notRunning = summaries
@@ -82,10 +86,19 @@ export class ScraperCronService {
           if (source && source.scraper_path) {
             const absPath = require('path').resolve(__dirname, source.scraper_path);
             this.logger.log(`Starting scraper: ${s.scraper} (${absPath})`);
-            exec('node ' + absPath + ' --cron', { cwd: process.cwd() }, (error, stdout, stderr) => {
-              if (error) this.logger.error(`[${s.scraper}] Error: ${error.message}`);
-              if (stderr) this.logger.error(`[${s.scraper}] Stderr: ${stderr}`);
-              if (stdout) this.logger.log(`[${s.scraper}] Stdout: ${stdout}`);
+            // Use spawn to stream logs in real-time
+            const child = spawn('node', [absPath, '--cron'], { cwd: process.cwd() });
+
+            child.stdout.on('data', (data) => {
+              this.logger.log(`[${s.scraper}] ${data.toString()}`);
+            });
+
+            child.stderr.on('data', (data) => {
+              this.logger.error(`[${s.scraper}] ${data.toString()}`);
+            });
+
+            child.on('close', (code) => {
+              this.logger.log(`[${s.scraper}] Process exited with code ${code}`);
             });
           } else {
             this.logger.warn(`No valid source or scraper_path for ${s.scraper}. Skipping.`);

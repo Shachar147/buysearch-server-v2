@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ScrapingHistory, ScrapingType, ScrapingStatus } from './scraping-history.entity';
+import * as moment from 'moment';
 
 export { ScrapingType, ScrapingStatus } from './scraping-history.entity';
 
@@ -165,17 +166,22 @@ export class ScrapingHistoryService {
 
   async cancelOldInProgressSessions(scraper: string): Promise<number[]> {
     const inProgress = await this.getInProgressSessions(scraper);
-    const now = new Date();
-    const oneHourAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+    const now = moment.utc();
+    const expiryTime = now.clone().subtract(15, 'minutes');
   
+    console.log(scraper, inProgress?.[0]?.updatedAt, moment.utc(inProgress?.[0]?.updatedAt), expiryTime);
+
     const toCancel = inProgress.filter((session, index) =>
-      index > 0 || // not the latest
-      new Date(session.updatedAt) < oneHourAgo // last update > 4 hours ago
+      session && (
+        index > 0 ||
+        session.updatedAt && moment.utc(session.updatedAt).isBefore(expiryTime)
+      )
     );
   
     const ids = toCancel.map(s => s.id);
   
     if (ids.length > 0) {
+      console.log(`Cancelling ${ids.length} in-progress sessions for ${scraper}`);
       await this.scrapingHistoryRepository.update(ids, {
         status: ScrapingStatus.FAILED,
         endTime: new Date()
@@ -184,4 +190,4 @@ export class ScrapingHistoryService {
   
     return ids;
   }
-} 
+}
