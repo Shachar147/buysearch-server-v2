@@ -3,11 +3,11 @@ import { SourceService } from './source.service';
 import { Source } from './source.entity';
 import { UserGuard } from '../auth/user.guard';
 
-@UseGuards(UserGuard)
 @Controller('sources')
 export class SourceController {
   constructor(private readonly sourceService: SourceService) {}
 
+  @UseGuards(UserGuard)
   @Post()
   create(@Body() createSourceDto: Partial<Source>) {
     return this.sourceService.create(createSourceDto);
@@ -25,11 +25,13 @@ export class SourceController {
     return this.sourceService.findOne(+id);
   }
 
+  @UseGuards(UserGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSourceDto: Partial<Source>) {
     return this.sourceService.update(+id, updateSourceDto);
   }
 
+  @UseGuards(UserGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.sourceService.remove(+id);
