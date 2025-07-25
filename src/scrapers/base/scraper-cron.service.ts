@@ -8,7 +8,7 @@ import { SourceService } from '../../source/source.service';
 import { ScrapingHistoryService } from '../../scraping-history/scraping-history.service';
 const fs = require('fs');
 
-const MAX_PARALLEL_SCRAPERS = 2;
+const MAX_PARALLEL_SCRAPERS = 1;
 
 const CronExpressionExtended = {
   TWICE_DAILY: '0 2,10 * * *'
@@ -19,8 +19,8 @@ export class ScraperCronService {
   private readonly logger = new Logger(ScraperCronService.name);
 
   // @Cron(CronExpression.EVERY_HOUR)
-  // @Cron('0,15,30,45 * * * *')
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron('1,15,30,45 * * * *')
+  // @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
     if (process.env.NODE_ENV === 'production') {
       // Optionally log
@@ -62,6 +62,14 @@ export class ScraperCronService {
         };
       }));
 
+      // Filter out scrapers that have been scraped in the last 24 hours
+      const now = Date.now();
+      const summariesFiltered = summaries.filter(s => {
+        const lastScraped = new Date(s.updatedAt).getTime();
+        return now - lastScraped > 24 * 60 * 60 * 1000;
+      });
+      this.logger.log(`Filtered to ${summariesFiltered.length} scrapers not scraped in the last 24 hours.`);
+
       // 3. Count running scrapers
       const running = summaries.filter(s => s.currentScan && s.currentScan.status === 'in_progress');
       const runningCount = running.length;
@@ -75,7 +83,7 @@ export class ScraperCronService {
         const toStart = MAX_PARALLEL_SCRAPERS - runningCount;
         this.logger.log(`Need to start ${toStart} more scrapers.`);
         // Find scrapers not running, sort by oldest updatedAt
-        const notRunning = summaries
+        const notRunning = summariesFiltered
           .filter(s => !s.currentScan || s.currentScan.status !== 'in_progress')
           .sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime())
           .slice(0, toStart);

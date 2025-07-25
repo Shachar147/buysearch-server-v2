@@ -140,16 +140,25 @@ export abstract class BaseScraper {
       }
 
       // Finish scraping session
-      await finishScrapingSession(
-        this.session,
-        totalNew,
-        totalUpdated,
-        this.startTime,
-        this.scraperName,
-        this.scrapingHistoryService,
-        totalItems,
-        missingItems
-      );
+      if (totalNew + totalUpdated > 0) {
+        await finishScrapingSession(
+          this.session,
+          totalNew,
+          totalUpdated,
+          this.startTime,
+          this.scraperName,
+          this.scrapingHistoryService,
+          totalItems,
+          missingItems
+        );
+      } else {
+        // if we scraped nothing, mark session as failed
+        await this.scrapingHistoryService.failScrapingSession(
+          this.session.id,
+          totalNew,
+          totalUpdated
+        );
+      }
 
       await app.close();
       
