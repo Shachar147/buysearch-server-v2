@@ -32,6 +32,9 @@ import { SavedFilterModule } from './src/saved-filter/saved-filter.module';
     SavedFilterModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ScraperCronService],
+  providers: [
+    AppService,
+    ...(process.env.ENABLE_CRON === 'true' ? [ScraperCronService] : []),
+  ],
 })
 export class AppModule {}

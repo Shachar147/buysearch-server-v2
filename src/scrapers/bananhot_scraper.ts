@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { calcSalePercent, extractColorsWithHebrew, Product } from './base/scraper_utils';
 import puppeteer from 'puppeteer';
-import { Category } from 'src/category.constants';
+import { Category } from '../category.constants';
 
 const BASE_URL = 'https://bananhot.co.il';
 

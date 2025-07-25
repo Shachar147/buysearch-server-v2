@@ -968,11 +968,11 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.HOME]: {
     en: ['home', 'house', 'apartment', 'flat'],
-    he: ['בית', 'דירה', 'דירות']
+    he: [' לבית', 'דירה', 'דירות']
   },
   [Category.HOME_WELLNESS]: {
     en: ['home wellness', 'home & wellness', 'wellness', 'body care', 'body'],
-    he: ['בית', 'בריאות', 'טיפוח']
+    he: [' לבית', 'בריאות', 'טיפוח']
   },
   [Category.GIFTS]: {
     en: ['gift', 'gifts', 'present', 'presents'],
@@ -1124,23 +1124,23 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.HOME_KITCHEN]: {
     en: ['kitchen', 'spoons', 'forks'],
-    he: ['למטבח', 'צלחת', 'צלחות', 'סכו"ם', 'מזלגות', 'סכינים', 'כפות', 'כפיות', 'כוסות', 'מטבח']
+    he: ['למטבח', 'צלחת', 'צלחות', 'סכו"ם', 'מזלגות', 'סכינים', 'כפות', 'כפיות', 'כוסות', 'מטבח', 'לבית']
   },
   [Category.HOME_SLEEP]: {
     en: ['sleep', 'bedroom', 'bedding', 'duvet', 'pillow', 'sheets', 'blanket', 'quilt', 'linen', 'comforter', 'bed', 'mattress', 'bedspread', 'pillowcase', 'coverlet', 'sleeping'],
-    he: ['שינה', 'חדר שינה', 'מצעים', 'שמיכה', 'כרית', 'סדין', 'שמיכות', 'כיסוי מיטה', 'ציפה', 'מיטה', 'מזרן', 'כיסוי', 'כריות', 'שנת לילה']
+    he: ['שינה', 'חדר שינה', 'מצעים', 'שמיכה', 'כרית', 'סדין', 'שמיכות', 'כיסוי מיטה', 'ציפה', 'מיטה', 'מזרן', 'כיסוי', 'כריות', 'שנת לילה', 'לבית']
   },
   [Category.HOME_DECOR]: {
     en: ['decor', 'decoration', 'design', 'home decor', 'ornament', 'vase', 'picture', 'frame', 'art', 'sculpture', 'candle', 'home styling', 'accessory', 'accessories', 'interior'],
-    he: ['עיצוב', 'דקור', 'דקורציה', 'קישוט', 'ואזה', 'תמונה', 'מסגרת', 'אומנות', 'פיסול', 'נר', 'סטיילינג', 'אביזר', 'אביזרים', 'פנים הבית']
+    he: ['עיצוב', 'דקור', 'דקורציה', 'קישוט', 'ואזה', 'תמונה', 'מסגרת', 'אומנות', 'פיסול', 'נר', 'סטיילינג', 'אביזר', 'אביזרים', 'פנים הבית', 'לבית']
   },
   [Category.HOME_BATH]: {
     en: ['bath', 'bathroom', 'towel', 'towels', 'bathrobe', 'robe', 'shower', 'soap', 'bath mat', 'bathroom accessories', 'washcloth', 'loofah', 'bathroom decor', 'bath accessories'],
-    he: ['אמבטיה', 'מגבת', 'מגבות', 'חלוק', 'מקלחת', 'סבון', 'שטיחון', 'אביזרי אמבטיה', 'רחצה', 'ספוג', 'דקור אמבטיה', 'אביזרי רחצה']
+    he: ['אמבטיה', 'מגבת', 'מגבות', 'חלוק', 'מקלחת', 'סבון', 'שטיחון', 'אביזרי אמבטיה', 'רחצה', 'ספוג', 'דקור אמבטיה', 'אביזרי רחצה', 'לבית']
   },
   [Category.HOME_LIVING_ROOM]: {
     en: ['living room', 'living room decor', 'living room accessories', 'living room design', 'living room furniture', 'living room styling', 'living room accessories', 'living room decor', 'living room design', 'living room furniture', 'living room styling'],
-    he: ['ריהוט לסלון', 'ריהוט סלון']
+    he: ['ריהוט לסלון', 'ריהוט סלון', 'לבית']
   },
   [Category.SARONGS]: {
     en: ['sarong', 'sarongs'],
@@ -1148,51 +1148,51 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.HOME_TABLES]: {
     en: ['table', 'tables'],
-    he: ['שולחנות', 'שולחן']
+    he: ['שולחנות', 'שולחן', 'לבית']
   },
   [Category.HOME_CHAIRS]: {
     en: ['chair', 'chairs'],
-    he: ['כיסא', 'כיסאות']
+    he: ['כיסא', 'כיסאות', 'לבית']
   },
   [Category.HOME_BAR_CHAIRS]: {
     en: ['bar chair', 'bar chairs'],
-    he: ['כיסא בר', 'כיסאות בר']
+    he: ['כיסא בר', 'כיסאות בר', 'לבית']
   },
   [Category.HOME_SOFAS]: {
     en: ['sofa', 'sofas'],
-    he: ['ספות', 'ספא']
+    he: ['ספות', 'ספא', 'לבית']
   },
   [Category.HOME_CONSOLES]: {
     en: ['console', 'consoles'],
-    he: ['קונסולה', 'קונסולות']
+    he: ['קונסולה', 'קונסולות', 'לבית']
   },
   [Category.HOME_FURNITURE]: {
     en: ['furniture', 'home furniture'],
-    he: ['ריהוט', 'ריהוט ביתי', 'ריהוט בית']
+    he: ['ריהוט', 'ריהוט ביתי', 'ריהוט בית', 'לבית']
   },
   [Category.HOME_CARPETS]: {
     en: ['carpet', 'carpets'],
-    he: ['שטיח', 'שטיחים']
+    he: ['שטיח', 'שטיחים', 'לבית']
   },
   [Category.HOME_LIGHTING]: {
     en: ['lighting', 'light', 'lights'],
-    he: ['תאורה', 'מנורות']
+    he: ['תאורה', 'מנורות', 'לבית']
   },
   [Category.HOME_CURTAINS]: {
     en: ['curtain', 'curtains'],
-    he: ['וילון', 'וילונות']
+    he: ['וילון', 'וילונות', 'לבית']
   },
   [Category.HOME_PILLOWS]: {
     en: ['pillow', 'pillows'],
-    he: ['כרית', 'כריות']
+    he: ['כרית', 'כריות', 'לבית']
   },
   [Category.HOME_BLANKETS]: {
     en: ['blanket', 'blankets'],
-    he: ['שמיכה', 'שמיכות']
+    he: ['שמיכה', 'שמיכות', 'לבית']
   },
   [Category.HOME_MIRRORS]: {
     en: ['mirror', 'mirrors'],
-    he: ['מראה', 'מראות']
+    he: ['מראה', 'מראות', 'לבית']
   }
 };
 

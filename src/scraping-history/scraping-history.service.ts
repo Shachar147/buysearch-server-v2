@@ -169,7 +169,7 @@ export class ScrapingHistoryService {
     const now = moment.utc();
     const expiryTime = now.clone().subtract(15, 'minutes');
   
-    console.log(scraper, inProgress?.[0]?.updatedAt, moment.utc(inProgress?.[0]?.updatedAt), expiryTime);
+    // console.log(scraper, inProgress?.[0]?.updatedAt, moment.utc(inProgress?.[0]?.updatedAt), expiryTime);
 
     const toCancel = inProgress.filter((session, index) =>
       session && (

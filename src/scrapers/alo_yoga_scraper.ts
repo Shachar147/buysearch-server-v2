@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
 import { Product, extractColors, calcSalePercent } from './base/scraper_utils';
-import { Category } from 'src/category.constants';
+import { Category } from '../category.constants';
 
 export class AloYogaScraper extends BaseScraper {
   protected readonly scraperName = 'Alo Yoga';

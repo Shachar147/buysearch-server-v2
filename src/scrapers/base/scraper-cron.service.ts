@@ -4,8 +4,9 @@ import { exec, spawn } from 'child_process';
 import { NestFactory } from '@nestjs/core';
 import { resolve } from 'path';
 import { AppModule } from '../../../app.module';
-import { SourceService } from 'src/source/source.service';
-import { ScrapingHistoryService } from 'src/scraping-history/scraping-history.service';
+import { SourceService } from '../../source/source.service';
+import { ScrapingHistoryService } from '../../scraping-history/scraping-history.service';
+const fs = require('fs');
 
 const MAX_PARALLEL_SCRAPERS = 2;
 
@@ -19,7 +20,7 @@ export class ScraperCronService {
 
   // @Cron(CronExpression.EVERY_HOUR)
   // @Cron('0,15,30,45 * * * *')
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron(CronExpression.EVERY_MINUTE)
   async handleCron() {
     if (process.env.NODE_ENV === 'production') {
       // Optionally log
@@ -86,8 +87,30 @@ export class ScraperCronService {
           if (source && source.scraper_path) {
             const absPath = require('path').resolve(__dirname, source.scraper_path);
             this.logger.log(`Starting scraper: ${s.scraper} (${absPath})`);
+            
+            
             // Use spawn to stream logs in real-time
-            const child = spawn('node', [absPath, '--cron'], { cwd: process.cwd() });
+            let runner, fileToRun;
+            if (fs.existsSync(absPath)) {
+              const ext = require('path').extname(absPath);
+              runner = ext === '.ts' ? 'ts-node' : 'node';
+              fileToRun = absPath;
+            } else if (absPath.endsWith('.js')) {
+              // Try .ts fallback
+              const tsPath = absPath.replace(/\.js$/, '.ts');
+              if (fs.existsSync(tsPath)) {
+                runner = 'ts-node';
+                fileToRun = tsPath;
+              } else {
+                this.logger.error(`[${s.scraper}] Neither ${absPath} nor ${tsPath} exist.`);
+                return;
+              }
+            } else {
+              this.logger.error(`[${s.scraper}] File not found: ${absPath}`);
+              return;
+            }
+            this.logger.log(`[${s.scraper}] Running: ${runner} ${fileToRun}`);
+            const child = spawn(runner, [fileToRun, '--cron'], { cwd: process.cwd() });
 
             child.stdout.on('data', (data) => {
               this.logger.log(`[${s.scraper}] ${data.toString()}`);

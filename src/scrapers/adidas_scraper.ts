@@ -4,7 +4,7 @@ import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
-import { Category } from 'src/category.constants';
+import { Category } from '../category.constants';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [
