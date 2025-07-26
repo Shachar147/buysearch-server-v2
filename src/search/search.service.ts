@@ -57,7 +57,7 @@ export class SearchService {
     'skims': ['סקימס'],
     'brownie': ['בראוני'],
     'alo yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה'],
-    'Alo Yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה'],
+    'Alo Yoga': ['alo yoga', 'aloyoga', 'אלויוגה', 'אלו יוגה', 'הלו יוגה', 'הלויוגה', 'האלו יוגה', 'אלו יו'],
     'styleforrent': ['styleforrent', 'סטייל פור', 'style for r', 'סטיילפור'],
     'lululemon': ['lululemon', 'lulu l', 'לולולמון', 'לולו למון'],
     'gant': ['gant', 'גנט', 'גאנט'],
@@ -297,6 +297,13 @@ export class SearchService {
     });
     filters.brands = Array.from(foundBrands).filter(Boolean);
 
+    if (filters.brands.includes('Alo Yoga') && filters.brands.includes('Alo')) {
+      filters.brands = filters.brands.filter(b => b !== 'Alo');
+    }
+
+    // filter out categories that appears on filters.brands
+    filters.categories = filters.categories.filter(c => !filters.brands.includes(c));
+
     // Extract gender
     if (
       lowerQuery.includes('women') ||
@@ -394,23 +401,24 @@ export class SearchService {
       { key: 'Asos', patterns: [/\basos\b/, /אסוס/] },
       { key: 'ItayBrands', patterns: [/\bitay b\b/, /איתי בר/] },
       { key: 'Zara', patterns: [/\bzara\b/, /זארה/] },
-      { key: 'Gant', patterns: [/\bgant\b/, /גאנט/] },
-      { key: 'Nike', patterns: [/nike/, /נייק/, /נייקי/] },
+      // { key: 'Gant', patterns: [/\bgant\b/, /גאנט/] },
+      // { key: 'Nike', patterns: [/nike/, /נייק/, /נייקי/] },
       { key: 'Renuar', patterns: [/renuar/, /רנואר/] },
       { key: 'JDSports', patterns: [/jdsports/, /ג׳יידי/] },
       { key: 'Story', patterns: [/story/, /סטורי/] },
       { key: 'Chozen', patterns: [/chozen/, /צ׳וזן/, /צוזן/] },
       { key: 'OneProjectShop', patterns: [/oneprojectshop/, /וואן ?פרוג׳קט/, /ואן פרוג׳קט/] },
       { key: 'Castro', patterns: [/castro/, /קא?סטרו/] },
-      { key: 'Tommy Hilfiger', patterns: [/tommy h/, /טומי ה/] },
-      { key: 'Alo Yoga', patterns: [/alo y/, /אלו י/, /האלו י/, /הלו י/] },
+      // { key: 'Tommy Hilfiger', patterns: [/tommy h/, /טומי ה/] },
+      // { key: 'Alo Yoga', patterns: [/alo y/, /אלו י/, /האלו י/, /הלו י/] },
       { key: 'Revolve', patterns: [/revolv/, /ריבולב/, /ריוולב/, /ריוולו/, /ריולב/] },
       { key: 'Lululemon', patterns: [/lululemon/, /לולולמון/, /לולו למון/] },
       { key: 'Primark', patterns: [/primark/, /פרימרק/] },
-      { key: 'Adidas', patterns: [/adidas/, /אדידס/] },
-      { key: 'Polo Ralph Lauren', patterns: [/polo ralph lauren/, /פולו ראלפ לורנ/, /פולו ראלפ לורן/, /פולו ראלף לאורן/] },
-      { key: 'Revolve', patterns: [/revolv/, /ריבולב/, /ריוולב/, /ריוולו/, /ריולב/] },
+      // { key: 'Adidas', patterns: [/adidas/, /אדידס/] },
+      // { key: 'Polo Ralph Lauren', patterns: [/polo ralph lauren/, /פולו ראלפ לורנ/, /פולו ראלפ לורן/, /פולו ראלף לאורן/] },
       { key: 'StyleForRent', patterns: [/styleforrent/, /סטייל פור/, /סטיילפור/] },
+      { key: 'Golf & Co', patterns: [/golf and/, /golf \&/, /גולף אנד/] },
+      { key: 'FoxHome', patterns: [/fox ho/, /פוקס הו/, /פוקסהום/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))

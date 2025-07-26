@@ -632,11 +632,11 @@ export type CategorySynonyms = {
 export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.T_SHIRTS]: {
     en: ['t-shirt', 'tshirt', 'tee', 't shirt', 'tank top', 'vest'],
-    he: ['טי שירט', 'טי-שירט', 'טישרט', 'חולצה', 'חולצות', 'טי שירטים', 'טי-שירטים', 'ווסט']
+    he: ['טי שירט', 'טי-שירט', 'טישרט', 'חולצה', 'חולצות', 'טי שירטים', 'טי-שירטים', 'ווסט', 'חולצת ']
   },
   [Category.TOPS]: {
     en: ['top', 'tops'],
-    he: ['טופ', 'טופים']
+    he: ['טופ', 'טופים', 'חולצת ']
   },
   [Category.SHIRTS]: {
     en: ['shirt', 'blouse', 'button down', 'button-up', 'dress shirt'],
