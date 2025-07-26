@@ -194,7 +194,7 @@ export class AloYogaScraper extends BaseScraper {
       {
         id: 'bags',
         name: Category.BAGS,
-        gender: 'Wommen',
+        gender: 'Women',
         url: 'https://www.aloyoga.com/he-il/collections/bags',
       },
       // --- Men ---
