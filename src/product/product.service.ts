@@ -437,6 +437,13 @@ export class ProductService {
 
   async create(createProductDto: Partial<Product>): Promise<Product> {
     const product = this.productsRepository.create(createProductDto);
+    
+    // smart search text
+    // Generate search_text if not provided
+    if (!product.search_text) {
+      product.search_text = this.generateSearchText(product);
+    }
+    
     return this.productsRepository.save(product);
   }
 
@@ -447,6 +454,19 @@ export class ProductService {
 
   async remove(id: number): Promise<void> {
     await this.productsRepository.delete(id);
+  }
+
+  // smart search text
+  private generateSearchText(product: Partial<Product>): string {
+    const searchTextParts = [
+      product.title,
+      product.brand?.name,
+      product.source?.name,
+      product.categories?.map(c => c.name).join(' '),
+      product.colors?.map(c => c.name).join(' ')
+    ].filter(Boolean);
+    
+    return searchTextParts.join(' ');
   }
 
   async upsertProduct(productData: ProductInput): Promise<{ product: Product; created: boolean; updated: boolean }> {
@@ -485,6 +505,17 @@ export class ProductService {
       if (product.brand?.id !== brand.id) updates.brand = brand;
       if (product.source?.id !== source.id) updates.source = source;
 
+      // smart search text
+      // Always update search_text when any field changes
+      const searchText = [
+        productData.title,
+        brand.name,
+        source.name,
+        categories.map(c => c.name).join(' '),
+        colors.map(c => c.name).join(' ')
+      ].filter(Boolean).join(' ');
+      updates.search_text = searchText;
+
       // Only update if there are actual changes
       if (Object.keys(updates).length > 0) {
         await this.productsRepository.update(product.id, updates);
@@ -515,6 +546,16 @@ export class ProductService {
       // Reload the product to get updated data
       product = await this.findOne(product.id);
     } else {
+
+      // smart search text
+      const searchText = [
+        productData.title,
+        brand.name,
+        source.name,
+        categories.map(c => c.name).join(' '),
+        colors.map(c => c.name).join(' ')
+      ].filter(Boolean).join(' ');
+
       const data = {
         title: productData.title,
         url: productData.url,
@@ -525,6 +566,7 @@ export class ProductService {
         salePercent: productData.salePercent,
         currency: productData.currency,
         gender: productData.gender,
+        search_text: searchText, // smart search text
         brand,
         source,
         categories,
@@ -674,6 +716,16 @@ export class ProductService {
           existing.source?.id !== source?.id;
 
         if (shouldUpdate) {
+          // smart search text
+          // Generate search_text for the updated product
+          const searchText = [
+            input.title,
+            brand?.name,
+            source?.name,
+            input.categories.map(cat => cat).join(' '),
+            input.colors.map(col => col).join(' ')
+          ].filter(Boolean).join(' ');
+
           Object.assign(existing, {
             title: input.title,
             images: input.images,
@@ -683,6 +735,7 @@ export class ProductService {
             salePercent: input.salePercent,
             currency: input.currency,
             gender: input.gender,
+            search_text: searchText,
             brand,
             source
           });
@@ -699,8 +752,19 @@ export class ProductService {
           priceHistoryMap.push({ productId: existing.id, price: newMin });
         }
       } else {
+        // smart search text
+        // Generate search_text for the new product
+        const searchText = [
+          input.title,
+          brand?.name,
+          source?.name,
+          input.categories.map(cat => cat).join(' '),
+          input.colors.map(col => col).join(' ')
+        ].filter(Boolean).join(' ');
+
         const newProduct = this.productsRepository.create({
           ...input,
+          search_text: searchText, // smart search text
           brand,
           source,
           colors: colorEntities,

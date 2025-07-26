@@ -5,6 +5,7 @@ import { Color } from '../color/color.entity';
 import { Source } from '../source/source.entity';
 
 @Entity('products')
+@Index('idx_product_search_text', { synchronize: false }) // This is a placeholder for TypeORM, see note below
 export class Product {
   @Index()
   @PrimaryGeneratedColumn()
@@ -39,6 +40,11 @@ export class Product {
   @Index()
   @Column()
   gender: string;
+
+  // GIN index for search_text should be created via migration:
+  // CREATE INDEX idx_product_search_text ON products USING GIN (to_tsvector('simple', search_text));
+  @Column({ type: 'text', nullable: true })
+  search_text: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
