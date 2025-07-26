@@ -185,7 +185,7 @@ export class PrimarkScraper extends BaseScraper {
     const brand = normalizeBrandName('Primark');
     const gender = category.gender;
 
-    if (!title || !url || !price) return;
+    if (!title || !url || !price || price == 0) return;
 
     return this.createProduct({
       title,
