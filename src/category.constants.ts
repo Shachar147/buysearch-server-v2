@@ -96,6 +96,7 @@ export enum Category {
   BUCKET_HATS = "Bucket Hats",
   HEADWEAR = "Hats & Headwear",
   SUNGLASSES = "Sunglasses",
+  EYEGLASSES = "Eyeglasses",
   EYEWEAR = "Eyewear",
   NECKLACES = "Necklaces",
   BRACELETS = "Bracelets",
@@ -623,6 +624,10 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'sneaker': [Category.SNICKERS],
     ' heel': [Category.HEELS],
     'sandal': [Category.SANDALS],
+    'משקפי ראייה': [Category.EYEGLASSES],
+    'משקפי ראיה': [Category.EYEGLASSES],
+    'משקפיים לראייה': [Category.EYEGLASSES],
+    'משקפיים לראיה': [Category.EYEGLASSES],
 };
 
 // --- Category Synonyms Map ---
@@ -1198,6 +1203,10 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.WATCHES]: {
     en: ['watch', 'watches'],
     he: ['שעון', 'שעונים']
+  },
+  [Category.EYEGLASSES]: {
+    en: ['eyeglasses', 'glasses for men', 'glasses for women', 'glasses for kids'],
+    he: ['משקפי ראייה', 'משקפי ראיה']
   }
 };
 
