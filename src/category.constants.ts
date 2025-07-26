@@ -105,6 +105,7 @@ export enum Category {
   SCARVES = "Scarves",
   HANDKERCHIEFS = "Handkerchiefs",
   OTHER_ACCESSORIES = "Other",
+  WATCHES = "WATCHES",
 
   // 🏷️ Brands (used as filters)
   BY_BRAND = "By Brand",
@@ -542,7 +543,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     "archive old": [Category.GIFTS],
     "גבות": [Category.BROW_PENCIL],
     "ספריי עיון": [Category.HOME],
-    "שעונים": [Category.ACCESSORIES],
+    "שעונים": [Category.WATCHES],
     "לייף סטייל": [Category.HOME],
     "buyer's picks": [Category.GIFTS],
     "maskit x gottex": [Category.BY_BRAND],
@@ -648,7 +649,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.SWEATERS]: {
     en: ['sweater', 'sweaters', 'jumper', 'pull', 'pull-over', 'pullover'],
-    he: ['סוודר', 'סוודרים', 'סוויטשירטים', 'סווטשירטים', 'סווטשיירטים']
+    he: ['סוודר', 'סוודרים', 'סוויטשירטים', 'סווטשירטים', 'סווטשיירטים', 'סווטשרט', 'סווט שירט', 'סווט שרט'],
   },
   [Category.CREW_NECK_SWEATERS]: {
     en: ['crew neck sweater', 'crewneck sweater', 'crew neck', 'crewneck'],
@@ -847,8 +848,8 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
     he: ['אוקספורד', 'נעלי אוקספורד']
   },
   [Category.ACCESSORIES]: {
-    en: ['accessories', 'jewelry', 'watch', 'sunglasses', 'bag', 'hat', 'hats', 'belt', 'scarf', 'gloves', 'accessory'],
-    he: ['אביזרים', 'אקססוריז', 'אביזר', 'שעון', 'שעונים', 'תיק', 'תיקים', 'כובע', 'כובעים', 'משקפיים', 'משקפי שמש', 'צמיד', 'צמידים', 'שרשרת', 'שרשראות', 'עגיל', 'עגילים', 'טבעת', 'טבעות', 'חגורה', 'חגורות', 'ארנק', 'ארנקים', 'נגד מים לטלפון', 'קייס ל']
+    en: ['accessories', 'accessory'],
+    he: ['אביזרים', 'אקססוריז', 'אביזר', 'נגד מים לטלפון', 'קייס ל']
   },
   [Category.BAGS]: {
     en: ['bag', 'bags', 'handbag', 'handbags'],
@@ -891,7 +892,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
     he: ['ארנק', 'ארנק עור', 'ארנקים', 'ארנקי עור']
   },
   [Category.HATS]: {
-    en: ['hat', 'hats', 'cap', 'caps'],
+    en: ['hat', 'hats', ' cap ', ' caps '],
     he: ['כובע', 'כובעים', 'כובע מצחיה', 'כובעי מצחיה']
   },
   [Category.BUCKET_HATS]: {
@@ -1193,6 +1194,10 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.HOME_MIRRORS]: {
     en: ['mirror', 'mirrors'],
     he: ['מראה', 'מראות', 'לבית']
+  },
+  [Category.WATCHES]: {
+    en: ['watch', 'watches'],
+    he: ['שעון', 'שעונים']
   }
 };
 
