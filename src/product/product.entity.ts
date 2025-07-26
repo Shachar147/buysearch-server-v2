@@ -40,9 +40,11 @@ export class Product {
   @Column()
   gender: string;
 
+  @Index()
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
+  @Index()
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
