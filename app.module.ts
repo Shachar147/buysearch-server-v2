@@ -15,6 +15,7 @@ import { UserModule } from './src/user/user.module';
 import { FavouritesModule } from './src/favourites/favourites.module';
 import { ScrapingHistoryModule } from './src/scraping-history/scraping-history.module';
 import { SavedFilterModule } from './src/saved-filter/saved-filter.module';
+import { ProxyModule } from './src/proxy/proxy.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SavedFilterModule } from './src/saved-filter/saved-filter.module';
     FavouritesModule,
     ScrapingHistoryModule,
     SavedFilterModule,
+    ProxyModule,
   ],
   controllers: [AppController],
   providers: [
