@@ -19,7 +19,7 @@ export class ScraperCronService {
   private readonly logger = new Logger(ScraperCronService.name);
 
   // @Cron(CronExpression.EVERY_HOUR)
-  @Cron('1,15,30,45 * * * *')
+  @Cron('0,15,30,45 * * * *')
   // @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
     if (process.env.NODE_ENV === 'production') {
