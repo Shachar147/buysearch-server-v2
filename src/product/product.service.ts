@@ -10,6 +10,7 @@ import { Brackets } from 'typeorm';
 import { FavouritesService } from '../favourites/favourites.service';
 import { PriceHistoryService } from '../price-history/price-history.service';
 import { PAGINATION_LIMIT } from '../consts';
+import { ucfirst } from 'src/search/search.utils';
 
 export interface ProductFilters {
   color?: string;
@@ -83,6 +84,10 @@ export class ProductService {
       data: [],
     }
 
+    // Get all active source IDs first
+    const activeSourcesResult = await this.sourceService.findAll(0, 100000); // Get all active sources
+    const allActiveSourceIds = activeSourcesResult.data.map(s => s.id);
+
     if (filters.brand) {
       const brands = await this.brandService.findByNameOrNames(filters.brand);
       brandIds = brands.map(b => b.id);
@@ -102,6 +107,9 @@ export class ProductService {
       const sources = await this.sourceService.findByNameOrNames(filters.source);
       sourceIds = sources.map(s => s.id);
       if (!sourceIds.length) return { total: 0, data: [] };
+    } else {
+      // If no source filter is passed, use all active sources
+      sourceIds = allActiveSourceIds;
     }
 
     // 2. Build main products query (no joins)
@@ -113,12 +121,10 @@ export class ProductService {
     }
     if (sourceIds.length) {
       qb.andWhere('product."sourceId" IN (:...sourceIds)', { sourceIds });
-    } else if (!filters.source) {
-      // If no source filter is passed, only include products from active sources
-      qb.andWhere('product."sourceId" IN (SELECT s.id FROM sources s WHERE s."isActive" = true)');
     }
     if (filters.gender) {
-      qb.andWhere('LOWER(product.gender) = LOWER(:gender)', { gender: filters.gender });
+      // qb.andWhere('LOWER(product.gender) = LOWER(:gender)', { gender: filters.gender });
+      qb.andWhere('product.gender = :gender', { gender: ucfirst(filters.gender) });
     }
     if (filters.priceFrom !== undefined) {
       qb.andWhere('product.price >= :priceFrom', { priceFrom: filters.priceFrom });
