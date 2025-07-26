@@ -136,6 +136,10 @@ export class GolfAndCoScraper extends BaseScraper {
             return;
         }
 
+        if (!title || !url || !price){
+          return;
+        }
+
         const formattedProduct = this.createProduct({
             title,
             url: url ? (url.startsWith('http') ? url : `https://www.golfco.co.il${url}`) : '',

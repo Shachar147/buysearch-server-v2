@@ -186,6 +186,11 @@ class TerminalXScraper extends BaseScraper {
       ...item.category_ids.map((c_id) => categoryIdToName[Number(c_id)]).filter(Boolean)
     ]));
 
+    if (!title || !price){
+      console.log('No title or price for product', item);
+      return;
+    }
+
     return this.createProduct({
       title,
       url: `https://www.terminalx.com/${baseUrl}/${item.sku.toLowerCase()}`,

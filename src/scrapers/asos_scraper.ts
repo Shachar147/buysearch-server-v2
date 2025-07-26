@@ -275,6 +275,11 @@ class ASOSScraper extends BaseScraper {
     const price = raw.price?.current?.value ?? null;
     const salePrice = raw.price?.previous?.value ?? raw.price?.rrp?.value ?? null;
 
+    if (!raw.name || !raw.url || !price) {
+      console.log('No name or url or price for product', raw);
+      return;
+    }
+
     return this.createProduct({
       title: raw.name,
       url: `https://www.asos.com/${raw.url.replace(/^\/+/, '')}`,
