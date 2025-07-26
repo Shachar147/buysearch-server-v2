@@ -220,16 +220,7 @@ class NewBalanceScraper extends BaseScraper {
     }
   }
 
-  private async proxyImage(imageUrl: string): Promise<string> {
-    try {
-      // Create a proxy URL that will fetch the image with proper headers
-      const proxyUrl = `/api/proxy/proxy-image?url=${encodeURIComponent(imageUrl)}`;
-      return proxyUrl;
-    } catch (error) {
-      console.error('Error creating proxy URL:', error);
-      return imageUrl; // Fallback to original URL
-    }
-  }
+
 
   private async scrapeNewBalanceCategory(category: CategoryType): Promise<Product[]> {
     this.logProgress(`Fetching ${category.url}`);
@@ -254,21 +245,12 @@ class NewBalanceScraper extends BaseScraper {
       this.logProgress(`Found ${productCards.length} products in ${category.name}`);
 
       const products: Product[] = [];
-      for (const card of productCards.toArray()) {
+      productCards.each((_, card) => {
         const product = this.parseNewBalanceProduct($(card), category, $);
         if (product) {
-          // Proxy the images to bypass referer blocking
-          if (product.images && product.images.length > 0) {
-            const proxiedImages = [];
-            for (const imageUrl of product.images) {
-              const proxiedUrl = await this.proxyImage(imageUrl);
-              proxiedImages.push(proxiedUrl);
-            }
-            product.images = proxiedImages;
-          }
           products.push(product);
         }
-      }
+      });
 
       this.logProgress(`Successfully parsed ${products.length} products from ${category.name}`);
       return products;
