@@ -423,6 +423,7 @@ export class SearchService {
       { key: 'Foot Locker', patterns: [/foot lo/, /פוט ל/, /פוטלו/, /footlo/] },
       { key: 'New Era', patterns: [/new era/, /ניו ארה/, /ניואר/] },
       { key: 'Razili', patterns: [/razili/, /רזילי/] },
+      { key: 'Hamashbir', patterns: [/hamashbir/, /המשביר ל/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))
