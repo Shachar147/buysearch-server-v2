@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-extra';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
+import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory, normalizeCategories } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -296,7 +296,7 @@ export class NewEraScraper extends BaseScraper {
         images,
         colors: extractedColors,
         source: this.source,
-        categories: [category.name],
+        categories: normalizeCategories([category.name]),
         gender: category.gender,
         isSellingFast: false, // New Era doesn't seem to have this indicator
       };
