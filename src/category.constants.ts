@@ -752,7 +752,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
     he: []
   },
   [Category.SUITS]: {
-    en: ['suit', 'suits'],
+    en: ['suit ', ' suit', ' suits', 'suits '],
     he: ['חליפה', 'חליפות']
   },
   [Category.SWIMWEAR]: {

@@ -4,9 +4,11 @@
 import { NestFactory } from '@nestjs/core';
 import { ProductService } from '../../product/product.service';
 import { ScrapingHistoryService, ScrapingType } from '../../scraping-history/scraping-history.service';
+import { SourceService } from '../../source/source.service';
 import { CATEGORIES_TO_IGNORE, CATEGORY_NORMALIZATION_MAP } from '../../category.constants';
 import { ucfirst } from '../../search/search.utils';
 import { AppModule } from '../../../app.module';
+import * as path from 'path';
 
 // --- Common Types ---
 export interface Product {
@@ -446,8 +448,47 @@ export async function createAppContext() {
   const app = await NestFactory.createApplicationContext(AppModule);
   const productsService = app.get(ProductService);
   const scrapingHistoryService = app.get(ScrapingHistoryService);
+  const sourceService = app.get(SourceService);
   
-  return { app, productsService, scrapingHistoryService };
+  return { app, productsService, scrapingHistoryService, sourceService };
+}
+
+// --- Source Path Management ---
+export async function updateSourceScraperPath(
+  sourceName: string,
+  sourceService: SourceService
+): Promise<void> {
+  try {
+    // Get the current file path and convert it to the expected format
+    const currentFilePath = process.argv[1]; // This gets the path to the current script
+    const fileName = path.basename(currentFilePath, path.extname(currentFilePath));
+    
+    // Convert to the expected format: '../filename.js'
+    const scraperPath = `../${fileName}.js`;
+    
+    // Find the source by name
+    const source = await sourceService.findByName(sourceName);
+    
+    if (source) {
+      // Only update if scraper_path doesn't exist
+      if (!source.scraper_path) {
+        await sourceService.update(source.id, { scraper_path: scraperPath });
+        console.log(`📝 Updated scraper_path for source "${sourceName}": ${scraperPath}`);
+      } else {
+        console.log(`✅ Source "${sourceName}" already has scraper_path: ${source.scraper_path}`);
+      }
+    } else {
+      // // Create the source if it doesn't exist
+      // await sourceService.create({ 
+      //   name: sourceName, 
+      //   scraper_path: scraperPath,
+      //   isActive: true 
+      // });
+      // console.log(`📝 Created source "${sourceName}" with scraper_path: ${scraperPath}`);
+    }
+  } catch (error) {
+    console.warn(`⚠️  Failed to update scraper_path for source "${sourceName}": ${error.message}`);
+  }
 }
 
 // --- Product Processing ---

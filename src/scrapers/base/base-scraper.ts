@@ -1,9 +1,10 @@
 // Abstract base class for all scrapers
 // =============================================================
 
+import { SourceService } from 'src/source/source.service';
 import { ProductService } from '../../product/product.service';
 import { ScrapingHistoryService } from '../../scraping-history/scraping-history.service';
-import { Product, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, processProducts } from './scraper_utils';
+import { Product, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, processProducts, updateSourceScraperPath } from './scraper_utils';
 
 export interface Category {
   id: string | number;
@@ -19,6 +20,7 @@ export abstract class BaseScraper {
   
   protected productsService!: ProductService;
   protected scrapingHistoryService!: ScrapingHistoryService;
+  protected sourceService: SourceService;
   protected session: any;
   protected startTime!: Date;
   protected totalCategories: number = 0;
@@ -56,9 +58,10 @@ export abstract class BaseScraper {
     const allScrapedUrls: Set<string> = new Set();
     try {
       // Initialize NestJS context
-      const { app, productsService, scrapingHistoryService } = await createAppContext();
+      const { app, productsService, scrapingHistoryService, sourceService } = await createAppContext();
       this.productsService = productsService;
       this.scrapingHistoryService = scrapingHistoryService;
+      this.sourceService = sourceService;
 
       // Create scraping session
       const { session, startTime } = await createScrapingSession(this.scraperName, scrapingHistoryService);
@@ -139,6 +142,9 @@ export abstract class BaseScraper {
         console.log(`Missing item DB IDs (not found in scrape):`, missingIds);
       }
 
+      // Update source scraper path
+      await updateSourceScraperPath(this.source, this.sourceService);
+
       // Finish scraping session
       if (totalNew + totalUpdated > 0) {
         await finishScrapingSession(
@@ -152,6 +158,7 @@ export abstract class BaseScraper {
           missingItems
         );
       } else {
+        
         // if we scraped nothing, mark session as failed
         await this.scrapingHistoryService.failScrapingSession(
           this.session.id,
@@ -171,6 +178,10 @@ export abstract class BaseScraper {
           totalUpdated
         );
       }
+
+      // Update source scraper path
+      await updateSourceScraperPath(this.source, this.sourceService);
+
       throw error;
     }
   }

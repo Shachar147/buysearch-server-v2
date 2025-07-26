@@ -61,7 +61,8 @@ export class SearchService {
     'styleforrent': ['styleforrent', 'סטייל פור', 'style for r', 'סטיילפור'],
     'lululemon': ['lululemon', 'lulu l', 'לולולמון', 'לולו למון'],
     'gant': ['gant', 'גנט', 'גאנט'],
-    'saint laurent': ['yves saint laurent', 'ysl', 'איב סאן', 'סאן לורן', 'סאן לורנט', 'san laurent', 'sun laurent', 'yves s']
+    'saint laurent': ['yves saint laurent', 'ysl', 'איב סאן', 'סאן לורן', 'סאן לורנט', 'san laurent', 'sun laurent', 'yves s'],
+    'legaloutfit': ['legaloutfit', 'ליגלא', 'ליגאל א', 'לגאל אא', 'ליגל א', 'ליגלאא']
   };
 
   private HEBREW_COLOR_SYNONYMS = {
