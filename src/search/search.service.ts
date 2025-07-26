@@ -420,6 +420,7 @@ export class SearchService {
       { key: 'StyleForRent', patterns: [/styleforrent/, /סטייל פור/, /סטיילפור/] },
       { key: 'Golf & Co', patterns: [/golf and/, /golf \&/, /גולף אנד/] },
       { key: 'FoxHome', patterns: [/fox ho/, /פוקס הו/, /פוקסהום/] },
+      { key: 'Foot Locker', patterns: [/foot lo/, /פוט ל/, /פוטלו/, /footlo/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))

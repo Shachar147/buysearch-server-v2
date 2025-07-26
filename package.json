@@ -40,6 +40,8 @@
     "scrape:primark": "ts-node src/scrapers/primark_scraper.ts",
     "scrape:legaloutfit": "npx ts-node -r tsconfig-paths/register src/scrapers/legaloutfit_scraper.ts",
     "scrape:newbalance": "npx ts-node -r tsconfig-paths/register src/scrapers/newbalance_scraper.ts",
+    "scrape:footlocker": "npx ts-node -r tsconfig-paths/register src/scrapers/footlocker_scraper.ts",
+    "scrape:newera": "npx ts-node -r tsconfig-paths/register src/scrapers/newera_scraper.ts",
     "check:categories": "ts-node --transpile-only scripts/check-db-categories-vs-enum-nest.ts",
     "start:old": "nest start",
     "start:dev": "nest start --watch",
