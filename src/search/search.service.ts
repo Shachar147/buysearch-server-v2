@@ -5,6 +5,7 @@ import { ColorService } from '../color/color.service';
 import { ucfirst } from './search.utils';
 
 import {
+  Category,
   CATEGORY_SEARCH_KEYWORDS_MAP
 } from '../category.constants';
 import { normalizeBrandName } from '../scrapers/base/scraper_utils';
@@ -304,6 +305,11 @@ export class SearchService {
 
     // filter out categories that appears on filters.brands
     filters.categories = filters.categories.filter(c => !filters.brands.includes(c));
+
+    // if shorts is in the categories, filter out trousers and pants
+    if (filters.categories.includes(Category.SHORTS)) {
+      filters.categories = filters.categories.filter(c => c !== Category.TROUSERS && c !== Category.PANTS);
+    }
 
     // Extract gender
     if (

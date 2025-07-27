@@ -716,7 +716,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.SHORTS]: {
     en: ['shorts', 'bermuda'],
-    he: ['שורט', 'שורטים', 'ברמודה', 'ברמודות']
+    he: ['שורט', 'שורטים', 'ברמודה', 'ברמודות', 'מכנס קצר', 'מכנסיים קצרים', 'מכנסים קצרים']
   },
   [Category.SKIRTS]: {
     en: ['skirt', 'skirts'],
