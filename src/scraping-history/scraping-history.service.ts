@@ -43,6 +43,10 @@ export class ScrapingHistoryService {
     if (progress !== undefined) {
       updateData.progress = progress;
     }
+
+    if (progress != 100) {
+      updateData.status = ScrapingStatus.IN_PROGRESS;
+    }
     
     await this.scrapingHistoryRepository.update(id, updateData);
     

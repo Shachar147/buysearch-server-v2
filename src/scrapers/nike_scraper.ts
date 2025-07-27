@@ -1,8 +1,8 @@
-import puppeteer from 'puppeteer';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, normalizeCategories } from './base/scraper_utils';
+import { fetchPageWithBrowser, handleInfiniteScroll } from './base/browser-helpers';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 dotenv.config();
@@ -198,43 +198,25 @@ class NikeScraper extends BaseScraper {
   }
 
   private async fetchNikePage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.setUserAgent(
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-    );
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'networkidle2',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        // Infinite scroll: keep scrolling and waiting for new products
+        await handleInfiniteScroll(page, {
+          productSelector: 'a.product-card__link-overlay',
+          maxScrolls: 50,
+          scrollDelay: 10000,
+          onScroll: (currentCount, iteration) => {
+            this.logProgress(`Scroll iteration ${iteration}: ${currentCount} products loaded. Scrolling to bottom...`);
+          }
+        });
 
-    // Infinite scroll: keep scrolling and waiting for new products
-    let previousCount = 0;
-    let reachedEnd = false;
-    let scrollIteration = 1;
-    while (!reachedEnd) {
-      const productsBefore = await page.$$eval('a.product-card__link-overlay', els => els.length);
-      this.logProgress(`Scroll iteration ${scrollIteration}: ${productsBefore} products loaded. Scrolling to bottom...`);
-      // await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-      // Set scroll position to be 800px above the bottom of the page
-    //   await page.evaluate('window.scrollTo(0, document.body.scrollHeight)');
-        await page.evaluate('window.scrollTo(0, document.body.scrollHeight - 1200)');
-      this.logProgress(`Waiting 10 seconds for new items to load...`);
-      await new Promise(res => setTimeout(res, 10000)); // Wait 10 seconds for new items to load
-      const productsAfter = await page.$$eval('a.product-card__link-overlay', els => els.length);
-      if (productsAfter > productsBefore) {
-        this.logProgress(`New products loaded: ${productsAfter - productsBefore}. Total: ${productsAfter}`);
-      } else {
-        this.logProgress(`No new products loaded after scroll. Stopping infinite scroll.`);
-        reachedEnd = true;
+        const totalProducts = await page.$$eval('a.product-card__link-overlay', els => els.length);
+        this.logProgress(`Infinite scroll complete. Total products loaded: ${totalProducts}`);
       }
-      previousCount = productsAfter;
-      scrollIteration++;
-    }
-
-    const totalProducts = await page.$$eval('a.product-card__link-overlay', els => els.length);
-    this.logProgress(`Infinite scroll complete. Total products loaded: ${totalProducts}`);
-
-    const html = await page.content();
-    await browser.close();
-    return html;
+    });
   }
 
   private parseNikeProducts(html: string, category: CategoryType): Product[] {

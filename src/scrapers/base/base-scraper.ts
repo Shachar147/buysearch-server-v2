@@ -5,6 +5,7 @@ import { SourceService } from 'src/source/source.service';
 import { ProductService } from '../../product/product.service';
 import { ScrapingHistoryService } from '../../scraping-history/scraping-history.service';
 import { Product, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, processProducts, updateSourceScraperPath } from './scraper_utils';
+import { getBrowserManager, cleanupBrowserManager, setupEmergencyCleanup } from './browser-manager';
 
 export interface Category {
   id: string | number;
@@ -24,6 +25,7 @@ export abstract class BaseScraper {
   protected session: any;
   protected startTime!: Date;
   protected totalCategories: number = 0;
+  protected browserManager = getBrowserManager();
 
   /**
    * Get the list of categories to scrape
@@ -47,6 +49,13 @@ export abstract class BaseScraper {
    */
   protected async cleanup(): Promise<void> {
     // Override in subclasses if needed
+  }
+
+  /**
+   * Get browser manager for this scraper
+   */
+  protected getBrowserManager() {
+    return this.browserManager;
   }
 
   /**
@@ -132,6 +141,9 @@ export abstract class BaseScraper {
       // Clean up scraper-specific resources
       await this.cleanup();
 
+      // Clean up browser resources
+      await this.browserManager.cleanup();
+
       // Fetch all DB URLs and IDs for this source
       const dbUrlIdPairs = await this.productsService.getAllUrlsAndIdsBySource(this.source);
       const missingIds = dbUrlIdPairs.filter(({ url }) => !allScrapedUrls.has(url)).map(({ id }) => id);
@@ -182,6 +194,9 @@ export abstract class BaseScraper {
       // Update source scraper path
       await updateSourceScraperPath(this.source, this.sourceService);
 
+      // Clean up browser resources on error
+      await this.browserManager.cleanup();
+
       throw error;
     }
   }
@@ -190,6 +205,9 @@ export abstract class BaseScraper {
    * Run the scraper with signal handling: marks session as failed if interrupted (SIGINT/SIGTERM)
    */
   public async runWithSignalHandling() {
+    // Set up emergency cleanup for browser resources
+    setupEmergencyCleanup();
+    
     let interrupted = false;
     const handleInterrupt = async () => {
       if (interrupted) return;
@@ -204,6 +222,8 @@ export abstract class BaseScraper {
           );
           console.error('Session marked as failed.');
         }
+        // Clean up browser resources
+        await this.browserManager.cleanup();
       } catch (err) {
         console.error('Failed to mark session as failed:', err);
       } finally {
