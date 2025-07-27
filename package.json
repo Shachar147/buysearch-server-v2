@@ -45,6 +45,7 @@
     "scrape:razili": "npx ts-node -r tsconfig-paths/register src/scrapers/razili_scraper.ts",
     "scrape:hamashbir": "npx ts-node -r tsconfig-paths/register src/scrapers/hamashbir_scraper.ts",
     "scrape:carolina": "npx ts-node -r tsconfig-paths/register src/scrapers/carolinalemke_scraper.ts",
+    "scrape:ioptic": "npx ts-node -r tsconfig-paths/register src/scrapers/ioptic_scraper.ts",
     "check:categories": "ts-node --transpile-only scripts/check-db-categories-vs-enum-nest.ts",
     "start:old": "nest start",
     "start:dev": "nest start --watch",

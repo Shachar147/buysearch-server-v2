@@ -17,7 +17,7 @@ export class RaziliScraper extends BaseScraper {
       id: 'sale-clothing',
       name: Category.CLOTHING,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/sale-%D7%91%D7%99%D7%92%D7%95%D7%93'
+      url: 'https://www.razili.co.il/collections/sale-%D7%91%D7%92%D7%93%D7%99%D7%9D'
     },
     {
       id: 'sale-shoes',
@@ -147,6 +147,12 @@ export class RaziliScraper extends BaseScraper {
       name: Category.HEELS,
       gender: 'Women',
       url: 'https://www.razili.co.il/collections/%D7%A0%D7%A2%D7%9C%D7%99-%D7%A2%D7%A7%D7%91'
+    },
+    {
+      id: 'sale',
+      name: 'Sale',
+      gender: 'Women',
+      url: 'https://www.razili.co.il/collections/razili-outlet'
     }
   ];
 
