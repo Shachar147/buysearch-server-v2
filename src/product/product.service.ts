@@ -10,7 +10,7 @@ import { Brackets } from 'typeorm';
 import { FavouritesService } from '../favourites/favourites.service';
 import { PriceHistoryService } from '../price-history/price-history.service';
 import { PAGINATION_LIMIT } from '../consts';
-import { ucfirst } from 'src/search/search.utils';
+import { ucfirst } from '../search/search.utils';
 
 export interface ProductFilters {
   color?: string;
