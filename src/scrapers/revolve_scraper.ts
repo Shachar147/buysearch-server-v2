@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
 import { Product, calcSalePercent, extractColors, normalizeBrandName } from './base/scraper_utils';
 import { Category } from '../category.constants';
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 
 const CATEGORIES: BaseCategory[] = [
   {

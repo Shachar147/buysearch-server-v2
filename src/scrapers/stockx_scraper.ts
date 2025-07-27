@@ -1,16 +1,15 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
+import { Product, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 // todo: fix images
 // todo: check sale price
 // todo: add more categories
-
 
 
 const CATEGORIES: CategoryType[] = [
