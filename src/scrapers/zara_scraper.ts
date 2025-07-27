@@ -215,28 +215,28 @@ const CATEGORIES: CategoryType[] = [
   {
     id: 'clothing-girls-small',
     name: Category.CLOTHING,
-    gender: 'Kids',
+    gender: 'Girls',
     age: '1.5-6', // ignored for now
     url: 'https://www.zara.com/il/he/kids-babygirl-l87.html?v1=2421860'
   },
   {
     id: 'clothing-girls-big',
     name: Category.CLOTHING,
-    gender: 'Kids',
+    gender: 'Girls',
     age: '6-14',
     url: 'https://www.zara.com/il/he/kids-girl-l323.html?v1=2425905'
   },
   {
     id: 'clothing-boys-small',
     name: Category.CLOTHING,
-    gender: 'Kids',
+    gender: 'Boys',
     age: '1.5-6',
     url: 'https://www.zara.com/il/he/kids-babyboy-l5.html?v1=2422499'
   },
   {
     id: 'clothing-boys-big',
     name: Category.CLOTHING,
-    gender: 'Kids',
+    gender: 'Boys',
     age: '6-14',
     url: 'https://www.zara.com/il/he/kids-boy-l173.html?v1=2426469'
   },
