@@ -84,7 +84,7 @@ class ItayBrandsScraper extends BaseScraper {
     return this.scrapeItayBrandsCategory(category);
   }
 
-  //   private async fetchItayBrandsPage(url: string): Promise<string> {
+    private async fetchItayBrandsPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
