@@ -15,6 +15,14 @@ export class UserService {
     return this.usersRepository.findOne({ where: { username } });
   }
 
+  async findByEmail(email: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { email } });
+  }
+
+  async findByGoogleId(googleId: string): Promise<User | undefined> {
+    return this.usersRepository.findOne({ where: { googleId } });
+  }
+
   async findById(id: number): Promise<User | undefined> {
     return this.usersRepository.findOne({ where: { id } });
   }
@@ -26,9 +34,57 @@ export class UserService {
     return this.usersRepository.save(user);
   }
 
+  async createGoogleUser(googleData: {
+    googleId: string;
+    email: string;
+    googleEmail: string;
+    googleName: string;
+    googlePicture: string;
+  }): Promise<User> {
+    // Generate a unique username from email
+    const baseUsername = googleData.email.split('@')[0];
+    let username = baseUsername;
+    let counter = 1;
+    
+    // Ensure username is unique
+    while (await this.findByUsername(username)) {
+      username = `${baseUsername}${counter}`;
+      counter++;
+    }
+
+    const user = this.usersRepository.create({
+      username,
+      email: googleData.email,
+      googleId: googleData.googleId,
+      googleEmail: googleData.googleEmail,
+      googleName: googleData.googleName,
+      googlePicture: googleData.googlePicture,
+    });
+    
+    return this.usersRepository.save(user);
+  }
+
+  async linkGoogleToExistingUser(userId: number, googleData: {
+    googleId: string;
+    email: string;
+    googleEmail: string;
+    googleName: string;
+    googlePicture: string;
+  }): Promise<User> {
+    await this.usersRepository.update(userId, {
+      googleId: googleData.googleId,
+      googleEmail: googleData.googleEmail,
+      googleName: googleData.googleName,
+      googlePicture: googleData.googlePicture,
+      email: googleData.email, // Update email if not set
+    });
+    
+    return this.findById(userId);
+  }
+
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.findByUsername(username);
-    if (!user) return null;
+    if (!user || !user.passwordHash) return null;
     const isValid = await bcrypt.compare(password, user.passwordHash);
     return isValid ? user : null;
   }

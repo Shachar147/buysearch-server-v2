@@ -261,7 +261,7 @@ class LegaloutfitScraper extends BaseScraper {
         productCards.each((_, card) => {
           const product = this.parseLegaloutfitProduct($(card), category, $);
           if (product) {
-            pageProducts.push(product);
+            pageProducts.push(this.createProduct(product));
           }
         });
 

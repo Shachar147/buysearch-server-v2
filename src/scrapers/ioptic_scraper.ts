@@ -160,7 +160,7 @@ export class IOpticScraper extends BaseScraper {
       productItems.each((_, item) => {
         const product = this.parseIOpticProduct($(item), category, $);
         if (product) {
-          products.push(product);
+          products.push(this.createProduct(product));
         }
       });
 

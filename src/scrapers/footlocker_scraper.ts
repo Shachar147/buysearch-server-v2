@@ -181,7 +181,7 @@ export class FootlockerScraper extends BaseScraper {
       productItems.each((_, item) => {
         const product = this.parseFootlockerProduct($(item), category, $);
         if (product) {
-          products.push(product);
+          products.push(this.createProduct(product));
         }
       });
 

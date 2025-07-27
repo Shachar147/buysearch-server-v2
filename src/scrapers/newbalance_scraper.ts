@@ -248,7 +248,7 @@ class NewBalanceScraper extends BaseScraper {
       productCards.each((_, card) => {
         const product = this.parseNewBalanceProduct($(card), category, $);
         if (product) {
-          products.push(product);
+          products.push(this.createProduct(product));
         }
       });
 

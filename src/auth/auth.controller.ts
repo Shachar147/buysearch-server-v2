@@ -1,11 +1,12 @@
-import { Controller, Post, Body, Res, UnauthorizedException, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Res, UnauthorizedException, Get, UseGuards, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { ApiBody } from '@nestjs/swagger';
 import { UserService } from '../user/user.service';
 import { UserGuard } from './user.guard';
 import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -80,6 +81,62 @@ export class AuthController {
     } catch (e) {
       throw new UnauthorizedException('Invalid credentials');
     }
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {
+    // This will redirect to Google OAuth
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
+    try {
+      // Check if Google OAuth is configured
+      if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+        return res.redirect(`${frontendUrl}/login?google=error&message=Google OAuth is not configured`);
+      }
+
+      const googleData = (req as any).user as any;
+      const { token, isNewUser } = await this.authService.handleGoogleLogin(googleData);
+      
+      // Decode token to get expiration
+      const decoded: any = (token && token.split('.').length === 3)
+        ? JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
+        : null;
+      const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
+      
+      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+      
+      // Redirect to frontend with success and token
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      res.redirect(`${frontendUrl}/login?google=success&isNewUser=${isNewUser}&token=${encodeURIComponent(token)}`);
+    } catch (error) {
+      console.error('Google auth error:', error);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const errorMessage = error.message || 'Authentication failed';
+      res.redirect(`${frontendUrl}/login?google=error&message=${encodeURIComponent(errorMessage)}`);
+    }
+  }
+
+  @Get('profile')
+  @UseGuards(UserGuard)
+  async getProfile(@Req() req: Request) {
+    const user = await this.userService.findById((req as any).user.sub);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+    return {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      googleName: user.googleName,
+      googlePicture: user.googlePicture,
+      lastLoginAt: user.lastLoginAt,
+      totalSearches: user.totalSearches,
+    };
   }
 
   @UseGuards(UserGuard)

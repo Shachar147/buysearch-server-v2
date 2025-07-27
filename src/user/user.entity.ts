@@ -3,6 +3,7 @@ import { MinLength } from 'class-validator';
 
 @Entity('users')
 @Unique(['username'])
+@Unique(['email'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
@@ -11,12 +12,28 @@ export class User {
   @MinLength(4)
   username: string;
 
-  @Column()
+  @Column({ nullable: true })
+  email: string;
+
+  @Column({ nullable: true })
   @MinLength(8)
   passwordHash: string;
 
-  @Column()
+  @Column({ nullable: true })
   salt: string;
+
+  // Google OAuth fields
+  @Column({ nullable: true })
+  googleId: string;
+
+  @Column({ nullable: true })
+  googleEmail: string;
+
+  @Column({ nullable: true })
+  googleName: string;
+
+  @Column({ nullable: true })
+  googlePicture: string;
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;

@@ -190,7 +190,7 @@ export class RaziliScraper extends BaseScraper {
       productItems.each((_, item) => {
         const product = this.parseRaziliProduct($(item), category, $);
         if (product) {
-          products.push(product);
+          products.push(this.createProduct(product));
         }
       });
 

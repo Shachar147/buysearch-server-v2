@@ -195,7 +195,7 @@ export class HamashbirScraper extends BaseScraper {
       productItems.each((_, item) => {
         const product = this.parseHamashbirProduct($(item), category, $);
         if (product) {
-          products.push(product);
+          products.push(this.createProduct(product));
         }
       });
 
@@ -406,7 +406,7 @@ export class HamashbirScraper extends BaseScraper {
         categories: normalizeCategories([category.name]),
         gender: category.gender,
         isSellingFast: false, // Hamashbir doesn't seem to have this indicator
-      };
+      };    
 
       return product;
 

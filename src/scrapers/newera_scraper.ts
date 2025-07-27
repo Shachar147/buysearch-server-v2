@@ -102,7 +102,7 @@ export class NewEraScraper extends BaseScraper {
       productItems.each((_, item) => {
         const product = this.parseNewEraProduct($(item), category, $);
         if (product) {
-          products.push(product);
+          products.push(this.createProduct(product));
         }
       });
 

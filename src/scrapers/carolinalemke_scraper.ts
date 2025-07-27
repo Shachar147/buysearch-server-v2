@@ -143,7 +143,7 @@ export class CarolinaLemkeScraper extends BaseScraper {
       productItems.each((_, item) => {
         const product = this.parseCarolinaLemkeProduct($(item), category, $);
         if (product) {
-          products.push(product);
+          products.push(this.createProduct(product));
         }
       });
 
