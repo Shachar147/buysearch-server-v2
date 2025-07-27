@@ -26,7 +26,7 @@ export function getSecurityConfig(): SecurityConfig {
     console.warn('Warning: Using default JWT_SECRET for scraper context');
   }
 
-  const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+  const adminUsername = process.env.ADMIN_USERNAME || 'Shachar';
   
   return {
     jwt: {
