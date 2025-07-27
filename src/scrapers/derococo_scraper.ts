@@ -413,35 +413,43 @@ export class DerococoScraper extends BaseScraper {
       }
     }
 
+    // Replace {width} placeholder with actual size
     images = images.map(img => img.replace('{width}', '600'));
 
     let price: number | null = null;
     let oldPrice: number | null = null;
     let currency = 'ILS';
 
-    // Check if product is on sale
-    const isOnSale = $el.find('.ProductItem__Label--onSale').length > 0;
+    // Check if product is on sale by looking for both highlight and compareAt prices
     const priceContainer = $el.find('.ProductItem__PriceList');
-
-    if (isOnSale) {
-      // Product has both regular and sale prices
-      const salePriceText = priceContainer.find('.Price--highlight').text().trim();
-      const regularPriceText = priceContainer.find('.Price--compareAt').text().trim();
+    const salePriceElement = priceContainer.find('.Price--highlight');
+    const regularPriceElement = priceContainer.find('.Price--compareAt');
+    
+    if (salePriceElement.length > 0 && regularPriceElement.length > 0) {
+      // Product is on sale - has both sale and regular prices
+      const salePriceText = salePriceElement.text().trim();
+      const regularPriceText = regularPriceElement.text().trim();
       
+      // Extract sale price (the highlighted one)
       if (salePriceText) {
         const match = salePriceText.replace(/[^\d]/g, '').match(/\d+/);
         if (match) price = parseInt(match[0]);
       }
+      
+      // Extract regular price (the compareAt one)
       if (regularPriceText) {
         const match = regularPriceText.replace(/[^\d]/g, '').match(/\d+/);
         if (match) oldPrice = parseInt(match[0]);
       }
     } else {
-      // Product has only regular price
-      const priceText = priceContainer.find('.ProductItem__Price').text().trim();
-      if (priceText) {
-        const match = priceText.replace(/[^\d]/g, '').match(/\d+/);
-        if (match) price = parseInt(match[0]);
+      // Product has only regular price (no sale)
+      const priceElement = priceContainer.find('.ProductItem__Price');
+      if (priceElement.length > 0) {
+        const priceText = priceElement.text().trim();
+        if (priceText) {
+          const match = priceText.replace(/[^\d]/g, '').match(/\d+/);
+          if (match) price = parseInt(match[0]);
+        }
       }
     }
     
@@ -469,15 +477,120 @@ export class DerococoScraper extends BaseScraper {
 
   private extractDerococoColors(title: string, url: string): string[] {
     
-    // Then extract colors from title (this already handles English)
+    // Extract colors from title
     const titleColors = extractColors(title, []);
     
+    // Extract colors from URL
     const urlColors = extractColors(url, []);
+    
+    // Extract colors from URL path segments (like heather-grey in the URL)
+    const urlPathColors = this.extractColorsFromUrlPath(url);
 
-    // Combine both sets
-    const allColors = new Set([...urlColors, ...titleColors]);
+    // Combine all sets
+    const allColors = new Set([...titleColors, ...urlColors, ...urlPathColors]);
     
     return Array.from(allColors).filter((c) => c.trim().length > 0);
+  }
+
+  private extractColorsFromUrlPath(url: string): string[] {
+    const colors: string[] = [];
+    
+    // Extract color names from URL path segments
+    const urlSegments = url.split('/');
+    
+    for (const segment of urlSegments) {
+      // Look for color patterns like "heather-grey", "navy-blue", etc.
+      const colorMatch = segment.match(/([a-z]+(?:-[a-z]+)*)/i);
+      if (colorMatch) {
+        const potentialColor = colorMatch[1].replace(/-/g, ' ');
+        
+        // Check if this looks like a color name
+        if (this.isLikelyColorName(potentialColor)) {
+          const formattedColor = potentialColor.split(' ')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+          
+          if (!colors.includes(formattedColor)) {
+            colors.push(formattedColor);
+          }
+        }
+      }
+    }
+    
+    return colors;
+  }
+
+  private isLikelyColorName(colorName: string): boolean {
+    const colorKeywords = [
+      'black', 'white', 'red', 'blue', 'green', 'yellow', 'pink', 'purple', 'orange', 'brown', 'gray', 'grey',
+      'navy', 'beige', 'cream', 'ivory', 'gold', 'silver', 'bronze', 'copper', 'maroon', 'burgundy', 'coral',
+      'turquoise', 'teal', 'olive', 'lime', 'mint', 'lavender', 'violet', 'indigo', 'cyan', 'magenta', 'tan',
+      'khaki', 'camel', 'taupe', 'charcoal', 'slate', 'denim', 'rose', 'peach', 'apricot', 'salmon', 'crimson',
+      'emerald', 'jade', 'forest', 'sage', 'mint', 'aqua', 'azure', 'sky', 'royal', 'electric', 'neon',
+      'heather', 'light', 'dark', 'pale', 'deep', 'bright', 'soft', 'warm', 'cool', 'neutral', 'pastel'
+    ];
+    
+    const words = colorName.toLowerCase().split(' ');
+    
+    // Check if any word is a known color keyword
+    for (const word of words) {
+      if (colorKeywords.includes(word)) {
+        return true;
+      }
+    }
+    
+    // Also check for compound color names
+    const compoundColors = [
+      'heather grey', 'heather gray', 'navy blue', 'forest green', 'royal blue', 'sky blue',
+      'light blue', 'dark blue', 'light grey', 'dark grey', 'light gray', 'dark gray',
+      'pale pink', 'deep red', 'bright yellow', 'soft pink', 'warm beige', 'cool blue',
+      'dark green', 'lavender'
+    ];
+    
+    return compoundColors.includes(colorName.toLowerCase());
+  }
+
+  private extractUrlsFromSrcset(srcset: string): string[] {
+    const urls: string[] = [];
+    
+    // Parse srcset format: "url1 200w, url2 400w, url3 600w"
+    const srcsetParts = srcset.split(',');
+    
+    for (const part of srcsetParts) {
+      const trimmedPart = part.trim();
+      const urlMatch = trimmedPart.match(/^([^\s]+)/);
+      
+      if (urlMatch) {
+        const url = urlMatch[1];
+        const fullUrl = url.startsWith('http') ? url : `https:${url}`;
+        urls.push(fullUrl);
+      }
+    }
+    
+    // Sort by width (descending) to get highest resolution first
+    // Extract width from the srcset part and sort accordingly
+    const sortedUrls = urls.sort((a, b) => {
+      const aWidth = this.extractWidthFromSrcsetPart(srcset, a);
+      const bWidth = this.extractWidthFromSrcsetPart(srcset, b);
+      return bWidth - aWidth; // Descending order
+    });
+    
+    return sortedUrls;
+  }
+
+  private extractWidthFromSrcsetPart(srcset: string, url: string): number {
+    const srcsetParts = srcset.split(',');
+    
+    for (const part of srcsetParts) {
+      if (part.includes(url)) {
+        const widthMatch = part.match(/(\d+)w/);
+        if (widthMatch) {
+          return parseInt(widthMatch[1]);
+        }
+      }
+    }
+    
+    return 0;
   }
 }
 
