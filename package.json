@@ -48,6 +48,7 @@
     "scrape:ioptic": "npx ts-node -r tsconfig-paths/register src/scrapers/ioptic_scraper.ts",
     "scrape:hollister": "npx ts-node -r tsconfig-paths/register src/scrapers/hollister_scraper.ts",
     "check:categories": "ts-node --transpile-only scripts/check-db-categories-vs-enum-nest.ts",
+    "migrate:scrapers": "node scripts/migrate-scrapers.js",
     "start:old": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

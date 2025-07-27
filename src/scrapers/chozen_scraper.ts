@@ -15,7 +15,7 @@ import { Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
-import puppeteer from 'puppeteer';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 dotenv.config();
 
 const MEN_FILTER = '?filter.p.m.custom.gender=%D7%92%D7%91%D7%A8%D7%99%D7%9D';
@@ -254,14 +254,15 @@ class ChozenScraper extends BaseScraper {
     return this.scrapeChozenCategory(category);
   }
 
-  private async fetchChozenPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    const html = await page.content();
-    await browser.close();
-    return html;
+    private async fetchChozenPage(url: string): Promise<string> {
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        // Custom page logic can be added here
+      }
+    });
   }
 
   private parseChozenProduct(productElem: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {

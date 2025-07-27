@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer-extra';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
@@ -7,10 +7,7 @@ import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, 
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-// @ts-ignore
-import * as StealthPlugin from 'puppeteer-extra-plugin-stealth';
 
-puppeteer.use((StealthPlugin as any)());
 
 const CATEGORIES: CategoryType[] = [
   {
@@ -95,38 +92,15 @@ class NewBalanceScraper extends BaseScraper {
     return this.scrapeNewBalanceCategory(category);
   }
 
-  private async fetchNewBalancePage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-blink-features=AutomationControlled',
-      ],
+    private async fetchNewBalancePage(url: string): Promise<string> {
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        // Custom page logic can be added here
+      }
     });
-
-    const page = await browser.newPage();
-
-    await page.setUserAgent(
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-    );
-
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'he-IL,he;q=0.9,en;q=0.8',
-    });
-
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-
-    // Wait for products to load
-    try {
-      await page.waitForSelector('.product-tile-item', { timeout: 10000 });
-    } catch (err) {
-      console.log('❕ No product tiles found, continuing anyway');
-    }
-
-    const html = await page.content();
-    await browser.close();
-    return html;
   }
 
   private parseNewBalanceProduct(productCard: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {

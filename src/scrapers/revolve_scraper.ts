@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
 import { Product, calcSalePercent, extractColors, normalizeBrandName } from './base/scraper_utils';
 import { Category } from '../category.constants';
-import puppeteer from 'puppeteer';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 
 const CATEGORIES: BaseCategory[] = [
   {
@@ -208,28 +208,16 @@ export class RevolveScraper extends BaseScraper {
   }
 
   private async fetchPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({
-      executablePath: puppeteer.executablePath(),
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        await page.waitForSelector('li.js-plp-container', { timeout: 10000 }).catch(() => {
+          this.logProgress('No product cards found on page, might be the last page.');
+        });
+      }
     });
-    try {
-      const page = await browser.newPage();
-      await page.setUserAgent(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36'
-      );
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-      
-      await page.waitForSelector('li.js-plp-container', { timeout: 10000 }).catch(() => {
-        this.logProgress('No product cards found on page, might be the last page.');
-      });
-
-      const html = await page.content();
-      return html;
-    } finally {
-      await browser.close();
-    }
-    return "";
   }
 
   private parseProduct($, el: any, category: BaseCategory): Product | undefined {

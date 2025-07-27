@@ -1,16 +1,11 @@
-import puppeteer from 'puppeteer-extra';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as dotenv from 'dotenv';
 dotenv.config();
-
-// @ts-ignore
-import * as StealthPlugin from 'puppeteer-extra-plugin-stealth';
-
-puppeteer.use((StealthPlugin as any)());
 
 const CATEGORIES: CategoryType[] = [
   {
@@ -230,38 +225,18 @@ class ZaraScraper extends BaseScraper {
 
   
   private async fetchZaraPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({
-      headless: true, // change to false to DEBUG
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-blink-features=AutomationControlled',
-      ],
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+      extraHeaders: {
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+      onPageReady: async (page) => {
+        // Wait for cookie popup and click accept if visible
+        await handleCookieConsent(page, ['button.onetrust-close-btn-handler']);
+      }
     });
-  
-    const page = await browser.newPage();
-  
-    await page.setUserAgent(
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-    );
-  
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'en-US,en;q=0.9',
-    });
-  
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-
-    // Wait for cookie popup and click accept if visible
-    try {
-        await page.waitForSelector('button.onetrust-close-btn-handler', { timeout: 5000 });
-        await page.click('button.onetrust-close-btn-handler');
-    } catch (err) {
-        console.log('❕ No cookie popup found or already accepted');
-    }
-  
-    const html = await page.content();
-    await browser.close();
-    return html;
   }
 
   /**

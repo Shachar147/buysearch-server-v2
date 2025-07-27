@@ -3,42 +3,19 @@
 const fs = require('fs');
 const path = require('path');
 
-// List of scrapers to migrate
-const scrapers = [
-  'adidas_scraper.ts',
-  'newbalance_scraper.ts',
-  'ioptic_scraper.ts',
-  'castro_scraper.ts',
-  'jdsports_scraper.ts',
-  'renuar_scraper.ts',
-  'foxhome_scraper.ts',
-  'ralph_lauren_scraper.ts',
-  'golf_and_co_scraper.ts',
-  'revolve_scraper.ts',
-  'hamashbir_scraper.ts',
-  'zarahome_scraper.ts',
-  'chozen_scraper.ts',
-  'story_scraper.ts',
-  'primark_scraper.ts',
-  'legaloutfit_scraper.ts',
-  'footlocker_scraper.ts',
-  'newera_scraper.ts',
-  'razili_scraper.ts',
-  'carolinalemke_scraper.ts',
-  'hollister_scraper.ts',
-  'zara_scraper.ts',
-  'tommy_scraper.ts',
-  'bananhot_scraper.ts',
-  'alo_yoga_scraper.ts',
-  'asos_scraper.ts',
-  'factory54_scraper.ts',
-  'gant_scraper.ts',
-  'stockx_scraper.ts',
-  'styleforrent_scraper.ts',
-  'terminalx_scraper.ts'
-];
+// Automatically find all scraper files
+function findScraperFiles(scrapersDir) {
+  try {
+    const files = fs.readdirSync(scrapersDir);
+    return files.filter(file => file.endsWith('_scraper.ts'));
+  } catch (error) {
+    console.error('❌ Error reading scrapers directory:', error.message);
+    return [];
+  }
+}
 
 const scrapersDir = path.join(__dirname, '../src/scrapers');
+const scrapers = findScraperFiles(scrapersDir);
 
 console.log('🔧 Scraper Migration Helper');
 console.log('==========================');

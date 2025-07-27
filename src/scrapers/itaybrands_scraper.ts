@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
@@ -84,24 +84,15 @@ class ItayBrandsScraper extends BaseScraper {
     return this.scrapeItayBrandsCategory(category);
   }
 
-  // private async fetchItayBrandsPage(url: string): Promise<string> {
-  //   const { data } = await axios.get(url, {
-  //     headers: {
-  //       'accept': 'text/html,application/xhtml+xml,application/xml',
-  //       'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
-  //     },
-  //   });
-  //   return data;
-  // }
-
-  private async fetchItayBrandsPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-    const html = await page.content();
-    await browser.close();
-    return html;
+  //   private async fetchItayBrandsPage(url: string): Promise<string> {
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'networkidle2',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        // Custom page logic can be added here
+      }
+    });
   }
 
   /**

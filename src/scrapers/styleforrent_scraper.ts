@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
@@ -132,30 +132,20 @@ class StyleForRentScraper extends BaseScraper {
   }
 
   private async fetchStyleForRentPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ 
-      headless: true, // Change to true for production
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        // Wait for the product grid to load
+        await page.waitForSelector('.grid__item', { timeout: 10000 }).catch(() => {
+          console.log('No products found on page, might be the last page');
+        });
+        
+        // Small delay to ensure dynamic content loads
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
     });
-    try {
-      const page = await browser.newPage();
-      await page.setUserAgent(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-      );
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-      
-      // Wait for the product grid to load
-      await page.waitForSelector('.grid__item', { timeout: 10000 }).catch(() => {
-        console.log('No products found on page, might be the last page');
-      });
-      
-      // Small delay to ensure dynamic content loads
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const html = await page.content();
-      return html;
-    } finally {
-      await browser.close();
-    }
   }
 
   private parseStyleForRentProduct($: cheerio.CheerioAPI, productCard: any, category: CategoryType): Product | undefined {

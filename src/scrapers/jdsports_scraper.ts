@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
@@ -123,24 +123,16 @@ class JDSportsScraper extends BaseScraper {
     return allProducts;
   }
 
-  private async fetchJDSportsPage(url: string): Promise<string> {
-    try {
-        const browser = await puppeteer.launch({ headless: true });
-        const page = await browser.newPage();
-        await page.setUserAgent(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-        );
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-        const html = await page.content();
-
-        // if (html.includes("product-item")){
-        //     console.log("all good");
-        // } else {
-        //     console.log("oops")
-        // }
-        await browser.close();
-        return html;
-    } catch {
+    private async fetchJDSportsPage(url: string): Promise<string> {
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'networkidle2',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        // Custom page logic can be added here
+      }
+    });
+  } catch {
         return "";
     }
   }
