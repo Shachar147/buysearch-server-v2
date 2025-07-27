@@ -202,9 +202,50 @@ const CATEGORIES: CategoryType[] = [
   },
   {
     id: 'linen-men',
-    name: 'פשתן',
+    name: Category.CLOTHING,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-linen-l708.html'
+  },
+  {
+    id: 'sale-kids',
+    name: 'Sale',
+    gender: 'Kids',
+    url: 'https://www.zara.com/il/he/s-kids-l12716.html'
+  },
+  {
+    id: 'clothing-girls-small',
+    name: Category.CLOTHING,
+    gender: 'Kids',
+    age: '1.5-6', // ignored for now
+    url: 'https://www.zara.com/il/he/kids-babygirl-l87.html?v1=2421860'
+  },
+  {
+    id: 'clothing-girls-big',
+    name: Category.CLOTHING,
+    gender: 'Kids',
+    age: '6-14',
+    url: 'https://www.zara.com/il/he/kids-girl-l323.html?v1=2425905'
+  },
+  {
+    id: 'clothing-boys-small',
+    name: Category.CLOTHING,
+    gender: 'Kids',
+    age: '1.5-6',
+    url: 'https://www.zara.com/il/he/kids-babyboy-l5.html?v1=2422499'
+  },
+  {
+    id: 'clothing-boys-big',
+    name: Category.CLOTHING,
+    gender: 'Kids',
+    age: '6-14',
+    url: 'https://www.zara.com/il/he/kids-boy-l173.html?v1=2426469'
+  },
+  {
+    id: 'clothing-babies',
+    name: Category.CLOTHING,
+    gender: 'Babies',
+    age: '0-18',
+    url: 'https://www.zara.com/il/he/kids-baby-l7244.html?v1=2428025'
   }
   // Add more categories as needed
 ];
