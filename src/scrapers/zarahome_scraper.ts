@@ -1,12 +1,10 @@
-import puppeteer from 'puppeteer-extra';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
 import { Product, calcSalePercent, extractColorsWithHebrew } from './base/scraper_utils';
-// @ts-ignore
-import * as StealthPlugin from 'puppeteer-extra-plugin-stealth';
-puppeteer.use((StealthPlugin as any)());
+
 
 const BASE_URL = 'https://www.zarahome.com';
 
@@ -260,48 +258,49 @@ export class ZaraHomeScraper extends BaseScraper {
   protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     this.logProgress(`Fetching ${category.url}`);
     const products: Product[] = [];
-    const browser = await puppeteer.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
-    await page.goto(category.url, { waitUntil: 'networkidle2', timeout: 60000 });
-    try {
-      await page.waitForSelector('.product-item-container', { timeout: 20000 });
-    } catch (e) {
-      this.logProgress('Timeout waiting for .product-item-container');
-    }
-
-    await new Promise(res => setTimeout(res, 1500)); // Short delay after scroll
-
-    // Infinite scroll: keep scrolling and waiting for new products
-    let reachedEnd = false;
-    let scrollIteration = 1;
-    while (!reachedEnd) {
-      const productsBefore = await page.$$eval('.product-item-container', els => els.length);
-      this.logProgress(`Scroll iteration ${scrollIteration}: ${productsBefore} products loaded. Scrolling .sidenav-main-content to bottom...`);
-      await page.evaluate(() => {
-        const el = document.querySelector('.sidenav-main-content');
-        if (el) {
-          el.scrollTo(0, el.scrollHeight - 1200);
-          // Optionally, trigger a small mouse move to help with lazy loading
-          window.dispatchEvent(new Event('mousemove'));
+    
+    const finalHtml = await fetchPageWithBrowser(category.url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'networkidle2',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        try {
+          await page.waitForSelector('.product-item-container', { timeout: 20000 });
+        } catch (e) {
+          this.logProgress('Timeout waiting for .product-item-container');
         }
-      });
-      await new Promise(res => setTimeout(res, 500)); // Short delay after scroll
-      this.logProgress('Waiting 4 seconds for new items to load...');
-      await new Promise(res => setTimeout(res, 4000)); // Wait 7 seconds for new items to load
-      const productsAfter = await page.$$eval('.product-item-container', els => els.length);
-      if (productsAfter > productsBefore) {
-        this.logProgress(`New products loaded: ${productsAfter - productsBefore}. Total: ${productsAfter}`);
-      } else {
-        this.logProgress('No new products loaded after scroll. Stopping infinite scroll.');
-        reachedEnd = true;
-      }
-      scrollIteration++;
-    }
 
-    // Extract all products from the final DOM
-    const finalHtml = await page.content();
-    await browser.close();
+        await new Promise(res => setTimeout(res, 1500)); // Short delay after scroll
+
+        // Infinite scroll: keep scrolling and waiting for new products
+        let reachedEnd = false;
+        let scrollIteration = 1;
+        while (!reachedEnd) {
+          const productsBefore = await page.$$eval('.product-item-container', els => els.length);
+          this.logProgress(`Scroll iteration ${scrollIteration}: ${productsBefore} products loaded. Scrolling .sidenav-main-content to bottom...`);
+          await page.evaluate(() => {
+            const el = document.querySelector('.sidenav-main-content');
+            if (el) {
+              el.scrollTo(0, el.scrollHeight - 1200);
+              // Optionally, trigger a small mouse move to help with lazy loading
+              window.dispatchEvent(new Event('mousemove'));
+            }
+          });
+          await new Promise(res => setTimeout(res, 500)); // Short delay after scroll
+          this.logProgress('Waiting 4 seconds for new items to load...');
+          await new Promise(res => setTimeout(res, 4000)); // Wait 7 seconds for new items to load
+          const productsAfter = await page.$$eval('.product-item-container', els => els.length);
+          if (productsAfter > productsBefore) {
+            this.logProgress(`New products loaded: ${productsAfter - productsBefore}. Total: ${productsAfter}`);
+          } else {
+            this.logProgress('No new products loaded after scroll. Stopping infinite scroll.');
+            reachedEnd = true;
+          }
+          scrollIteration++;
+        }
+      }
+    });
+    
     const $ = cheerio.load(finalHtml);
     const allProductElems = $('.product-item-container');
     this.logProgress(`Total products found after scrolling: ${allProductElems.length}`);

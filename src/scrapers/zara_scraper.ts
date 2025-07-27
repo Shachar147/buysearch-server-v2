@@ -1,16 +1,11 @@
-import puppeteer from 'puppeteer-extra';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as dotenv from 'dotenv';
 dotenv.config();
-
-// @ts-ignore
-import * as StealthPlugin from 'puppeteer-extra-plugin-stealth';
-
-puppeteer.use((StealthPlugin as any)());
 
 const CATEGORIES: CategoryType[] = [
   {
@@ -207,9 +202,50 @@ const CATEGORIES: CategoryType[] = [
   },
   {
     id: 'linen-men',
-    name: 'פשתן',
+    name: Category.CLOTHING,
     gender: 'Men',
     url: 'https://www.zara.com/il/he/man-linen-l708.html'
+  },
+  {
+    id: 'sale-kids',
+    name: 'Sale',
+    gender: 'Kids',
+    url: 'https://www.zara.com/il/he/s-kids-l12716.html'
+  },
+  {
+    id: 'clothing-girls-small',
+    name: Category.CLOTHING,
+    gender: 'Girls',
+    age: '1.5-6', // ignored for now
+    url: 'https://www.zara.com/il/he/kids-babygirl-l87.html?v1=2421860'
+  },
+  {
+    id: 'clothing-girls-big',
+    name: Category.CLOTHING,
+    gender: 'Girls',
+    age: '6-14',
+    url: 'https://www.zara.com/il/he/kids-girl-l323.html?v1=2425905'
+  },
+  {
+    id: 'clothing-boys-small',
+    name: Category.CLOTHING,
+    gender: 'Boys',
+    age: '1.5-6',
+    url: 'https://www.zara.com/il/he/kids-babyboy-l5.html?v1=2422499'
+  },
+  {
+    id: 'clothing-boys-big',
+    name: Category.CLOTHING,
+    gender: 'Boys',
+    age: '6-14',
+    url: 'https://www.zara.com/il/he/kids-boy-l173.html?v1=2426469'
+  },
+  {
+    id: 'clothing-babies',
+    name: Category.CLOTHING,
+    gender: 'Babies',
+    age: '0-18',
+    url: 'https://www.zara.com/il/he/kids-baby-l7244.html?v1=2428025'
   }
   // Add more categories as needed
 ];
@@ -230,38 +266,18 @@ class ZaraScraper extends BaseScraper {
 
   
   private async fetchZaraPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({
-      headless: true, // change to false to DEBUG
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-blink-features=AutomationControlled',
-      ],
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+      extraHeaders: {
+        'Accept-Language': 'en-US,en;q=0.9',
+      },
+      onPageReady: async (page) => {
+        // Wait for cookie popup and click accept if visible
+        await handleCookieConsent(page, ['button.onetrust-close-btn-handler']);
+      }
     });
-  
-    const page = await browser.newPage();
-  
-    await page.setUserAgent(
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-    );
-  
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'en-US,en;q=0.9',
-    });
-  
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-
-    // Wait for cookie popup and click accept if visible
-    try {
-        await page.waitForSelector('button.onetrust-close-btn-handler', { timeout: 5000 });
-        await page.click('button.onetrust-close-btn-handler');
-    } catch (err) {
-        console.log('❕ No cookie popup found or already accepted');
-    }
-  
-    const html = await page.content();
-    await browser.close();
-    return html;
   }
 
   /**

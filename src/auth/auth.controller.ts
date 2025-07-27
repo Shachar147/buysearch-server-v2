@@ -144,15 +144,27 @@ export class AuthController {
   async getAllUsers() {
     const users = await this.userService.findAll();
     // Use injected entityManager for raw query
-    const rows = await this.entityManager.query(`
+    const favRows = await this.entityManager.query(`
       SELECT "userId", COUNT(*) as count
       FROM favourite_products
       GROUP BY "userId"
     `);
     const favCounts: Record<number, number> = {};
-    for (const row of rows) {
+    for (const row of favRows) {
       favCounts[Number(row.userId)] = Number(row.count);
     }
+
+    // Get filter sets count for each user
+    const filterRows = await this.entityManager.query(`
+      SELECT "userId", COUNT(*) as count
+      FROM saved_filters
+      GROUP BY "userId"
+    `);
+    const filterCounts: Record<number, number> = {};
+    for (const row of filterRows) {
+      filterCounts[Number(row.userId)] = Number(row.count);
+    }
+
     return users.map(u => ({
       id: u.id,
       username: u.username,
@@ -160,6 +172,8 @@ export class AuthController {
       lastLoginAt: u.lastLoginAt,
       totalSearches: u.totalSearches,
       favouritesCount: favCounts[u.id] || 0,
+      filterSetsCount: filterCounts[u.id] || 0,
+      userType: u.googleId ? 'google' : 'regular'
     }));
   }
 
@@ -183,14 +197,14 @@ export class AuthController {
   @Get('stats/categories')
   async getCategoryStats() {
     const rows = await this.entityManager.query(`
-      SELECT c.name,
+      SELECT c.id, c.name,
         SUM(CASE WHEN p.gender = 'Men' THEN 1 ELSE 0 END) as men,
         SUM(CASE WHEN p.gender = 'Women' THEN 1 ELSE 0 END) as women,
         SUM(CASE WHEN p.gender = 'Unisex' THEN 1 ELSE 0 END) as unisex
       FROM categories c
       LEFT JOIN product_categories pc ON pc."categoryId" = c.id
       LEFT JOIN products p ON p.id = pc."productId"
-      GROUP BY c.name
+      GROUP BY c.id, c.name
       ORDER BY c.name
     `);
     return rows;
@@ -200,13 +214,13 @@ export class AuthController {
   @Get('stats/brands')
   async getBrandStats() {
     const rows = await this.entityManager.query(`
-      SELECT b.name,
+      SELECT b.id, b.name,
         SUM(CASE WHEN p.gender = 'Men' THEN 1 ELSE 0 END) as men,
         SUM(CASE WHEN p.gender = 'Women' THEN 1 ELSE 0 END) as women,
         SUM(CASE WHEN p.gender = 'Unisex' THEN 1 ELSE 0 END) as unisex
       FROM brands b
       LEFT JOIN products p ON p."brandId" = b.id
-      GROUP BY b.name
+      GROUP BY b.id, b.name
       ORDER BY b.name
     `);
     return rows;
@@ -220,5 +234,44 @@ export class AuthController {
       FROM products
     `);
     return rows[0];
+  }
+
+  @UseGuards(UserGuard)
+  @Get('stats/daily-stats')
+  async getDailyStats() {
+    // Get today's date in UTC (start of day)
+    const today = new Date();
+    const todayUTC = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0, 0));
+    
+    // Get tomorrow's date in UTC (start of day)
+    const tomorrowUTC = new Date(todayUTC);
+    tomorrowUTC.setUTCDate(tomorrowUTC.getUTCDate() + 1);
+
+    // Get products added today
+    const addedRows = await this.entityManager.query(`
+      SELECT COUNT(*) as total_added_today
+      FROM products
+      WHERE "createdAt" >= $1 AND "createdAt" < $2
+    `, [todayUTC.toISOString(), tomorrowUTC.toISOString()]);
+
+    // Get products updated today (regardless of when they were created)
+    const updatedRows = await this.entityManager.query(`
+      SELECT COUNT(*) as total_updated_today
+      FROM products
+      WHERE "updatedAt" >= $1 AND "updatedAt" < $2
+    `, [todayUTC.toISOString(), tomorrowUTC.toISOString()]);
+
+    // Get price changes today (products with price history changes)
+    const priceChangesRows = await this.entityManager.query(`
+      SELECT COUNT(DISTINCT ph."productId") as total_price_changes_today
+      FROM price_history ph
+      WHERE ph."date" >= $1 AND ph."date" < $2
+    `, [todayUTC.toISOString(), tomorrowUTC.toISOString()]);
+
+    return {
+      total_added_today: parseInt(addedRows[0].total_added_today) || 0,
+      total_updated_today: parseInt(updatedRows[0].total_updated_today) || 0,
+      total_price_changes_today: parseInt(priceChangesRows[0].total_price_changes_today) || 0
+    };
   }
 } 

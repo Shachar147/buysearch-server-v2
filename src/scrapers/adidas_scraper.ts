@@ -1,10 +1,10 @@
-import puppeteer from 'puppeteer';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [
@@ -67,31 +67,32 @@ class AdidasScraper extends BaseScraper {
   }
 
   private async fetchAdidasPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    const page = await browser.newPage();
-    await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36');
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-    // Try to accept cookie consent if it appears
-    try {
-      // Wait for the consent button if it appears (up to 3 seconds)
-      await page.waitForSelector('button', { timeout: 3000 });
-      // Find the button with the text 'אני מאשר/ת' (Hebrew for 'I Accept')
-      const buttons = await page.$$('button');
-      for (const btn of buttons) {
-        const text = await page.evaluate(el => el.textContent, btn);
-        if (text && text.includes('אני מאשר')) {
-          await btn.click();
-          await new Promise(res => setTimeout(res, 1000)); // Wait for modal to close
-          break;
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'networkidle2',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        // Try to accept cookie consent if it appears
+        await handleCookieConsent(page, ['button']);
+        
+        // Custom cookie consent handling for Hebrew text
+        try {
+          const buttons = await page.$$('button');
+          for (const btn of buttons) {
+            const text = await page.evaluate(el => el.textContent, btn);
+            if (text && text.includes('אני מאשר')) {
+              await btn.click();
+              await new Promise(res => setTimeout(res, 1000)); // Wait for modal to close
+              break;
+            }
+          }
+        } catch (e) {
+          // If not found, continue
         }
+        
+        await new Promise(res => setTimeout(res, 5000)); // Wait 5 seconds
       }
-    } catch (e) {
-      // If not found, continue
-    }
-    await new Promise(res => setTimeout(res, 5000)); // Wait 5 seconds
-    const html = await page.content();
-    await browser.close();
-    return html;
+    });
   }
 
   private parseAdidasProducts(html: string, category: CategoryType): Product[] {

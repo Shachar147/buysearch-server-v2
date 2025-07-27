@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
 import { Product, extractColors, calcSalePercent, normalizeBrandName, prefixHttp } from './base/scraper_utils';
@@ -183,37 +183,15 @@ export class TommyScraper extends BaseScraper {
     ];
   }
 
-  private async fetchTommyPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-    const page = await browser.newPage();
-    await page.setUserAgent(
-      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-    );
-    await page.setExtraHTTPHeaders({
-      'Accept-Language': 'en-US,en;q=0.9',
+    private async fetchTommyPage(url: string): Promise<string> {
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'networkidle2',
+      timeout: 20000,
+      onPageReady: async (page) => {
+        // Custom page logic can be added here
+      }
     });
-    await page.goto(url, { waitUntil: 'networkidle2', timeout: 20000 }); // 60000
-    // Wait a bit for images and JS to load
-    // await new Promise(res => setTimeout(res, 2000));
-    const html = await page.content();
-    await browser.close();
-    // If the page is blank, retry once after a delay
-    if (html.trim().length < 1000) {
-      await new Promise(res => setTimeout(res, 3000));
-      const browser2 = await puppeteer.launch({ headless: false, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
-      const page2 = await browser2.newPage();
-      await page2.setUserAgent(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-      );
-      await page2.setExtraHTTPHeaders({
-        'Accept-Language': 'en-US,en;q=0.9',
-      });
-      await page2.goto(url, { waitUntil: 'networkidle2', timeout: 20000 }); // 60000
-      const html2 = await page2.content();
-      await browser2.close();
-      return html2;
-    }
-    return html;
   }
 
   protected async scrapeCategory(category: BaseCategory): Promise<Product[]> {

@@ -2,7 +2,7 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { calcSalePercent, extractColors, Product } from './base/scraper_utils';
 import { Category } from '../category.constants';
-import puppeteer from 'puppeteer';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 
 // NOTE: if there's a range (min, max), we currently take the max.
 // we can change it by using minPrice and oldminPrice
@@ -59,27 +59,19 @@ export class GolfAndCoScraper extends BaseScraper {
   }
 
   private async fetchPage(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ 
-      headless: true, // Change to true for production
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'domcontentloaded',
+      timeout: 60000,
+      onPageReady: async (page) => {
+        // Wait for the product grid to load
+        try {
+          await page.waitForSelector('.grid__item', { timeout: 10000 });
+        } catch (error) {
+          console.log('No products found on page, might be the last page');
+        }
+      }
     });
-    try {
-      const page = await browser.newPage();
-      await page.setUserAgent(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-      );
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-      
-    //   // Wait for the product grid to load
-    //   await page.waitForSelector('.grid__item', { timeout: 10000 }).catch(() => {
-    //     console.log('No products found on page, might be the last page');
-    //   });
-      
-      const html = await page.content();
-      return html;
-    } finally {
-      await browser.close();
-    }
   }
 
   protected async scrapeCategory(category: CategoryType): Promise<Product[]> {

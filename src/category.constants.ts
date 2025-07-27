@@ -61,6 +61,7 @@ export enum Category {
   UNDERWEAR_LINGERIE = "Underwear & Lingerie",
   OVERSIZE = "Oversize",
   SPECIAL_FIT = "Special Fit",
+  WEDDING = "Wedding",
 
   // 👟 Shoes
   SHOES = "Shoes",
@@ -1217,6 +1218,10 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.EYEGLASSES]: {
     en: ['eyeglasses', 'glasses for men', 'glasses for women', 'glasses for kids'],
     he: ['משקפי ראייה', 'משקפי ראיה']
+  },
+  [Category.WEDDING]: {
+    en: ['wedding', 'wedding season', ' bride ', ' groom '],
+    he: ['חתונה', 'חליפת חתן', 'שמלת כלה', 'חתונות', 'שמלה כלה', 'שמלות כלה', 'חליפות חתן', 'חליפה חתן', 'שמלה לכלה', 'חליפה לחתן', 'שמלות לכלה', 'חליפות לחתן']
   }
 };
 

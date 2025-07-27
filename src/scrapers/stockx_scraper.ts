@@ -1,9 +1,9 @@
-import puppeteer from 'puppeteer-extra';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
+import { Product, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -11,9 +11,6 @@ dotenv.config();
 // todo: check sale price
 // todo: add more categories
 
-// @ts-ignore
-import * as StealthPlugin from 'puppeteer-extra-plugin-stealth';
-puppeteer.use((StealthPlugin as any)());
 
 const CATEGORIES: CategoryType[] = [
   {
@@ -40,35 +37,24 @@ class StockXScraper extends BaseScraper {
 
   private async fetchStockXPage(url: string, userAgent?: string, viewport?: { width: number, height: number }): Promise<string> {
     try {
-        const browser = await puppeteer.launch({
-        headless: true,
-        args: [
-            '--no-sandbox',
-            '--disable-setuid-sandbox',
-            '--disable-blink-features=AutomationControlled',
-        ],
-        });
-        const page = await browser.newPage();
-        if (userAgent) {
-          await page.setUserAgent(userAgent);
-        }
-        if (viewport) {
-          await page.setViewport(viewport);
-        }
-        await page.setExtraHTTPHeaders({
+      return fetchPageWithBrowser(url, {
+        userAgent: userAgent || 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+        waitUntil: 'domcontentloaded',
+        timeout: 60000,
+        extraHeaders: {
           'Accept-Language': 'en-US,en;q=0.9',
-        //   'Referer': 'https://www.google.com/',
           'Connection': 'keep-alive',
-        //   'Upgrade-Insecure-Requests': '1'
-        });
-        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 });
-        // Wait for images to load (StockX loads real images after a short delay)
-        await new Promise(res => setTimeout(res, 3000));
-        const html = await page.content();
-        await browser.close();
-        return html;
+        },
+        onPageReady: async (page) => {
+          if (viewport) {
+            await page.setViewport(viewport);
+          }
+          // Wait for images to load (StockX loads real images after a short delay)
+          await new Promise(res => setTimeout(res, 3000));
+        }
+      });
     } catch {
-        return "";
+      return "";
     }
   }
 

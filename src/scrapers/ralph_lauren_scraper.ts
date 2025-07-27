@@ -1,4 +1,4 @@
-import puppeteer from 'puppeteer';
+import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
 import { Product, extractColors, calcSalePercent, normalizeBrandName, prefixHttp } from './base/scraper_utils';
@@ -130,32 +130,19 @@ export class RalphLaurenScraper extends BaseScraper {
   }
 
   private async fetchPageWithPuppeteer(url: string): Promise<string> {
-    const browser = await puppeteer.launch({ 
-      headless: true, // Changed to true for production
-      args: ['--no-sandbox', '--disable-setuid-sandbox'] 
-    });
-    const page = await browser.newPage();
-    
-    try {
-      await page.setUserAgent(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36'
-      );
-      await page.setExtraHTTPHeaders({
+    return fetchPageWithBrowser(url, {
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      waitUntil: 'networkidle2',
+      timeout: 60000,
+      extraHeaders: {
         'Accept-Language': 'en-US,en;q=0.9',
-      });
-      
-      await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
-      
-      // Handle cookie consent popup
-      await this.handleCookieConsent(page);
-      
-      const html = await page.content();
-             await new Promise(resolve => setTimeout(resolve, 2000)); // Reduced wait time
-      
-      return html;
-    } finally {
-      await browser.close();
-    }
+      },
+      onPageReady: async (page) => {
+        // Handle cookie consent popup
+        await this.handleCookieConsent(page);
+        await new Promise(resolve => setTimeout(resolve, 2000)); // Reduced wait time
+      }
+    });
   }
 
   private async fetchAjaxPage(baseUrl: string, pageNum: number): Promise<string> {

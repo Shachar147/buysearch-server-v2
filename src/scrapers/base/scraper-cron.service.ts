@@ -6,6 +6,7 @@ import { resolve } from 'path';
 import { AppModule } from '../../../app.module';
 import { SourceService } from '../../source/source.service';
 import { ScrapingHistoryService } from '../../scraping-history/scraping-history.service';
+import { cleanupBrowserManager } from './browser-manager';
 const fs = require('fs');
 
 const MAX_PARALLEL_SCRAPERS = 1;
@@ -19,8 +20,8 @@ export class ScraperCronService {
   private readonly logger = new Logger(ScraperCronService.name);
 
   // @Cron(CronExpression.EVERY_HOUR)
-  @Cron('0,15,30,45 * * * *')
-  // @Cron(CronExpression.EVERY_5_MINUTES)
+  // @Cron('0,15,30,45 * * * *')
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
     if (process.env.NODE_ENV === 'production') {
       // Optionally log
@@ -66,7 +67,9 @@ export class ScraperCronService {
       const now = Date.now();
       const summariesFiltered = summaries.filter(s => {
         const lastScraped = new Date(s.updatedAt).getTime();
-        return now - lastScraped > 24 * 60 * 60 * 1000;
+        // return now - lastScraped > 24 * 60 * 60 * 1000;
+        return now - lastScraped > 1 * 60 * 60 * 1000;
+
       });
       this.logger.log(`Filtered to ${summariesFiltered.length} scrapers not scraped in the last 24 hours.`);
 
@@ -141,6 +144,8 @@ export class ScraperCronService {
         this.logger.log('No additional scrapers need to be started.');
       }
     } finally {
+      this.logger.log('Cron job finished. Cleaning up browser resources...');
+      await cleanupBrowserManager();
       this.logger.log('Cron job finished. Closing app context.');
       await app.close();
     }
