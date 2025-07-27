@@ -271,6 +271,9 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'סריג רוכסן': [Category.KNITWEAR],
   'קרדיגן': [Category.KNITWEAR],
   'סווטשירטים': [Category.SWEATERS],
+  'sweater': [Category.SWEATERS],
+  'long-sleeve': [Category.LONG_T_SHIRTS],
+  'long sleeve': [Category.LONG_T_SHIRTS],
   'סוויטשירטים': [Category.SWEATERS],
   'קפוצון': [Category.SWEATERS],
   'סווטשירט': [Category.SWEATERS],
@@ -556,6 +559,9 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'קרם לצוואר': [Category.BEAUTY, Category.MAKEUP, Category.CREAMS_AND_OILS],
     'lingerie & nightwear': [Category.LINGERIE, Category.SLEEP_WEAR],
     'sweatpants': [Category.JOGGERS],
+    'hoodie': [Category.SWEATERS],
+    'basketball shorts': [Category.SPORT],
+    'soccer shorts': [Category.SPORT],
     'seatpant': [Category.JOGGERS],
     'חולצת טי': [Category.T_SHIRTS],
     'נעלי ': [Category.SHOES],
@@ -628,6 +634,10 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'משקפי ראיה': [Category.EYEGLASSES],
     'משקפיים לראייה': [Category.EYEGLASSES],
     'משקפיים לראיה': [Category.EYEGLASSES],
+    'jacket': [Category.JACKETS_COATS],
+    ' jersey': [Category.TANKS],
+    ' tee': [Category.T_SHIRTS],
+
 };
 
 // --- Category Synonyms Map ---
@@ -637,7 +647,7 @@ export type CategorySynonyms = {
 
 export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.T_SHIRTS]: {
-    en: ['t-shirt', 'tshirt', 'tee', 't shirt', 'tank top', 'vest'],
+    en: ['t-shirt', 'tshirt', 'tee', 't shirt', 'tank top', 'vest', ' tee'],
     he: ['טי שירט', 'טי-שירט', 'טישרט', 'חולצה', 'חולצות', 'טי שירטים', 'טי-שירטים', 'ווסט', 'חולצת ']
   },
   [Category.TOPS]: {
@@ -761,7 +771,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
     he: ['חליפה', 'חליפות']
   },
   [Category.SWIMWEAR]: {
-    en: ['swimwear', 'swimsuit', 'bathing suit', 'bikini', 'trunks'],
+    en: ['swimwear', 'swimsuit', 'bathing suit', 'bikini', 'swim trunks'],
     he: ['בגד ים', 'בגדי ים', 'ביקיני', 'טרנקס', 'חוטיני']
   },
   [Category.BEACHWEAR]: {

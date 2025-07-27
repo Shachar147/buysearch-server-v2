@@ -5,7 +5,7 @@ import { NestFactory } from '@nestjs/core';
 import { ProductService } from '../../product/product.service';
 import { ScrapingHistoryService, ScrapingType } from '../../scraping-history/scraping-history.service';
 import { SourceService } from '../../source/source.service';
-import { CATEGORIES_TO_IGNORE, CATEGORY_NORMALIZATION_MAP } from '../../category.constants';
+import { CATEGORIES_TO_IGNORE, Category, CATEGORY_NORMALIZATION_MAP } from '../../category.constants';
 import { ucfirst } from '../../search/search.utils';
 import { AppModule } from '../../../app.module';
 import * as path from 'path';
@@ -564,8 +564,14 @@ export async function processProductsOld(
  */
 export function extractCategory(title: string): string[] {
   if (!title) return [];
-  const lowerTitle = title.toLowerCase();
+  let lowerTitle = title.toLowerCase();
   const foundCategories = new Set<string>();
+
+  if (lowerTitle.includes('swim trunks')) {
+    foundCategories.add(Category.SWIMWEAR);
+    lowerTitle = lowerTitle.replace('swim trunks', ''); // to prevent 'trunks' from being converted to Boxers
+  }
+
   // Check for each synonym key and value in the title
   for (const [key, mappedArr] of Object.entries(CATEGORY_NORMALIZATION_MAP)) {
     if (lowerTitle.includes(key)) {
