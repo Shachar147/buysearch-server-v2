@@ -5,14 +5,17 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
 import { GoogleStrategy } from './google.strategy';
+import { getSecurityConfig } from '../config/security.config';
+
+const securityConfig = getSecurityConfig();
 
 @Module({
   imports: [
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'changeme',
-      signOptions: { expiresIn: '7d' },
+      secret: securityConfig.jwt.secret,
+      signOptions: { expiresIn: securityConfig.jwt.expiresIn },
     }),
   ],
   providers: [AuthService, GoogleStrategy],
