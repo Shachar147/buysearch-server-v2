@@ -123,7 +123,7 @@ class JDSportsScraper extends BaseScraper {
     return allProducts;
   }
 
-    private async fetchJDSportsPage(url: string): Promise<string> {
+  private async fetchJDSportsPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
@@ -132,9 +132,6 @@ class JDSportsScraper extends BaseScraper {
         // Custom page logic can be added here
       }
     });
-  } catch {
-        return "";
-    }
   }
 
   private getPrice(elm, selector: string): number | undefined {

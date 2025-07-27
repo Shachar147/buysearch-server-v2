@@ -250,7 +250,7 @@ class GantScraper extends BaseScraper {
     return allProducts;
   }
 
-    private async fetchGantPage(url: string): Promise<string> {
+  private async fetchGantPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
@@ -259,11 +259,6 @@ class GantScraper extends BaseScraper {
         // Custom page logic can be added here
       }
     });
-  }
-    catch {
-
-    }
-    return '';
   }
 
   private parseGantProducts(html: string, category: CategoryType): Product[] {

@@ -109,10 +109,10 @@ class LegaloutfitScraper extends BaseScraper {
       userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
-        // Handle cookie consent
-        await handleCookieConsent(page, ['button', 'button.onetrust-close-btn-handler']);
       onPageReady: async (page) => {
+        // Handle cookie consent
         // Custom page logic can be added here
+        await handleCookieConsent(page, ['button', 'button.onetrust-close-btn-handler']);
       }
     });
   }
