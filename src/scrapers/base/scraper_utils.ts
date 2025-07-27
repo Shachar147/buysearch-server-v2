@@ -381,7 +381,7 @@ export function extractColorsWithHebrew(title: string, apiColors: string[], sour
   // Combine both sets
   const allColors = new Set([...convertedApiColors, ...titleColors]);
   
-  return Array.from(allColors).filter((c) => c.trim().length > 0);;
+  return Array.from(allColors).filter((c) => c.trim().length > 0);
 }
 
 export function calcSalePercent(price: number | null, oldPrice: number | null): number | null {
