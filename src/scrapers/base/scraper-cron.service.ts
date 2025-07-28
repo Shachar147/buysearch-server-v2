@@ -67,8 +67,8 @@ export class ScraperCronService {
       const now = Date.now();
       const summariesFiltered = summaries.filter(s => {
         const lastScraped = new Date(s.updatedAt).getTime();
-        // return now - lastScraped > 24 * 60 * 60 * 1000;
-        return now - lastScraped > 1 * 60 * 60 * 1000;
+        return now - lastScraped > 24 * 60 * 60 * 1000;
+        // return now - lastScraped > 1 * 60 * 60 * 1000;
 
       });
       this.logger.log(`Filtered to ${summariesFiltered.length} scrapers not scraped in the last 24 hours.`);
