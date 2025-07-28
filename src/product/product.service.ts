@@ -9,6 +9,7 @@ import { SourceService } from '../source/source.service';
 import { Brackets } from 'typeorm';
 import { FavouritesService } from '../favourites/favourites.service';
 import { PriceHistoryService } from '../price-history/price-history.service';
+import { NotificationService } from '../notification/notification.service';
 import { PAGINATION_LIMIT } from '../consts';
 import { ucfirst } from '../search/search.utils';
 
@@ -64,6 +65,7 @@ export class ProductService {
     private sourceService: SourceService,
     private favouritesService: FavouritesService,
     private readonly priceHistoryService: PriceHistoryService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async findAll(filters: ProductFilters = {}, userId?: number): Promise<any> {
@@ -545,8 +547,27 @@ export class ProductService {
 
     // Add price history if changed
     let currMinimalPrice = productData.price ?? productData.oldPrice;
-    if (originalMinimalPrice != currMinimalPrice) {
-      await this.priceHistoryService.addIfChanged(product.id, currMinimalPrice);
+    if (Number(originalMinimalPrice) != Number(currMinimalPrice)) {
+      await this.priceHistoryService.addIfChanged(product.id, currMinimalPrice, originalMinimalPrice, product.createdAt);
+      
+      // Create notification for price change if both prices are valid
+      if (originalMinimalPrice && currMinimalPrice && originalMinimalPrice != currMinimalPrice) {
+        console.log("Creating notification for price change", {
+          productId: product.id,
+          originalMinimalPrice,
+          currMinimalPrice,
+        });
+        try {
+          await this.notificationService.createPriceChangeNotification(
+            product.id,
+            originalMinimalPrice,
+            currMinimalPrice
+          );
+        } catch (error) {
+          // Log error but don't fail the product update
+          console.error('Failed to create price change notification:', error);
+        }
+      }
     }
 
     return {
@@ -638,7 +659,7 @@ export class ProductService {
     console.log(`[bulkUpsertProducts] Found ${existingProducts.length} existing products in DB`);
   
     const productsToSave: Product[] = [];
-    const priceHistoryMap: { productId: number; price: number | null }[] = [];
+    const priceHistoryMap: { productId: number; price: number | null; oldPrice?: number | null; productCreatedAt?: Date }[] = [];
   
     let newCount = 0;
     let updatedCount = 0;
@@ -667,6 +688,9 @@ export class ProductService {
       const categoryEntities = input.categories.map(cat => categoryMap.get(`${input.gender}|${cat}`));
 
       if (existing) {
+        // Store original price before any updates for price change detection
+        const originalMinimalPrice = existing.price ?? existing.oldPrice;
+
         const shouldUpdate = 
           existing.title !== input.title ||
           JSON.stringify(existing.images) !== JSON.stringify(input.images) ||
@@ -678,6 +702,43 @@ export class ProductService {
           existing.gender !== input.gender ||
           existing.brand?.id !== brand?.id ||
           existing.source?.id !== source?.id;
+
+        const newMinimalPrice = input.price ?? input.oldPrice;
+
+        // Check for price change BEFORE updating the existing object
+        if (Number(originalMinimalPrice) !== Number(newMinimalPrice)) {
+          priceHistoryMap.push({ 
+            productId: existing.id, 
+            price: newMinimalPrice,
+            oldPrice: originalMinimalPrice,
+            productCreatedAt: existing.createdAt
+          });
+          
+          // Create notification for price change if both prices are valid AND there's an actual change
+          if (originalMinimalPrice && newMinimalPrice && originalMinimalPrice != newMinimalPrice) {
+            // Additional check: ensure the percentage change is significant (not 0%)
+            const priceChange = newMinimalPrice - originalMinimalPrice;
+            const priceChangePercent = Math.abs((priceChange / originalMinimalPrice) * 100);
+            
+            console.log("Creating notification for price change", {
+              productId: existing.id,
+              originalMinimalPrice,
+              newMinimalPrice,
+              priceChangePercent,
+            });
+
+            try {
+              await this.notificationService.createPriceChangeNotification(
+                existing.id,
+                originalMinimalPrice,
+                newMinimalPrice
+              );
+            } catch (error) {
+              // Log error but don't fail the product update
+              console.error('Failed to create price change notification:', error);
+            }
+          }
+        }
 
         if (shouldUpdate) {
           Object.assign(existing, {
@@ -698,12 +759,6 @@ export class ProductService {
 
         existing.colors = colorEntities;
         existing.categories = categoryEntities;
-
-        const oldMin = existing.price ?? existing.oldPrice;
-        const newMin = input.price ?? input.oldPrice;
-        if (oldMin !== newMin) {
-          priceHistoryMap.push({ productId: existing.id, price: newMin });
-        }
       } else {
         const newProduct = this.productsRepository.create({
           ...input,

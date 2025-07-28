@@ -16,6 +16,7 @@ import { FavouritesModule } from './src/favourites/favourites.module';
 import { ScrapingHistoryModule } from './src/scraping-history/scraping-history.module';
 import { SavedFilterModule } from './src/saved-filter/saved-filter.module';
 import { ProxyModule } from './src/proxy/proxy.module';
+import { NotificationModule } from './src/notification/notification.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ProxyModule } from './src/proxy/proxy.module';
     ScrapingHistoryModule,
     SavedFilterModule,
     ProxyModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [

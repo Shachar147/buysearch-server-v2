@@ -11,6 +11,7 @@ import { SearchModule } from '../search/search.module';
 import { AuthModule } from '../auth/auth.module';
 import { FavouritesModule } from '../favourites/favourites.module';
 import { PriceHistoryModule } from '../price-history/price-history.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { PriceHistoryModule } from '../price-history/price-history.module';
     AuthModule,
     FavouritesModule,
     PriceHistoryModule,
+    NotificationModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],

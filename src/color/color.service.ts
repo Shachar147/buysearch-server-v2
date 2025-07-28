@@ -96,4 +96,8 @@ export class ColorService {
     });
   }
   
+  public async findAllNoPagination(): Promise<Color[]> {
+    return this.colorsRepository.find({ where: { isActive: true }, order: { id: 'ASC' } });
+  }
+  
 } 

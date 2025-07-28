@@ -129,10 +129,10 @@ export class PrimarkScraper extends BaseScraper {
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
-        await page.waitForSelector('[id^="product-card-"]', { timeout: 10000 }).catch(() => {
-          this.logProgress('No product cards found on page, might be the last page.');
-        });
-      }
+      await page.waitForSelector('[id^="product-card-"]', { timeout: 10000 }).catch(() => {
+        this.logProgress('No product cards found on page, might be the last page.');
+      });
+    }
     });
   }
 
