@@ -241,6 +241,14 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'tax free': ['Tax Free'],
   'שרשרת': [Category.JEWELRY, Category.NECKLACES],
   'שרשראות': [Category.JEWELRY, Category.NECKLACES],
+  'necklace': [Category.JEWELRY, Category.NECKLACES],
+  'bracelet': [Category.JEWELRY, Category.BRACELETS],
+  'scarf': [Category.SCARVES],
+  'צעיף': [Category.SCARVES],
+  'צעיפים': [Category.SCARVES],
+  'watch': [Category.WATCHES],
+  'שעון': [Category.WATCHES],
+  'שעונים': [Category.WATCHES],
   'טבעות': [Category.JEWELRY, Category.RINGS],
   'בקבוקי ספורט': [Category.SPORT],
   'אביזרי ספורט': [Category.SPORT],
@@ -638,7 +646,6 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'jacket': [Category.JACKETS_COATS],
     ' jersey': [Category.TANKS],
     ' tee': [Category.T_SHIRTS],
-
 };
 
 // --- Category Synonyms Map ---
