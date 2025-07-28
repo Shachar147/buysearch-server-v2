@@ -6,6 +6,9 @@ A NestJS-based backend server for the BuySearch product aggregation platform. Th
 
 <img width="494" height="901" alt="image" src="https://github.com/user-attachments/assets/e11122b3-85a7-4128-a007-33f25f4eddd2" />
 
+<img width="256" height="441" alt="image" src="https://github.com/user-attachments/assets/9538ab8d-5db8-48bb-b1bb-687df870a47a" />
+
+
 ## 🚀 Features
 
 - **Product Scraping**: Automated scraping from multiple e-commerce sources
