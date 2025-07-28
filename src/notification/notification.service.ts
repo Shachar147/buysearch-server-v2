@@ -51,6 +51,20 @@ export class NotificationService {
   }
 
   async createPriceChangeNotification(productId: number, oldPrice: number, newPrice: number): Promise<void> {
+    // Convert prices to numbers to ensure proper calculations
+    const oldPriceNum = typeof oldPrice === 'string' ? parseFloat(oldPrice) : Number(oldPrice);
+    const newPriceNum = typeof newPrice === 'string' ? parseFloat(newPrice) : Number(newPrice);
+    
+    const priceChange = newPriceNum - oldPriceNum;
+    const priceChangePercent = ((priceChange / oldPriceNum) * 100).toFixed(1);
+    const changeType = priceChange > 0 ? 'increased' : 'dropped';
+    const changeAmount = Math.abs(priceChange);
+    // if (!changeAmount) {
+    //   return;
+    // }
+
+    // ------------------------------------------------------------
+
     // Get all users who have this product in their favourites
     const favouriteUsers = await this.favouriteProductRepository
       .createQueryBuilder('favourite')
@@ -71,15 +85,6 @@ export class NotificationService {
     if (!product) {
       return;
     }
-
-    // Convert prices to numbers to ensure proper calculations
-    const oldPriceNum = typeof oldPrice === 'string' ? parseFloat(oldPrice) : Number(oldPrice);
-    const newPriceNum = typeof newPrice === 'string' ? parseFloat(newPrice) : Number(newPrice);
-    
-    const priceChange = newPriceNum - oldPriceNum;
-    const priceChangePercent = ((priceChange / oldPriceNum) * 100).toFixed(1);
-    const changeType = priceChange > 0 ? 'increased' : 'dropped';
-    const changeAmount = Math.abs(priceChange);
 
     const currency = product.currency;
     const oldPriceFormatted = this.formatPrice(oldPrice, currency);

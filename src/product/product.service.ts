@@ -547,11 +547,16 @@ export class ProductService {
 
     // Add price history if changed
     let currMinimalPrice = productData.price ?? productData.oldPrice;
-    if (originalMinimalPrice != currMinimalPrice) {
+    if (Number(originalMinimalPrice) != Number(currMinimalPrice)) {
       await this.priceHistoryService.addIfChanged(product.id, currMinimalPrice, originalMinimalPrice, product.createdAt);
       
       // Create notification for price change if both prices are valid
-      if (originalMinimalPrice && currMinimalPrice && originalMinimalPrice !== currMinimalPrice) {
+      if (originalMinimalPrice && currMinimalPrice && originalMinimalPrice != currMinimalPrice) {
+        console.log("Creating notification for price change", {
+          productId: product.id,
+          originalMinimalPrice,
+          currMinimalPrice,
+        });
         try {
           await this.notificationService.createPriceChangeNotification(
             product.id,
@@ -701,7 +706,7 @@ export class ProductService {
         const newMinimalPrice = input.price ?? input.oldPrice;
 
         // Check for price change BEFORE updating the existing object
-        if (originalMinimalPrice !== newMinimalPrice) {
+        if (Number(originalMinimalPrice) !== Number(newMinimalPrice)) {
           priceHistoryMap.push({ 
             productId: existing.id, 
             price: newMinimalPrice,
@@ -709,8 +714,19 @@ export class ProductService {
             productCreatedAt: existing.createdAt
           });
           
-          // Create notification for price change if both prices are valid
-          if (originalMinimalPrice && newMinimalPrice && originalMinimalPrice !== newMinimalPrice) {
+          // Create notification for price change if both prices are valid AND there's an actual change
+          if (originalMinimalPrice && newMinimalPrice && originalMinimalPrice != newMinimalPrice) {
+            // Additional check: ensure the percentage change is significant (not 0%)
+            const priceChange = newMinimalPrice - originalMinimalPrice;
+            const priceChangePercent = Math.abs((priceChange / originalMinimalPrice) * 100);
+            
+            console.log("Creating notification for price change", {
+              productId: existing.id,
+              originalMinimalPrice,
+              newMinimalPrice,
+              priceChangePercent,
+            });
+
             try {
               await this.notificationService.createPriceChangeNotification(
                 existing.id,
