@@ -138,10 +138,10 @@ export class RalphLaurenScraper extends BaseScraper {
         'Accept-Language': 'en-US,en;q=0.9',
       },
       onPageReady: async (page) => {
-        // Handle cookie consent popup
-        await this.handleCookieConsent(page);
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Reduced wait time
-      }
+      // Handle cookie consent popup
+      await this.handleCookieConsent(page);
+             await new Promise(resolve => setTimeout(resolve, 2000)); // Reduced wait time
+    }
     });
   }
 

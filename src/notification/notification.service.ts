@@ -46,7 +46,8 @@ export class NotificationService {
     const changeType = priceChange > 0 ? 'increased' : 'decreased';
     const changeAmount = Math.abs(priceChange);
 
-    const message = `${product.title} price ${changeType} by ${changeAmount} ILS (${priceChangePercent}%)`;
+    const currency = product.currency;
+    const message = `${product.title} price ${changeType} from ${oldPrice} ${currency} to ${newPrice} ${currency} (${changeAmount} ${currency}, ${priceChangePercent}%)`;
 
     // Create notifications for all users who have this product favourited
     const notifications = usersWithFavourite.map(user => {

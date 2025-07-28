@@ -203,7 +203,7 @@ class NikeScraper extends BaseScraper {
       waitUntil: 'networkidle2',
       timeout: 60000,
       onPageReady: async (page) => {
-        // Infinite scroll: keep scrolling and waiting for new products
+    // Infinite scroll: keep scrolling and waiting for new products
         await handleInfiniteScroll(page, {
           productSelector: 'a.product-card__link-overlay',
           maxScrolls: 50,
@@ -213,8 +213,8 @@ class NikeScraper extends BaseScraper {
           }
         });
 
-        const totalProducts = await page.$$eval('a.product-card__link-overlay', els => els.length);
-        this.logProgress(`Infinite scroll complete. Total products loaded: ${totalProducts}`);
+    const totalProducts = await page.$$eval('a.product-card__link-overlay', els => els.length);
+    this.logProgress(`Infinite scroll complete. Total products loaded: ${totalProducts}`);
       }
     });
   }

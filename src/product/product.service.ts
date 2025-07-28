@@ -548,7 +548,7 @@ export class ProductService {
     // Add price history if changed
     let currMinimalPrice = productData.price ?? productData.oldPrice;
     if (originalMinimalPrice != currMinimalPrice) {
-      await this.priceHistoryService.addIfChanged(product.id, currMinimalPrice);
+      await this.priceHistoryService.addIfChanged(product.id, currMinimalPrice, originalMinimalPrice);
       
       // Create notification for price change if both prices are valid
       if (originalMinimalPrice && currMinimalPrice && originalMinimalPrice !== currMinimalPrice) {
@@ -654,7 +654,7 @@ export class ProductService {
     console.log(`[bulkUpsertProducts] Found ${existingProducts.length} existing products in DB`);
   
     const productsToSave: Product[] = [];
-    const priceHistoryMap: { productId: number; price: number | null }[] = [];
+    const priceHistoryMap: { productId: number; price: number | null; oldPrice?: number | null }[] = [];
   
     let newCount = 0;
     let updatedCount = 0;
@@ -683,6 +683,8 @@ export class ProductService {
       const categoryEntities = input.categories.map(cat => categoryMap.get(`${input.gender}|${cat}`));
 
       if (existing) {
+        // Store original price before any updates for price change detection
+        const originalMinimalPrice = existing.price ?? existing.oldPrice;
 
         const shouldUpdate = 
           existing.title !== input.title ||
@@ -716,22 +718,28 @@ export class ProductService {
         existing.colors = colorEntities;
         existing.categories = categoryEntities;
 
-        const oldMin = existing.price ?? existing.oldPrice;
-        const newMin = input.price ?? input.oldPrice;
+        const newMinimalPrice = input.price ?? input.oldPrice;
 
-        if (existing.id == 430933) {
-          console.log("hereeee", {
-            existingPrice: existing.price,
-            existingOldPrice: existing.oldPrice,
-            newPrice: input.price,
-            newOldPrice: input.oldPrice,
-            oldMin,
-            newMin,
+        if (originalMinimalPrice !== newMinimalPrice) {
+          priceHistoryMap.push({ 
+            productId: existing.id, 
+            price: newMinimalPrice,
+            oldPrice: originalMinimalPrice 
           });
-        }
-
-        if (oldMin !== newMin) {
-          priceHistoryMap.push({ productId: existing.id, price: newMin });
+          
+          // Create notification for price change if both prices are valid
+          if (originalMinimalPrice && newMinimalPrice && originalMinimalPrice !== newMinimalPrice) {
+            try {
+              await this.notificationService.createPriceChangeNotification(
+                existing.id,
+                originalMinimalPrice,
+                newMinimalPrice
+              );
+            } catch (error) {
+              // Log error but don't fail the product update
+              console.error('Failed to create price change notification:', error);
+            }
+          }
         }
       } else {
         const newProduct = this.productsRepository.create({
