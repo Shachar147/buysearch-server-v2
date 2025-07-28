@@ -9,6 +9,7 @@ import { SourceService } from '../source/source.service';
 import { Brackets } from 'typeorm';
 import { FavouritesService } from '../favourites/favourites.service';
 import { PriceHistoryService } from '../price-history/price-history.service';
+import { NotificationService } from '../notification/notification.service';
 import { PAGINATION_LIMIT } from '../consts';
 import { ucfirst } from '../search/search.utils';
 
@@ -64,6 +65,7 @@ export class ProductService {
     private sourceService: SourceService,
     private favouritesService: FavouritesService,
     private readonly priceHistoryService: PriceHistoryService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   async findAll(filters: ProductFilters = {}, userId?: number): Promise<any> {
@@ -547,6 +549,20 @@ export class ProductService {
     let currMinimalPrice = productData.price ?? productData.oldPrice;
     if (originalMinimalPrice != currMinimalPrice) {
       await this.priceHistoryService.addIfChanged(product.id, currMinimalPrice);
+      
+      // Create notification for price change if both prices are valid
+      if (originalMinimalPrice && currMinimalPrice && originalMinimalPrice !== currMinimalPrice) {
+        try {
+          await this.notificationService.createPriceChangeNotification(
+            product.id,
+            originalMinimalPrice,
+            currMinimalPrice
+          );
+        } catch (error) {
+          // Log error but don't fail the product update
+          console.error('Failed to create price change notification:', error);
+        }
+      }
     }
 
     return {
