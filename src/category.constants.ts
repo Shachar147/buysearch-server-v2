@@ -102,6 +102,7 @@ export enum Category {
   NECKLACES = "Necklaces",
   BRACELETS = "Bracelets",
   RINGS = "Rings",
+  EARRINGS = "Earrings",
   JEWELRY = "Jewelry",
   GLOVES = "Gloves",
   SCARVES = "Scarves",
@@ -460,7 +461,6 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'bucket': [Category.BUCKET_HATS],
   // 'בויפרנד': [Category.JEANS],
   'נעלי כלה': [Category.SHOES],
-  'צעיפים': [Category.SCARVES],
   'שמלות מקסי': [Category.MAXI_DRESSES],
   'travel bags': [Category.TRAVEL_BAGS],
   'חגורת לוגו': [Category.BELTS],
@@ -556,7 +556,6 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     "archive old": [Category.GIFTS],
     "גבות": [Category.BROW_PENCIL],
     "ספריי עיון": [Category.HOME],
-    "שעונים": [Category.WATCHES],
     "לייף סטייל": [Category.HOME],
     "buyer's picks": [Category.GIFTS],
     "maskit x gottex": [Category.BY_BRAND],
@@ -588,10 +587,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     ' belt': [Category.BELTS],
     'fp cap': [Category.HATS],
     'panama hat': [Category.HATS],
-    'necklace': [Category.JEWELRY],
-    ' ring': [Category.JEWELRY],
-    'bracelet': [Category.JEWELRY],
-    'earrings': [Category.JEWELRY],
+    ' ring': [Category.JEWELRY, Category.RINGS],
+    'earrings': [Category.JEWELRY, Category.EARRINGS],
     'toilette': [Category.PERFUMES],
     'skirt': [Category.SKIRTS],
     'sarong': [Category.SARONGS],
@@ -1229,6 +1226,10 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.WEDDING]: {
     en: ['wedding', 'wedding season', ' bride ', ' groom '],
     he: ['חתונה', 'חליפת חתן', 'שמלת כלה', 'חתונות', 'שמלה כלה', 'שמלות כלה', 'חליפות חתן', 'חליפה חתן', 'שמלה לכלה', 'חליפה לחתן', 'שמלות לכלה', 'חליפות לחתן']
+  },
+  [Category.EARRINGS]: {
+    en: ['earring'],
+    he: ['עגיל']
   }
 };
 
