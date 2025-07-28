@@ -1231,6 +1231,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
     en: ['earring'],
     he: ['עגיל']
   }
+  
 };
 
 // --- Generate Keyword-to-Category Map ---
