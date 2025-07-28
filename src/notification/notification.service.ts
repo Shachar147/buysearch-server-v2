@@ -19,6 +19,37 @@ export class NotificationService {
     private favouriteProductRepository: Repository<FavouriteProduct>,
   ) {}
 
+  private getCurrencySymbol(currency: string): string {
+    switch (currency.toUpperCase()) {
+      case 'USD':
+        return '$';
+      case 'ILS':
+        return '₪';
+      case 'EUR':
+        return '€';
+      case 'GBP':
+        return '£';
+      default:
+        return currency; // Return the currency code if no symbol is found
+    }
+  }
+
+  private formatPrice(price: number | string | null, currency: string): string {
+    if (price === null || price === undefined) {
+      return `${this.getCurrencySymbol(currency)}0.00`;
+    }
+    
+    // Convert to number and handle any type issues
+    const numericPrice = typeof price === 'string' ? parseFloat(price) : Number(price);
+    
+    if (isNaN(numericPrice)) {
+      return `${this.getCurrencySymbol(currency)}0.00`;
+    }
+    
+    const symbol = this.getCurrencySymbol(currency);
+    return `${symbol}${numericPrice.toFixed(2)}`;
+  }
+
   async createPriceChangeNotification(productId: number, oldPrice: number, newPrice: number): Promise<void> {
     // Get all users who have this product in their favourites
     const favouriteUsers = await this.favouriteProductRepository
@@ -41,13 +72,21 @@ export class NotificationService {
       return;
     }
 
-    const priceChange = newPrice - oldPrice;
-    const priceChangePercent = ((priceChange / oldPrice) * 100).toFixed(1);
-    const changeType = priceChange > 0 ? 'increased' : 'decreased';
+    // Convert prices to numbers to ensure proper calculations
+    const oldPriceNum = typeof oldPrice === 'string' ? parseFloat(oldPrice) : Number(oldPrice);
+    const newPriceNum = typeof newPrice === 'string' ? parseFloat(newPrice) : Number(newPrice);
+    
+    const priceChange = newPriceNum - oldPriceNum;
+    const priceChangePercent = ((priceChange / oldPriceNum) * 100).toFixed(1);
+    const changeType = priceChange > 0 ? 'increased' : 'dropped';
     const changeAmount = Math.abs(priceChange);
 
     const currency = product.currency;
-    const message = `${product.title} price ${changeType} from ${oldPrice} ${currency} to ${newPrice} ${currency} (${changeAmount} ${currency}, ${priceChangePercent}%)`;
+    const oldPriceFormatted = this.formatPrice(oldPrice, currency);
+    const newPriceFormatted = this.formatPrice(newPrice, currency);
+    const changeAmountFormatted = this.formatPrice(changeAmount, currency);
+    
+    const message = `${product.title}\nPrice ${changeType} by ${Math.abs(Number(priceChangePercent))}%\nFrom ${oldPriceFormatted} to ${newPriceFormatted}`;
 
     // Create notifications for all users who have this product favourited
     const notifications = usersWithFavourite.map(user => {
