@@ -14,7 +14,10 @@ export class ColorController {
   }
 
   @Get()
-  findAll(@Query('offset') offset = 0, @Query('limit') limit = 200) {
+  async findAll(@Query('offset') offset = 0, @Query('limit') limit = 200, @Query('all') all?: string) {
+    if (all === 'true') {
+      return await this.colorService.findAllNoPagination();
+    }
     offset = Number(offset) || 0;
     limit = Math.min(Number(limit) || 200, 200);
     return this.colorService.findAll(offset, limit);

@@ -87,4 +87,8 @@ export class BrandService {
     });
   }
 
+  public async findAllNoPagination(): Promise<Brand[]> {
+    return this.brandsRepository.find({ where: { isActive: true }, order: { id: 'ASC' } });
+  }
+
 } 

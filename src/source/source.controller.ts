@@ -14,7 +14,10 @@ export class SourceController {
   }
 
   @Get()
-  findAll(@Query('offset') offset = 0, @Query('limit') limit = 200) {
+  async findAll(@Query('offset') offset = 0, @Query('limit') limit = 200, @Query('all') all?: string) {
+    if (all === 'true') {
+      return await this.sourceService.findAllNoPagination();
+    }
     offset = Number(offset) || 0;
     limit = Math.min(Number(limit) || 200, 200);
     return this.sourceService.findAll(offset, limit);

@@ -683,6 +683,7 @@ export class ProductService {
       const categoryEntities = input.categories.map(cat => categoryMap.get(`${input.gender}|${cat}`));
 
       if (existing) {
+
         const shouldUpdate = 
           existing.title !== input.title ||
           JSON.stringify(existing.images) !== JSON.stringify(input.images) ||
@@ -717,6 +718,18 @@ export class ProductService {
 
         const oldMin = existing.price ?? existing.oldPrice;
         const newMin = input.price ?? input.oldPrice;
+
+        if (existing.id == 430933) {
+          console.log("hereeee", {
+            existingPrice: existing.price,
+            existingOldPrice: existing.oldPrice,
+            newPrice: input.price,
+            newOldPrice: input.oldPrice,
+            oldMin,
+            newMin,
+          });
+        }
+
         if (oldMin !== newMin) {
           priceHistoryMap.push({ productId: existing.id, price: newMin });
         }
