@@ -390,7 +390,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.GREY]: {
     en: ['grey', 'gray', 'silver', 'charcoal', 'slate'],
-    he: ['אפור', 'אפורה', 'אפורים', 'אפורות', 'כסף']
+    he: ['אפור', 'אפורה', 'אפורים', 'אפורות', 'כסף', 'אפרפר']
   },
   [Color.BEIGE]: {
     en: ['beige', 'tan', 'nude', 'cream', 'ecru'],
@@ -494,7 +494,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.SILVER]: {
     en: ['silver', 'metallic grey', 'platinum'],
-    he: ['צבע כסף', 'אפור מתכתי', 'פלטינה', 'כסוף']
+    he: ['צבע כסף', 'אפור מתכתי', 'פלטינה', 'כסוף', 'אפרפר', 'מטאלי']
   },
   [Color.COPPER]: {
     en: ['copper', 'orange brown', 'rust'],
@@ -502,11 +502,11 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.EMERLAD]: {
     en: ['emerald', 'green', 'jade'],
-    he: ['אמרלד', 'ירוק', 'יהד']
+    he: ['אמרלד', 'ירוק', 'ירקרק']
   },
   [Color.BABY_PINK]: {
     en: ['baby pink', 'light pink', 'pastel pink'],
-    he: ['ורוד בהיר', 'ורוד פסטל']
+    he: ['ורוד בהיר', 'ורוד פסטל', 'ורוד בייבי', 'ורוד ביבי']
   },
   [Color.ROSE]: {
     en: ['rose', 'pink', 'blush'],
