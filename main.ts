@@ -56,12 +56,12 @@ async function bootstrap() {
       name: 'Authorization',
       description: 'Enter JWT token as: Bearer <token>',
       in: 'header',
-    }, 'accessToken')
+    }, 'token')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   // Set global security requirement for Bearer token
   if (!document.security) document.security = [];
-  document.security.push({ accessToken: [] });
+  document.security.push({ token: [] });
   SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT || 3001);
