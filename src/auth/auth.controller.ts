@@ -7,6 +7,7 @@ import { UserGuard } from './user.guard';
 import { EntityManager } from 'typeorm';
 import { InjectEntityManager } from '@nestjs/typeorm';
 import { AuthGuard } from '@nestjs/passport';
+import { getSecurityConfig } from '../config/security.config';
 
 @Controller('auth')
 export class AuthController {
@@ -15,6 +16,29 @@ export class AuthController {
     private readonly userService: UserService,
     @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {}
+
+  private getCookieExpiration(): number {
+    const securityConfig = getSecurityConfig();
+    const expiresIn = securityConfig.jwt.expiresIn;
+    
+    // Convert JWT expiration string to milliseconds
+    if (expiresIn.includes('d')) {
+      const days = parseInt(expiresIn.replace('d', ''));
+      return days * 24 * 60 * 60 * 1000;
+    } else if (expiresIn.includes('h')) {
+      const hours = parseInt(expiresIn.replace('h', ''));
+      return hours * 60 * 60 * 1000;
+    } else if (expiresIn.includes('m')) {
+      const minutes = parseInt(expiresIn.replace('m', ''));
+      return minutes * 60 * 1000;
+    } else if (expiresIn.includes('s')) {
+      const seconds = parseInt(expiresIn.replace('s', ''));
+      return seconds * 1000;
+    }
+    
+    // Default to 7 days if parsing fails
+    return 7 * 24 * 60 * 60 * 1000;
+  }
 
   @Post('register')
   @ApiBody({
@@ -36,7 +60,23 @@ export class AuthController {
     const { username, password } = body;
     try {
       const { token } = await this.authService.register(username, password);
-      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+      // Set HTTP-only cookie for API security
+      res.cookie('token', token, { 
+        httpOnly: true, 
+        sameSite: 'lax',
+        secure: false,
+        maxAge: this.getCookieExpiration(),
+        path: '/'
+      });
+      
+      // Set client-readable cookie for fast client-side checks
+      res.cookie('clientToken', token, { 
+        httpOnly: false, 
+        sameSite: 'lax',
+        secure: false,
+        maxAge: this.getCookieExpiration(),
+        path: '/'
+      });
       res.json({ status: 'success', token });
     } catch (e: any) {
       if (e.code === 'userAlreadyExist') {
@@ -76,7 +116,13 @@ export class AuthController {
         ? JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
         : null;
       const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
-      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+      res.cookie('token', token, { 
+        httpOnly: true, 
+        sameSite: 'lax',
+        secure: false,
+        maxAge: this.getCookieExpiration(),
+        path: '/'
+      });
       res.json({ status: 'success', token, expiresIn });
     } catch (e) {
       throw new UnauthorizedException('Invalid credentials');
@@ -108,7 +154,13 @@ export class AuthController {
         : null;
       const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
       
-      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
+      res.cookie('token', token, { 
+        httpOnly: true, 
+        sameSite: 'lax',
+        secure: false,
+        maxAge: this.getCookieExpiration(),
+        path: '/'
+      });
       
       // Redirect to frontend with success and token
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
@@ -274,4 +326,16 @@ export class AuthController {
       total_price_changes_today: parseInt(priceChangesRows[0].total_price_changes_today) || 0
     };
   }
+
+  @Post('logout')
+  async logout(@Res() res: Response) {
+    res.clearCookie('token', {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: false,
+      path: '/'
+    });
+    res.json({ status: 'success', message: 'Logged out successfully' });
+  }
+
 } 

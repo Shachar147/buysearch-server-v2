@@ -3,12 +3,16 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
+import * as cookieParser from 'cookie-parser';
 
 // Load environment variables
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Cookie parser middleware
+  app.use(cookieParser());
 
   // Security headers
   app.use(helmet({
@@ -39,6 +43,7 @@ async function bootstrap() {
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type, Accept, Authorization, X-Requested-With, X-HTTP-Method-Override, Origin, Access-Control-Request-Headers, Access-Control-Request-Method',
+    exposedHeaders: ['Set-Cookie'],
   });
 
   // Set global API prefix
@@ -56,12 +61,12 @@ async function bootstrap() {
       name: 'Authorization',
       description: 'Enter JWT token as: Bearer <token>',
       in: 'header',
-    }, 'accessToken')
+    }, 'token')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   // Set global security requirement for Bearer token
   if (!document.security) document.security = [];
-  document.security.push({ accessToken: [] });
+  document.security.push({ token: [] });
   SwaggerModule.setup('api', app, document);
 
   await app.listen(process.env.PORT || 3001);
