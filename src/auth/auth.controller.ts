@@ -16,13 +16,6 @@ export class AuthController {
     @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {}
 
-  private getCookieExpiration(): number {
-    // Convert JWT expiration string (e.g., '7d') to milliseconds
-    const jwtExpiresIn = process.env.JWT_EXPIRES_IN || '7d';
-    const days = jwtExpiresIn.includes('d') ? parseInt(jwtExpiresIn) : 7;
-    return days * 24 * 60 * 60 * 1000; // Convert to milliseconds
-  }
-
   @Post('register')
   @ApiBody({
     schema: {
@@ -43,13 +36,7 @@ export class AuthController {
     const { username, password } = body;
     try {
       const { token } = await this.authService.register(username, password);
-      res.cookie('token', token, { 
-        httpOnly: false, 
-        sameSite: 'lax',
-        secure: false,
-        maxAge: this.getCookieExpiration(),
-        path: '/'
-      });
+      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
       res.json({ status: 'success', token });
     } catch (e: any) {
       if (e.code === 'userAlreadyExist') {
@@ -89,13 +76,7 @@ export class AuthController {
         ? JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
         : null;
       const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
-      res.cookie('token', token, { 
-        httpOnly: false, 
-        sameSite: 'lax',
-        secure: false,
-        maxAge: this.getCookieExpiration(),
-        path: '/'
-      });
+      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
       res.json({ status: 'success', token, expiresIn });
     } catch (e) {
       throw new UnauthorizedException('Invalid credentials');
@@ -127,13 +108,7 @@ export class AuthController {
         : null;
       const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
       
-      res.cookie('token', token, { 
-        httpOnly: false, 
-        sameSite: 'lax',
-        secure: false,
-        maxAge: this.getCookieExpiration(),
-        path: '/'
-      });
+      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
       
       // Redirect to frontend with success and token
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
