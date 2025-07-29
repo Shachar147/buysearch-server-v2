@@ -36,7 +36,6 @@ export class AuthController {
     const { username, password } = body;
     try {
       const { token } = await this.authService.register(username, password);
-      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
       res.json({ status: 'success', token });
     } catch (e: any) {
       if (e.code === 'userAlreadyExist') {
@@ -76,7 +75,6 @@ export class AuthController {
         ? JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
         : null;
       const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
-      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
       res.json({ status: 'success', token, expiresIn });
     } catch (e) {
       throw new UnauthorizedException('Invalid credentials');
@@ -101,15 +99,6 @@ export class AuthController {
 
       const googleData = (req as any).user as any;
       const { token, isNewUser } = await this.authService.handleGoogleLogin(googleData);
-      
-      // Decode token to get expiration
-      const decoded: any = (token && token.split('.').length === 3)
-        ? JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
-        : null;
-      const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
-      
-      res.cookie('token', token, { httpOnly: true, sameSite: 'lax' });
-      
       // Redirect to frontend with success and token
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
       res.redirect(`${frontendUrl}/login?google=success&isNewUser=${isNewUser}&token=${encodeURIComponent(token)}`);
@@ -121,18 +110,7 @@ export class AuthController {
     }
   }
 
-  @Post('logout')
-  async logout(@Res() res: Response) {
-    // Clear the token cookie
-    res.clearCookie('token', {
-      httpOnly: false,
-      sameSite: 'lax',
-      secure: false,
-      path: '/'
-    });
-    
-    res.json({ status: 'success', message: 'Logged out successfully' });
-  }
+
 
   @Get('profile')
   @UseGuards(UserGuard)
