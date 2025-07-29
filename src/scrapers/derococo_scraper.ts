@@ -1,8 +1,9 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
-import { Product, calcSalePercent, extractColors } from './base/scraper_utils';
+import { Product, calcSalePercent } from './base/scraper_utils';
 import { fetchPageWithBrowser } from './base/browser-helpers';
 import { Category } from 'src/category.constants';
+import { extractColors } from 'src/color.constants';
 
 const CATEGORIES: BaseCategory[] = [
   // Main Categories

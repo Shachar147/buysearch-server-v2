@@ -3,8 +3,9 @@ import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
+import { Product, normalizeBrandName } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
+import { extractColorsWithHebrew } from 'src/color.constants';
 dotenv.config();
 
 // todo: fix images

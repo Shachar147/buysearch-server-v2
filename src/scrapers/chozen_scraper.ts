@@ -12,10 +12,11 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
+import { Product, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 import { fetchPageWithBrowser } from './base/browser-helpers';
+import { extractColorsWithHebrew } from 'src/color.constants';
 dotenv.config();
 
 const MEN_FILTER = '?filter.p.m.custom.gender=%D7%92%D7%91%D7%A8%D7%99%D7%9D';

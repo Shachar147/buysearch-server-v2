@@ -65,8 +65,8 @@ export enum Color {
   PINSTRIPE = "Pinstripe",
 
   // finishes - Finishes, not colors, but often shown as filters.
-  SHINY = "Shiny",
-  GLITTER = "Glitter",
+  // SHINY = "Shiny",
+  // GLITTER = "Glitter",
 
   // Again, not true "colors", but valuable for filtering fabric appearance.
   DENIM = "Denim",
@@ -131,20 +131,20 @@ export const colorNameToColor: Record<Color, string> = {
   [Color.BRONZE]: '#CD7F32',
 
   // Patterns (approximate or symbolic)
-  [Color.STRIPED]: '#D3D3D3', // light grey placeholder
-  [Color.FLORAL]: '#FFB6C1', // soft pink (feminine tone)
-  [Color.CHECKED]: '#A9A9A9', // dark grey
-  [Color.PLAID]: '#B22222', // firebrick red (common in plaid)
-  [Color.CAMOUFLAGE]: '#78866B', // army green
-  [Color.LEOPARD]: '#DAA520', // goldenrod
-  [Color.ZEBRA]: '#FFFFFF', // white (symbolic)
-  [Color.POLKA_DOT]: '#FFDAB9', // peach puff
-  [Color.PINSTRIPE]: '#708090', // slate gray
+  [Color.STRIPED]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/stripped.jpeg', // light grey placeholder
+  [Color.FLORAL]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/floral.jpg',
+  [Color.CHECKED]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/checked.jpeg', // dark grey
+  [Color.PLAID]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/plaid.jpg', // firebrick red (common in plaid)
+  [Color.CAMOUFLAGE]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/camouflage.jpg', // army green
+  [Color.LEOPARD]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/leopard.jpeg', // goldenrod
+  [Color.ZEBRA]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/zebra.jpeg', // white (symbolic)
+  [Color.POLKA_DOT]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/polka-dot.jpg', // peach puff
+  [Color.PINSTRIPE]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/pinstripe.avif', // slate gray
 
 
-  // Finishes
-  [Color.SHINY]: '#E5E4E2', // platinum
-  [Color.GLITTER]: '#D4AF37', // glittery gold
+  // // Finishes
+  // [Color.SHINY]: '#E5E4E2', // platinum
+  // [Color.GLITTER]: '#D4AF37', // glittery gold
 
 
   // Denim Variants
@@ -155,12 +155,28 @@ export const colorNameToColor: Record<Color, string> = {
   [Color.RIPPED_DENIM]: '#87AFC7',
 
   // Misc
-  [Color.MULTICOLOR]: '#CCCCCC', // neutral placeholder
+  [Color.MULTICOLOR]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/multicolor.jpg', // neutral placeholder
   [Color.METALLIC]: '#B0B0B0',
-  [Color.TRANSPARENT]: '#FFFFFF00',
+  [Color.TRANSPARENT]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/transparent.png',
   [Color.MOCHA]: "#967969",
   [Color.STONE]: "#888C8D"
 };
+
+export const colorGroups = {
+    reds: [Color.RED, Color.BORDEAUX, Color.CORAL, Color.SALMON, Color.ROSE],
+    pinks: [Color.PINK, Color.BABY_PINK],
+    oranges: [Color.ORANGE, Color.MUSTARD, Color.BRONZE, Color.COPPER],
+    yellows: [Color.YELLOW, Color.GOLD],
+    greens: [Color.GREEN, Color.SAGE, Color.TEAL, Color.TURQUOISE, Color.MINT, Color.OLIVE, Color.EMERLAD],
+    blues: [Color.BLUE, Color.NAVY, Color.LIGHT_BLUE, Color.SKY_BLUE, Color.DARK_BLUE, Color.ROYAL_BLUE],
+    purples: [Color.PURPLE, Color.LAVENDER, Color.LILAC],
+    neutrals: [Color.BLACK, Color.WHITE, Color.GREY, Color.CHARCOAL, Color.BEIGE, Color.IVORY, Color.OFFWHITE, Color.CREAM, Color.TAUPE, Color.STONE],
+    browns: [Color.BROWN, Color.KHAKI, Color.CAMEL, Color.TAN, Color.NUDE, Color.MOCHA],
+    denims: [Color.DENIM, Color.LIGHT_DENIM, Color.DARK_DENIM, Color.WASHED_DENIM, Color.RIPPED_DENIM],
+    patterns: [Color.STRIPED, Color.FLORAL, Color.CHECKED, Color.PLAID, Color.CAMOUFLAGE, Color.LEOPARD, Color.ZEBRA, Color.POLKA_DOT, Color.PINSTRIPE],
+    // finishes: [Color.SHINY, Color.GLITTER, Color.METALLIC],
+    special: [Color.MULTICOLOR, Color.TRANSPARENT]
+}
 
 // Type for color synonyms
 export type ColorSynonyms = {
@@ -287,10 +303,10 @@ export const COLOR_NORMALIZATION_MAP: Record<string, (Color|string)[]> = {
   'פסים דקים': [Color.PINSTRIPE],
 
   // Finishes
-  'shiny': [Color.SHINY],
-  'מבריק': [Color.SHINY],
-  'glitter': [Color.GLITTER],
-  'נצנצים': [Color.GLITTER],
+  // 'shiny': [Color.SHINY],
+  // 'מבריק': [Color.SHINY],
+  // 'glitter': [Color.GLITTER],
+  // 'נצנצים': [Color.GLITTER],
 
   // Denim
   'denim': [Color.DENIM],
@@ -544,14 +560,14 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
     en: ['pinstripe', 'thin stripes', 'striped'],
     he: ['פסים דקים', 'פסים']
   },
-  [Color.SHINY]: {
-    en: ['shiny', 'glossy', 'metallic'],
-    he: ['מבריק', 'מתכתי']
-  },
-  [Color.GLITTER]: {
-    en: ['glitter', 'sparkly', 'sequin'],
-    he: ['נצנצים', 'מנצנץ', 'פאייטים']
-  },
+  // [Color.SHINY]: {
+  //   en: ['shiny', 'glossy', 'metallic'],
+  //   he: ['מבריק', 'מתכתי']
+  // },
+  // [Color.GLITTER]: {
+  //   en: ['glitter', 'sparkly', 'sequin'],
+  //   he: ['נצנצים', 'מנצנץ', 'פאייטים']
+  // },
   [Color.DENIM]: {
     en: ['denim', 'jeans', 'blue denim'],
     he: ['דנים', 'גינס', 'דנים כחול']

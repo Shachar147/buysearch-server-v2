@@ -1,9 +1,10 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
+import { Product, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
+import { extractColorsWithHebrew } from 'src/color.constants';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [

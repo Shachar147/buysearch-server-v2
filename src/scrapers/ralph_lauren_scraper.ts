@@ -1,8 +1,9 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
-import { Product, extractColors, calcSalePercent, normalizeBrandName, prefixHttp } from './base/scraper_utils';
+import { Product, calcSalePercent, normalizeBrandName, prefixHttp } from './base/scraper_utils';
 import { Category } from '../category.constants';
+import { extractColors } from 'src/color.constants';
 
 // V todo: fix sale price
 // todo: fix ralph lauren blocking "are you robot"

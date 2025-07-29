@@ -1,8 +1,9 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
-import { calcSalePercent, extractColors, Product } from './base/scraper_utils';
+import { calcSalePercent, Product } from './base/scraper_utils';
 import { Category } from '../category.constants';
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
+import { extractColors } from 'src/color.constants';
 
 // NOTE: if there's a range (min, max), we currently take the max.
 // we can change it by using minPrice and oldminPrice
