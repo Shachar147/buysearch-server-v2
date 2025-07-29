@@ -60,17 +60,8 @@ export class AuthController {
     const { username, password } = body;
     try {
       const { token } = await this.authService.register(username, password);
-      // Set HTTP-only cookie for API security
+      // Set single cookie that's readable by client
       res.cookie('token', token, { 
-        httpOnly: true, 
-        sameSite: 'lax',
-        secure: false,
-        maxAge: this.getCookieExpiration(),
-        path: '/'
-      });
-      
-      // Set client-readable cookie for fast client-side checks
-      res.cookie('clientToken', token, { 
         httpOnly: false, 
         sameSite: 'lax',
         secure: false,
@@ -116,8 +107,9 @@ export class AuthController {
         ? JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString())
         : null;
       const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
+      // Set single cookie that's readable by client
       res.cookie('token', token, { 
-        httpOnly: true, 
+        httpOnly: false, 
         sameSite: 'lax',
         secure: false,
         maxAge: this.getCookieExpiration(),
@@ -154,8 +146,9 @@ export class AuthController {
         : null;
       const expiresIn = decoded && decoded.exp ? decoded.exp - Math.floor(Date.now() / 1000) : null;
       
+      // Set single cookie that's readable by client
       res.cookie('token', token, { 
-        httpOnly: true, 
+        httpOnly: false, 
         sameSite: 'lax',
         secure: false,
         maxAge: this.getCookieExpiration(),
@@ -190,6 +183,8 @@ export class AuthController {
       totalSearches: user.totalSearches,
     };
   }
+
+
 
   @UseGuards(UserGuard)
   @Get('users')
@@ -329,12 +324,14 @@ export class AuthController {
 
   @Post('logout')
   async logout(@Res() res: Response) {
+    // Clear the token cookie
     res.clearCookie('token', {
-      httpOnly: true,
+      httpOnly: false,
       sameSite: 'lax',
       secure: false,
       path: '/'
     });
+    
     res.json({ status: 'success', message: 'Logged out successfully' });
   }
 

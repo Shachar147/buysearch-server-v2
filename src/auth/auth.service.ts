@@ -30,7 +30,7 @@ export class AuthService {
       err.code = 'usernameTooShort';
       throw err;
     }
-    if (!password || password.length < 8) {
+    if (!password || password.length < 4) {
       const err: any = new Error('passwordTooShort');
       err.code = 'passwordTooShort';
       throw err;
