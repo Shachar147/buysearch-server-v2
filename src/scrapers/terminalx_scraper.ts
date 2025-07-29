@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
+import { Product, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
+import { extractColorsWithHebrew } from 'src/color.constants';
 import * as dotenv from 'dotenv';
 dotenv.config();
 

@@ -139,7 +139,7 @@ export enum Category {
   HOME_BAR_CHAIRS = 'Bar Chairs',
   HOME_SOFAS = 'Sofas',
   HOME_CONSOLES = 'Consoles',
-  HOME_MIRRORS = "HOME_MIRRORS",
+  HOME_MIRRORS = "Mirrors",
 
   // 💄 Makeup
   MAKEUP = "Makeup",
@@ -617,7 +617,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'קונסולות': [Category.HOME_CONSOLES],
     'כיסאות בר': [Category.HOME_BAR_CHAIRS],
     'שטיח': [Category.HOME_CARPETS],
-    'מראה': [Category.HOME_MIRRORS],
+    // ' מראה': [Category.HOME_MIRRORS],
     'וילון': [Category.HOME_CURTAINS],
     'כרית': [Category.HOME_PILLOWS],
     'שמיכה': [Category.HOME_BLANKETS],
@@ -625,8 +625,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'שמיכת ספה': [Category.HOME_BLANKETS],
     'כריות': [Category.HOME_PILLOWS],
     'מראות': [Category.HOME_MIRRORS],
-    'מראה ': [Category.HOME_MIRRORS],
-    'מראת ': [Category.HOME_MIRRORS],
+    // 'מראה ': [Category.HOME_MIRRORS],
+    // 'מראת ': [Category.HOME_MIRRORS],
     'מנורת ': [Category.HOME_LIGHTING],
     'מנורות': [Category.HOME_LIGHTING],
     'מנורה': [Category.HOME_LIGHTING],

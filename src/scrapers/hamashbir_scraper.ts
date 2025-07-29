@@ -1,9 +1,10 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory, normalizeCategories } from './base/scraper_utils';
+import { Product, calcSalePercent, normalizeBrandName, normalizeCategories } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
+import { extractColorsWithHebrew } from 'src/color.constants';
 dotenv.config();
 
 export class HamashbirScraper extends BaseScraper {

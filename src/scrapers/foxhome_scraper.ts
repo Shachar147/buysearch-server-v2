@@ -1,8 +1,9 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
-import { calcSalePercent, extractColorsWithHebrew, Product } from './base/scraper_utils';
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { calcSalePercent, Product } from './base/scraper_utils';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import { Category } from '../category.constants';
+import { extractColorsWithHebrew } from 'src/color.constants';
 
 const BASE_URL = 'https://www.foxhome.co.il';
 

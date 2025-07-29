@@ -1,8 +1,9 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, extractColorsWithHebrew, extractCategory, normalizeBrandName } from './base/scraper_utils';
+import { Product, extractCategory, normalizeBrandName } from './base/scraper_utils';
+import { extractColorsWithHebrew } from 'src/color.constants';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 dotenv.config();

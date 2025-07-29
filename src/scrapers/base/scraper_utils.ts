@@ -9,6 +9,7 @@ import { CATEGORIES_TO_IGNORE, Category, CATEGORY_NORMALIZATION_MAP } from '../.
 import { ucfirst } from '../../search/search.utils';
 import { AppModule } from '../../../app.module';
 import * as path from 'path';
+import { Color, COLOR_NORMALIZATION_MAP, COLORS_TO_IGNORE } from '../../color.constants';
 
 // --- Common Types ---
 export interface Product {
@@ -33,23 +34,7 @@ export interface ScrapingResult {
   total: number;
 }
 
-// --- Color Utilities ---
-export const COLOR_KEYWORDS = [
-  'black', 'white', 'red', 'blue', 'green', 'yellow', 'pink', 'purple',
-  'orange', 'brown', 'grey', 'beige', 'navy', 'cream', 'khaki', 'turquoise', 'indigo',
-  'burgundy', 'silver', 'gold', 'multi', 'mauve', 'teal', 'coral', 'mint', 'lavender', 'azure', 'nude', 'stone'
-];
-
-export const COLOR_ALIASES: Record<string, string> = {
-  'charcoal marl': 'grey', 'off white': 'white', 'stone': 'beige', 'ivory': 'white',
-  'midnight': 'navy', 'taupe': 'beige', 'camel': 'brown', 'ecru': 'beige', 'cream': 'cream',
-  'chocolate': 'brown', 'denim': 'blue', 'olive': 'green', 'mustard': 'yellow', 'peach': 'pink',
-  'wine': 'burgundy', 'lilac': 'purple', 'charcoal': 'grey', 'marl': 'grey', 'gray': 'grey',
-  'light moss': 'green', 'in sage': 'green', 'in anthracite': 'grey', 'in washed asphalt': 'grey',
-  'in stone': 'beige', 'in tan': 'beige', 'indigo': 'purple', 'in sand': 'beige', 'in rust': 'red',
-  'in lime': 'yellow',
-  'light blue': 'azure'
-};
+// Color utilities are now imported from color.constants.ts
 
 // --- Brand Synonyms Mapping ---
 export const BRAND_SYNONYMS: Record<string, string> = {
@@ -162,98 +147,7 @@ export const BRAND_SYNONYMS: Record<string, string> = {
   'do it like beckham': 'Do It Like Beckham',
 };
 
-// --- Hebrew to English Color Mapping ---
-export const HEBREW_COLOR_MAP: Record<string, string> = {
-  'ארגמן': 'purple',
-  'ניוד': 'nude',
-  'תכלת': 'azure',
-  'אדום': 'red',
-  'אדומה': 'red',
-  'אדומים': 'red',
-  'אדומות': 'red',
-  'שחור': 'black',
-  'שחורה': 'black',
-  'שחורים': 'black',
-  'שחורות': 'black',
-  'לבן': 'white',
-  'לבנה': 'white',
-  'לבנים': 'white',
-  'לבנות': 'white',
-  'כחול': 'blue',
-  'כחולה': 'blue',
-  'כחולים': 'blue',
-  'כחולות': 'blue',
-  'ירוק': 'green',
-  'ירוקה': 'green',
-  'ירוקים': 'green',
-  'ירוקות': 'green',
-  'צהוב': 'yellow',
-  'צהובה': 'yellow',
-  'צהובים': 'yellow',
-  'צהובות': 'yellow',
-  'ורוד': 'pink',
-  'ורודה': 'pink',
-  'ורודים': 'pink',
-  'ורודות': 'pink',
-  'סגול': 'purple',
-  'סגולה': 'purple',
-  'סגולים': 'purple',
-  'סגולות': 'purple',
-  'כתום': 'orange',
-  'כתומה': 'orange',
-  'כתומים': 'orange',
-  'כתומות': 'orange',
-  'חום': 'brown',
-  'חומה': 'brown',
-  'חומים': 'brown',
-  'חומות': 'brown',
-  'אפור': 'grey',
-  'אפורה': 'grey',
-  'אפורים': 'grey',
-  'אפורות': 'grey',
-  'אפרפר': 'grey',
-  "בז'": 'beige',
-  'בז': 'beige',
-  'בזים': 'beige',
-  'בזות': 'beige',
-  'נייבי': 'navy',
-  'כחול כהה': 'navy',
-  'קרם': 'cream',
-  'שמנת': 'cream',
-  'חאקי': 'khaki',
-  'בורדו': 'burgundy',
-  'כסף': 'silver',
-  'כסופה': 'silver',
-  'כסופים': 'silver',
-  'כסופות': 'silver',
-  'זהב': 'gold',
-  'זהובה': 'gold',
-  'זהובים': 'gold',
-  'זהובות': 'gold',
-  'צבעוני': 'multi',
-  'צבעונית': 'multi',
-  'צבעוניים': 'multi',
-  'צבעוניות': 'multi',
-  'מולטי': 'multi',
-  'סגלגל': 'mauve',
-  'סגלגלה': 'mauve',
-  'סגלגלים': 'mauve',
-  'סגלגלות': 'mauve',
-  'טורקיז': 'teal',
-  'אלמוג': 'coral',
-  'קורל': 'coral',
-  'מנטה': 'mint',
-  'לבנדר': 'lavender',
-  'לוונדר': 'lavender',
-  'לונדר': 'lavender',
-  'אבן': 'stone',
-  'אופייט': 'off white',
-  "אוף וויט": 'off white',
-  "אוף ווייט": 'off white',
-  "אוף-וויט": "off white",
-  "כחול-ים": "navy",
-  "כחול נייבי": "navy",
-};
+// Hebrew color mapping is now in color.constants.ts
 
 /**
  * Normalize category names using synonyms mapping and ignore unwanted categories
@@ -276,27 +170,38 @@ export function normalizeCategories(categories: string[]): string[] {
   return Array.from(resultSet);
 }
 
-// --- Utility Functions ---
-export function extractColors(title: string, apiColors: string[]): string[] {
-  const lowerTitle = title.toLowerCase().replace('tailored', '');
-  const colorsSet = new Set(apiColors.map(c => c.toLowerCase()));
-  
-  // Add keyword-based detection
-  COLOR_KEYWORDS.forEach((c) => {
-    if (lowerTitle.includes(c)) colorsSet.add(c);
+/**
+ * Normalize color names using synonyms mapping and ignore unwanted colors
+ * @param colors Array of color names (string[])
+ * @returns Array of normalized color names (string[])
+ */
+export function normalizeColors(colors: string[]): string[] {
+  if (!Array.isArray(colors)) return [];
+  const resultSet = new Set<string>();
+  colors.forEach((color) => {
+    if (!color) return;
+    const normalized = color.trim().toLowerCase();
+    const mapped = COLOR_NORMALIZATION_MAP[normalized] || [ucfirst(color.trim())];
+    mapped.forEach((normColor) => {
+      if (normColor && !COLORS_TO_IGNORE.has(normColor.toLowerCase())) {
+        // Only add if it's a valid Color enum value
+        if (Object.values(Color).includes(normColor as Color)) {
+          resultSet.add(normColor);
+        }
+      }
+    });
   });
 
-  Object.keys(HEBREW_COLOR_MAP).forEach((c) => {
-    if (lowerTitle.includes(c)) colorsSet.add(HEBREW_COLOR_MAP[c]);
-  });
-  
-  // Add alias-based detection
-  for (const [alias, color] of Object.entries(COLOR_ALIASES)) {
-    if (lowerTitle.includes(alias)) colorsSet.add(color);
+  const normalizedColors = Array.from(resultSet);
+
+  if (JSON.stringify(normalizedColors) !== JSON.stringify(colors)) {
+    console.log(`normalized ${colors.join(', ')} | to | ${normalizedColors.join(', ')}`);
   }
-  
-  return Array.from(colorsSet).filter((c) => c.trim().length > 0);
+
+  return normalizedColors;
 }
+
+// Color extraction functions are now imported from color.constants.ts
 
 /**
  * Normalize brand names using synonyms mapping
@@ -331,58 +236,7 @@ export function normalizeBrandName(brandName: string): string {
     .join(' ');
 }
 
-/**
- * Convert Hebrew color names to English color names
- * @param hebrewColors Array of Hebrew color names
- * @param source Source name for logging (e.g., 'terminalx_scraper')
- * @returns Array of English color names
- */
-export function convertHebrewColors(hebrewColors: string[], source: string): string[] {
-  const englishColors = new Set<string>();
-  
-  hebrewColors.forEach(hebrewColor => {
-    const normalizedHebrew = hebrewColor.trim().toLowerCase();
-    const englishColor = HEBREW_COLOR_MAP[normalizedHebrew];
-    
-    if (englishColor) {
-      englishColors.add(englishColor);
-    } 
-    else if (normalizedHebrew.includes("אפור")){
-        englishColors.add("grey");
-    }
-    else if (normalizedHebrew.includes("חום ")){
-        englishColors.add("brown");
-    }
-    else {
-      // Log warning for missing Hebrew color mapping
-      console.warn(`⚠️  [${source}] Missing Hebrew color mapping: "${hebrewColor}" - please add to HEBREW_COLOR_MAP`);
-      // Keep the original Hebrew color as fallback
-      englishColors.add(hebrewColor.toLowerCase());
-    }
-  });
-  
-  return Array.from(englishColors);
-}
-
-/**
- * Enhanced color extraction that handles both Hebrew and English colors
- * @param title Product title
- * @param apiColors Colors from API
- * @param source Source name for logging
- * @returns Array of English color names
- */
-export function extractColorsWithHebrew(title: string, apiColors: string[], source: string): string[] {
-  // First, convert any Hebrew colors from API
-  const convertedApiColors = convertHebrewColors(apiColors, source);
-  
-  // Then extract colors from title (this already handles English)
-  const titleColors = extractColors(title, []);
-  
-  // Combine both sets
-  const allColors = new Set([...convertedApiColors, ...titleColors]);
-  
-  return Array.from(allColors).filter((c) => c.trim().length > 0);
-}
+// Hebrew color conversion and enhanced color extraction functions are now imported from color.constants.ts
 
 export function calcSalePercent(price: number | null, oldPrice: number | null): number | null {
   if (!oldPrice || !price || oldPrice <= price) return null;
