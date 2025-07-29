@@ -56,7 +56,7 @@ async function bootstrap() {
       name: 'Authorization',
       description: 'Enter JWT token as: Bearer <token>',
       in: 'header',
-    }, 'token')
+    }, 'accessToken')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   // Set global security requirement for Bearer token
