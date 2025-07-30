@@ -292,7 +292,7 @@ export class SuperPharmScraper extends BaseScraper {
       // Check for sale price (discountprice attribute)
       const discountPriceAttr = productLink.find('.item-box').attr('data-discountprice');
       if (discountPriceAttr && discountPriceAttr !== '') {
-        const discountPrice = parseFloat(discountPriceAttr);
+        const discountPrice = parseFloat(discountPriceAttr.replace(',',' '));
         if (!isNaN(discountPrice)) {
           price = discountPrice;
         }
@@ -301,7 +301,7 @@ export class SuperPharmScraper extends BaseScraper {
       // Check for regular price (price attribute)
       const regularPriceAttr = productLink.find('.item-box').attr('data-price');
       if (regularPriceAttr && regularPriceAttr !== '') {
-        const regularPrice = parseFloat(regularPriceAttr);
+        const regularPrice = parseFloat(regularPriceAttr.replace(',',' '));
         if (!isNaN(regularPrice)) {
           if (price === null) {
             // No sale price, use regular price
