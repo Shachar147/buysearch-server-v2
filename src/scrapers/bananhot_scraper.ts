@@ -1,8 +1,9 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
-import { calcSalePercent, extractColorsWithHebrew, Product } from './base/scraper_utils';
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { calcSalePercent, Product } from './base/scraper_utils';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import { Category } from '../category.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 
 const BASE_URL = 'https://bananhot.co.il';
 
@@ -109,7 +110,7 @@ const CATEGORIES: CategoryType[] = [
     name: Category.ACCESSORIES, // bandanas
     gender: 'Women',
     url: `${BASE_URL}/collections/bandana`,
-    additionalCategories: [Category.BEACHWEAR]
+    additionalCategories: [Category.BEACHWEAR],
   },
   {
     id: 'jewelry',
@@ -133,25 +134,25 @@ const CATEGORIES: CategoryType[] = [
     id: 'holidays',
     name: Category.CLOTHING,
     gender: 'Women',
-    url: `${BASE_URL}/collections/holiday`
+    url: `${BASE_URL}/collections/holiday`,
   },
   {
     id: 'summer25',
     name: Category.CLOTHING,
     gender: 'Women',
-    url: `${BASE_URL}/collections/summer-2025`
+    url: `${BASE_URL}/collections/summer-2025`,
   },
   {
     id: 'resort-25',
     name: Category.CLOTHING,
     gender: 'Women',
-    url: `${BASE_URL}/collection_resort-2025`
+    url: `${BASE_URL}/collection_resort-2025`,
   },
   {
     id: 'spring-25',
     name: Category.CLOTHING,
     gender: 'Women',
-    url: `${BASE_URL}/collections/spring-2025`
+    url: `${BASE_URL}/collections/spring-2025`,
   },
 ];
 
@@ -163,20 +164,26 @@ export class BananhotScraper extends BaseScraper {
     return CATEGORIES;
   }
 
-    private async fetchBananhotPage(url: string): Promise<string> {
+  private async fetchBananhotPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
-  private parseBananhotProduct(productElem: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
+  private parseBananhotProduct(
+    productElem: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | undefined {
     // Extract from data attributes
-    const title = productElem.attr('data-producttitle')?.trim() ||
+    const title =
+      productElem.attr('data-producttitle')?.trim() ||
       productElem.find('.card__content a').text().trim();
     let url = productElem.find('.card__content a').attr('href') || '';
     if (url && !url.startsWith('http')) url = BASE_URL + url;
@@ -191,7 +198,7 @@ export class BananhotScraper extends BaseScraper {
         const srcset = $img.attr('srcset');
         if (srcset) {
           // Take the largest image (last in srcset)
-          const parts = srcset.split(',').map(s => s.trim().split(' ')[0]);
+          const parts = srcset.split(',').map((s) => s.trim().split(' ')[0]);
           if (parts.length) src = parts[parts.length - 1];
         }
       }
@@ -202,18 +209,31 @@ export class BananhotScraper extends BaseScraper {
     images = images.filter(Boolean);
 
     // Price and Old Price
-    let price = null, oldPrice = null;
+    let price = null,
+      oldPrice = null;
     const priceAttr = productElem.attr('data-price');
     if (priceAttr) price = parseFloat(priceAttr);
     const oldPriceAttr = productElem.attr('data-oldprice');
     if (oldPriceAttr) oldPrice = parseFloat(oldPriceAttr);
     // Fallback to DOM if not present
     if (!price) {
-      const priceText = productElem.find('.price-item--regular, .price__regular, .price, .card-information__price').first().text().replace(/[^\d.]/g, '');
+      const priceText = productElem
+        .find(
+          '.price-item--regular, .price__regular, .price, .card-information__price',
+        )
+        .first()
+        .text()
+        .replace(/[^\d.]/g, '');
       if (priceText) price = parseFloat(priceText);
     }
     if (!oldPrice) {
-      const oldPriceText = productElem.find('.price-item--sale, .price__sale, .price--on-sale, .price__compare').first().text().replace(/[^\d.]/g, '');
+      const oldPriceText = productElem
+        .find(
+          '.price-item--sale, .price__sale, .price--on-sale, .price__compare',
+        )
+        .first()
+        .text()
+        .replace(/[^\d.]/g, '');
       if (oldPriceText) oldPrice = parseFloat(oldPriceText);
     }
     // Sale percent
@@ -223,17 +243,24 @@ export class BananhotScraper extends BaseScraper {
       const match = discountAttr.match(/(\d+)%/);
       if (match) salePercent = parseInt(match[1], 10);
     }
-    if (salePercent === null) salePercent = calcSalePercent(price, oldPrice) ?? 0;
+    if (salePercent === null)
+      salePercent = calcSalePercent(price, oldPrice) ?? 0;
 
     // Colors
     let colors: string[] = [];
     const colorAttr = productElem.attr('data-color');
     if (colorAttr) {
       // Try to extract color names from the attribute (may be comma or newline separated)
-      colors = colorAttr.split(',').map(c => c.trim()).filter(Boolean);
+      colors = colorAttr
+        .split(',')
+        .map((c) => c.trim())
+        .filter(Boolean);
       if (colors.length === 0) {
         // Try splitting by newlines
-        colors = colorAttr.split('\n').map(c => c.trim()).filter(Boolean);
+        colors = colorAttr
+          .split('\n')
+          .map((c) => c.trim())
+          .filter(Boolean);
       }
     }
     if (!colors.length) {
@@ -271,7 +298,7 @@ export class BananhotScraper extends BaseScraper {
 
   protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     const MAX_PAGES = 30;
     while (hasMore && page < MAX_PAGES) {
@@ -285,7 +312,10 @@ export class BananhotScraper extends BaseScraper {
         this.logProgress('No products found on page, stopping');
         break;
       }
-      const pageProducts = productElems.map((_, el) => this.parseBananhotProduct($(el), category, $)).get().filter(Boolean) as Product[];
+      const pageProducts = productElems
+        .map((_, el) => this.parseBananhotProduct($(el), category, $))
+        .get()
+        .filter(Boolean) as Product[];
       this.logProgress(`Found ${pageProducts.length} products on page ${page}`);
       allProducts.push(...pageProducts);
       // If less than 16 products, it's the last page
@@ -307,4 +337,4 @@ if (require.main === module) {
     console.error(e);
     process.exit(1);
   });
-} 
+}

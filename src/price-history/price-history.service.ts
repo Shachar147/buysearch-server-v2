@@ -10,18 +10,26 @@ export class PriceHistoryService {
     private repo: PriceHistoryRepository,
   ) {}
 
-  async addIfChanged(productId: number, newPrice: number, oldPrice?: number, productCreatedAt?: Date) {
-    const last = await this.repo.findOne({ where: { productId }, order: { date: 'DESC' } });
-    
+  async addIfChanged(
+    productId: number,
+    newPrice: number,
+    oldPrice?: number,
+    productCreatedAt?: Date,
+  ) {
+    const last = await this.repo.findOne({
+      where: { productId },
+      order: { date: 'DESC' },
+    });
+
     // If no history exists and we have an old price, add it first
     if (!last && oldPrice !== undefined && oldPrice !== newPrice) {
-      await this.repo.save({ 
-        productId, 
+      await this.repo.save({
+        productId,
         price: oldPrice,
-        date: productCreatedAt || new Date() // Use product creation date if available
+        date: productCreatedAt || new Date(), // Use product creation date if available
       });
     }
-    
+
     // Add the new price if it's different from the last recorded price
     if (!last || last.price !== newPrice) {
       await this.repo.save({ productId, price: newPrice });
@@ -37,7 +45,8 @@ export class PriceHistoryService {
   }
 
   async getProductIdsWithPriceChange(): Promise<number[]> {
-    const result = await this.repo.createQueryBuilder('ph')
+    const result = await this.repo
+      .createQueryBuilder('ph')
       .select('ph.productId', 'productId')
       .addSelect('COUNT(*)', 'amount')
       .groupBy('ph.productId')
@@ -46,30 +55,45 @@ export class PriceHistoryService {
     return result.map((row: any) => Number(row.productId));
   }
 
-  async addMany(entries: { productId: number; price: number | null; oldPrice?: number | null; productCreatedAt?: Date }[]): Promise<void> {
+  async addMany(
+    entries: {
+      productId: number;
+      price: number | null;
+      oldPrice?: number | null;
+      productCreatedAt?: Date;
+    }[],
+  ): Promise<void> {
     if (!entries.length) return;
-  
+
     const now = new Date();
     const records = [];
-  
+
     for (const entry of entries) {
       const productId = entry.productId;
       const newPrice = entry.price ?? 0;
       const oldPrice = entry.oldPrice;
       const productCreatedAt = entry.productCreatedAt;
-      
+
       // Check if this product has any existing price history
-      const last = await this.repo.findOne({ where: { productId }, order: { date: 'DESC' } });
-      
+      const last = await this.repo.findOne({
+        where: { productId },
+        order: { date: 'DESC' },
+      });
+
       // If no history exists and we have an old price, add it first
-      if (!last && oldPrice !== undefined && oldPrice !== null && oldPrice !== newPrice) {
+      if (
+        !last &&
+        oldPrice !== undefined &&
+        oldPrice !== null &&
+        oldPrice !== newPrice
+      ) {
         records.push({
           productId,
           price: oldPrice,
           date: productCreatedAt || new Date(now.getTime() - 1000), // Use product creation date if available
         });
       }
-      
+
       // Add the new price
       records.push({
         productId,
@@ -77,10 +101,9 @@ export class PriceHistoryService {
         date: now,
       });
     }
-  
+
     if (records.length > 0) {
       await this.repo.insert(records);
     }
   }
-  
-} 
+}

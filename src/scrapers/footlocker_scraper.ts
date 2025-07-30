@@ -1,9 +1,15 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory, normalizeCategories } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+  normalizeCategories,
+} from './base/scraper_utils';
 import * as dotenv from 'dotenv';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 export class FootlockerScraper extends BaseScraper {
@@ -16,134 +22,134 @@ export class FootlockerScraper extends BaseScraper {
       id: 'men-shoes',
       name: Category.SHOES,
       gender: 'Men',
-      url: 'https://footlocker.co.il/collections/men-shoes'
+      url: 'https://footlocker.co.il/collections/men-shoes',
     },
     {
       id: 'women-shoes',
       name: Category.SHOES,
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/women-shoes'
+      url: 'https://footlocker.co.il/collections/women-shoes',
     },
     {
       id: 'kids-shoes',
       name: Category.SHOES,
       gender: 'Kids',
-      url: 'https://footlocker.co.il/collections/kids-shoes'
+      url: 'https://footlocker.co.il/collections/kids-shoes',
     },
     {
       id: 'men-tshirts',
       name: Category.T_SHIRTS,
       gender: 'Men',
-      url: 'https://footlocker.co.il/collections/t-shirts-men'
+      url: 'https://footlocker.co.il/collections/t-shirts-men',
     },
     {
-        id: 'men-pants',
-        name: Category.PANTS,
-        gender: 'Men',
-        url: 'https://footlocker.co.il/collections/pants-men'
+      id: 'men-pants',
+      name: Category.PANTS,
+      gender: 'Men',
+      url: 'https://footlocker.co.il/collections/pants-men',
     },
     {
-        id: 'men-sweatshirts',
-        name: Category.SWEATERS,
-        gender: 'Men',
-        url: 'https://footlocker.co.il/collections/sweatshirts-men'
+      id: 'men-sweatshirts',
+      name: Category.SWEATERS,
+      gender: 'Men',
+      url: 'https://footlocker.co.il/collections/sweatshirts-men',
     },
     {
-        id: 'men-tanks',
-        name: Category.TANKS,
-        gender: 'Men',
-        url: 'https://footlocker.co.il/collections/tanks-sleeveless-shirts-men'
+      id: 'men-tanks',
+      name: Category.TANKS,
+      gender: 'Men',
+      url: 'https://footlocker.co.il/collections/tanks-sleeveless-shirts-men',
     },
     {
-        id: 'men-shorts',
-        name: Category.SHORTS,
-        gender: 'Men',
-        url: 'https://footlocker.co.il/collections/shorts-men'
+      id: 'men-shorts',
+      name: Category.SHORTS,
+      gender: 'Men',
+      url: 'https://footlocker.co.il/collections/shorts-men',
     },
     {
-        id: 'men-jackets',
-        name: Category.JACKETS_COATS,
-        gender: 'Men',
-        url: 'https://footlocker.co.il/collections/jackets-and-coats-men'
+      id: 'men-jackets',
+      name: Category.JACKETS_COATS,
+      gender: 'Men',
+      url: 'https://footlocker.co.il/collections/jackets-and-coats-men',
     },
     {
-        id: 'men-swimwear',
-        name: Category.SWIMWEAR,
-        gender: 'Men',
-        url: 'https://footlocker.co.il/collections/swimwear'
-    },  
+      id: 'men-swimwear',
+      name: Category.SWIMWEAR,
+      gender: 'Men',
+      url: 'https://footlocker.co.il/collections/swimwear',
+    },
     {
       id: 'women-t-shirts',
       name: Category.T_SHIRTS,
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/t-shirts-women'
+      url: 'https://footlocker.co.il/collections/t-shirts-women',
     },
     {
       id: 'women-pants',
       name: Category.PANTS,
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/pants-women'
+      url: 'https://footlocker.co.il/collections/pants-women',
     },
     {
       id: 'women-tights',
       name: Category.TIGHTS,
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/tights'
+      url: 'https://footlocker.co.il/collections/tights',
     },
     {
       id: 'women-sweatshirts',
       name: Category.SWEATERS,
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/sweatshirts-women'
+      url: 'https://footlocker.co.il/collections/sweatshirts-women',
     },
     {
       id: 'women-tanks',
       name: Category.TANKS,
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/tanks-sleeveless-shirts-women'
+      url: 'https://footlocker.co.il/collections/tanks-sleeveless-shirts-women',
     },
     {
       id: 'women-shorts',
       name: Category.SHORTS,
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/shorts-women'
+      url: 'https://footlocker.co.il/collections/shorts-women',
     },
     {
       id: 'women-jackets',
       name: Category.JACKETS_COATS,
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/jackets-and-coats-women'
+      url: 'https://footlocker.co.il/collections/jackets-and-coats-women',
     },
     {
       id: 'accessories',
       name: Category.ACCESSORIES,
       gender: 'Unisex',
-      url: 'https://footlocker.co.il/collections/accessories'
+      url: 'https://footlocker.co.il/collections/accessories',
     },
     {
       id: 'men-sale',
       name: 'Sale',
       gender: 'Men',
-      url: 'https://footlocker.co.il/collections/sale?filter.p.m.custom.prep3=%D7%92%D7%91%D7%A8%D7%99%D7%9D'
+      url: 'https://footlocker.co.il/collections/sale?filter.p.m.custom.prep3=%D7%92%D7%91%D7%A8%D7%99%D7%9D',
     },
     {
       id: 'women-sale',
       name: 'Sale',
       gender: 'Women',
-      url: 'https://footlocker.co.il/collections/sale?filter.p.m.custom.prep3=%D7%A0%D7%A9%D7%99%D7%9D'
+      url: 'https://footlocker.co.il/collections/sale?filter.p.m.custom.prep3=%D7%A0%D7%A9%D7%99%D7%9D',
     },
     {
       id: 'kids-sale',
       name: 'Sale',
       gender: 'Kids',
-      url: 'https://footlocker.co.il/collections/sale?filter.p.m.custom.prep3=%D7%99%D7%9C%D7%93%D7%99%D7%9D&filter.p.m.custom.prep3=%D7%A0%D7%95%D7%A2%D7%A8&filter.v.price.gte=&filter.v.price.lte='
+      url: 'https://footlocker.co.il/collections/sale?filter.p.m.custom.prep3=%D7%99%D7%9C%D7%93%D7%99%D7%9D&filter.p.m.custom.prep3=%D7%A0%D7%95%D7%A2%D7%A8&filter.v.price.gte=&filter.v.price.lte=',
     },
     // unisex
     {
       id: 'unisex-sale',
       name: 'Sale',
       gender: 'Unisex',
-      url: 'https://footlocker.co.il/collections/sale?filter.p.m.custom.prep3=%D7%99%D7%95%D7%A0%D7%99%D7%A1%D7%A7%D7%A1&filter.v.price.gte=&filter.v.price.lte='
+      url: 'https://footlocker.co.il/collections/sale?filter.p.m.custom.prep3=%D7%99%D7%95%D7%A0%D7%99%D7%A1%D7%A7%D7%A1&filter.v.price.gte=&filter.v.price.lte=',
     },
   ];
 
@@ -160,22 +166,26 @@ export class FootlockerScraper extends BaseScraper {
     this.totalCategories = this.CATEGORIES.length;
   }
 
-  private async scrapeFootlockerCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeFootlockerCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     this.logProgress(`Fetching ${category.url}`);
-    
+
     try {
       const html = await this.fetchFootlockerPage(category.url);
       const $ = cheerio.load(html);
-      
+
       // Find all product items
       const productItems = $('.product-item');
-      
+
       if (productItems.length === 0) {
         this.logProgress(`No products found for category ${category.name}`);
         return [];
       }
 
-      this.logProgress(`Found ${productItems.length} products in ${category.name}`);
+      this.logProgress(
+        `Found ${productItems.length} products in ${category.name}`,
+      );
 
       const products: Product[] = [];
       productItems.each((_, item) => {
@@ -185,32 +195,40 @@ export class FootlockerScraper extends BaseScraper {
         }
       });
 
-      this.logProgress(`Successfully parsed ${products.length} products from ${category.name}`);
+      this.logProgress(
+        `Successfully parsed ${products.length} products from ${category.name}`,
+      );
       return products;
-      
     } catch (error) {
       this.logError(`Error scraping category ${category.name}:`, error);
       return [];
     }
   }
 
-    private async fetchFootlockerPage(url: string): Promise<string> {
+  private async fetchFootlockerPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
       timeout: 60000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
-  private parseFootlockerProduct(productItem: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | null {
+  private parseFootlockerProduct(
+    productItem: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | null {
     try {
       // Extract title
-      const titleElement = productItem.find('.product-item-meta__title').first();
+      const titleElement = productItem
+        .find('.product-item-meta__title')
+        .first();
       const title = titleElement.text().trim();
-      
+
       if (!title) {
         return null;
       }
@@ -226,14 +244,26 @@ export class FootlockerScraper extends BaseScraper {
 
       // Extract images
       const images: string[] = [];
-      const primaryImage = productItem.find('.product-item__primary-image').attr('src');
-      const secondaryImage = productItem.find('.product-item__secondary-image').attr('src');
-      
+      const primaryImage = productItem
+        .find('.product-item__primary-image')
+        .attr('src');
+      const secondaryImage = productItem
+        .find('.product-item__secondary-image')
+        .attr('src');
+
       if (primaryImage) {
-        images.push(primaryImage.startsWith('//') ? `https:${primaryImage}` : primaryImage);
+        images.push(
+          primaryImage.startsWith('//')
+            ? `https:${primaryImage}`
+            : primaryImage,
+        );
       }
       if (secondaryImage) {
-        images.push(secondaryImage.startsWith('//') ? `https:${secondaryImage}` : secondaryImage);
+        images.push(
+          secondaryImage.startsWith('//')
+            ? `https:${secondaryImage}`
+            : secondaryImage,
+        );
       }
 
       // Extract prices - Foot Locker has different price structures for regular vs sale items
@@ -243,21 +273,23 @@ export class FootlockerScraper extends BaseScraper {
       // Check if this is a sale item (has price--highlight and price--compare)
       const salePriceElement = productItem.find('.price--highlight');
       const comparePriceElement = productItem.find('.price--compare');
-      
+
       if (salePriceElement.length > 0 && comparePriceElement.length > 0) {
         // This is a sale item
         const salePriceText = salePriceElement.text().trim();
         const comparePriceText = comparePriceElement.text().trim();
-        
+
         if (salePriceText) {
           const saleMatch = salePriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
           if (saleMatch) {
             price = parseFloat(saleMatch[0]);
           }
         }
-        
+
         if (comparePriceText) {
-          const compareMatch = comparePriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
+          const compareMatch = comparePriceText
+            .replace(/[₪,]/g, '')
+            .match(/[\d.]+/);
           if (compareMatch) {
             oldPrice = parseFloat(compareMatch[0]);
           }
@@ -266,7 +298,7 @@ export class FootlockerScraper extends BaseScraper {
         // Regular item - single price
         const priceElement = productItem.find('.price-list .price');
         const priceText = priceElement.text().trim();
-        
+
         if (priceText) {
           const priceMatch = priceText.replace(/[₪,]/g, '').match(/[\d.]+/);
           if (priceMatch) {
@@ -284,7 +316,8 @@ export class FootlockerScraper extends BaseScraper {
 
       // Determine if on sale
       const isOnSale = oldPrice !== null && price !== null && oldPrice > price;
-      const salePercent = isOnSale && oldPrice && price ? calcSalePercent(oldPrice, price) : null;
+      const salePercent =
+        isOnSale && oldPrice && price ? calcSalePercent(oldPrice, price) : null;
 
       // Extract category information
       const categoryElement = productItem.find('.collection-type');
@@ -294,7 +327,11 @@ export class FootlockerScraper extends BaseScraper {
       const normalizedBrand = normalizeBrandName(brand);
 
       // Extract colors from Hebrew text if available
-      const extractedColors = extractColorsWithHebrew(title + ' ' + (productCategory || ''), [], this.source);
+      const extractedColors = extractColorsWithHebrew(
+        title + ' ' + (productCategory || ''),
+        [],
+        this.source,
+      );
 
       const product: Product = {
         title,
@@ -313,7 +350,6 @@ export class FootlockerScraper extends BaseScraper {
       };
 
       return product;
-
     } catch (error) {
       this.logError('Error parsing Footlocker product:', error);
       return null;
@@ -325,4 +361,4 @@ export class FootlockerScraper extends BaseScraper {
 if (require.main === module) {
   const scraper = new FootlockerScraper();
   scraper.run().catch(console.error);
-} 
+}

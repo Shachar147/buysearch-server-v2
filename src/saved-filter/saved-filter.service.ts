@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SavedFilter } from './saved-filter.entity';
@@ -28,7 +32,11 @@ export class SavedFilterService {
     return savedFilter;
   }
 
-  async create(userId: number, name: string, filters: any): Promise<SavedFilter> {
+  async create(
+    userId: number,
+    name: string,
+    filters: any,
+  ): Promise<SavedFilter> {
     // Check if a filter with the same name already exists for this user
     const existingFilter = await this.savedFilterRepository.findOne({
       where: { userId, name },
@@ -45,9 +53,14 @@ export class SavedFilterService {
     return this.savedFilterRepository.save(savedFilter);
   }
 
-  async update(id: number, userId: number, name: string, filters: any): Promise<SavedFilter> {
+  async update(
+    id: number,
+    userId: number,
+    name: string,
+    filters: any,
+  ): Promise<SavedFilter> {
     const savedFilter = await this.findById(id, userId);
-    
+
     // Check if another filter with the same name exists (excluding current one)
     const existingFilter = await this.savedFilterRepository.findOne({
       where: { userId, name, id: Not(id) },
@@ -66,15 +79,20 @@ export class SavedFilterService {
     await this.savedFilterRepository.remove(savedFilter);
   }
 
-  async checkDuplicateName(userId: number, name: string, excludeId?: number): Promise<boolean> {
-    const query = this.savedFilterRepository.createQueryBuilder('filter')
+  async checkDuplicateName(
+    userId: number,
+    name: string,
+    excludeId?: number,
+  ): Promise<boolean> {
+    const query = this.savedFilterRepository
+      .createQueryBuilder('filter')
       .where('filter.userId = :userId', { userId })
       .andWhere('filter.name = :name', { name });
-    
+
     if (excludeId) {
       query.andWhere('filter.id != :excludeId', { excludeId });
     }
-    
+
     const count = await query.getCount();
     return count > 0;
   }
@@ -84,4 +102,4 @@ export class SavedFilterService {
     savedFilter.lastUsedAt = new Date();
     return this.savedFilterRepository.save(savedFilter);
   }
-} 
+}

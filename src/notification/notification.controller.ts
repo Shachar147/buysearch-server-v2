@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Param, Query, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Param,
+  Query,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { UserGuard } from '../auth/user.guard';
 
@@ -10,14 +18,18 @@ export class NotificationController {
   @Get()
   async getUserNotifications(
     @Request() req,
-    @Query('page') page: string = '1',
-    @Query('limit') limit: string = '10',
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
   ) {
     const userId = req.user.sub;
     const pageNum = parseInt(page, 10);
     const limitNum = parseInt(limit, 10);
 
-    return await this.notificationService.getUserNotifications(userId, pageNum, limitNum);
+    return await this.notificationService.getUserNotifications(
+      userId,
+      pageNum,
+      limitNum,
+    );
   }
 
   @Get('unseen-count')
@@ -30,7 +42,10 @@ export class NotificationController {
   @Post(':id/mark-seen')
   async markAsSeen(@Request() req, @Param('id') notificationId: string) {
     const userId = req.user.sub;
-    await this.notificationService.markAsSeen(parseInt(notificationId, 10), userId);
+    await this.notificationService.markAsSeen(
+      parseInt(notificationId, 10),
+      userId,
+    );
     return { success: true };
   }
 
@@ -40,4 +55,4 @@ export class NotificationController {
     await this.notificationService.markAllAsSeen(userId);
     return { success: true };
   }
-} 
+}

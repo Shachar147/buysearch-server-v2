@@ -12,10 +12,15 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+} from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 import { fetchPageWithBrowser } from './base/browser-helpers';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 const MEN_FILTER = '?filter.p.m.custom.gender=%D7%92%D7%91%D7%A8%D7%99%D7%9D';
@@ -254,41 +259,66 @@ class ChozenScraper extends BaseScraper {
     return this.scrapeChozenCategory(category);
   }
 
-    private async fetchChozenPage(url: string): Promise<string> {
+  private async fetchChozenPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
-  private parseChozenProduct(productElem: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
+  private parseChozenProduct(
+    productElem: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | undefined {
     // Extract product info from the product element
-    const title = productElem.find('.card__heading, .product-title, .product-card__title').text().trim();
+    const title = productElem
+      .find('.card__heading, .product-title, .product-card__title')
+      .text()
+      .trim();
     const url = BASE_URL + (productElem.find('a').attr('href') || '');
     // Images: prefer data-src, else src
     let images: string[] = [];
-    const img1 = productElem.find('img').attr('data-src') || productElem.find('img').attr('src');
+    const img1 =
+      productElem.find('img').attr('data-src') ||
+      productElem.find('img').attr('src');
     if (img1) images.push(img1.startsWith('http') ? img1 : 'https:' + img1);
     images = images.filter(Boolean);
     // --- Price and Sale Price ---
-    let price = null, oldPrice = null;
+    let price = null,
+      oldPrice = null;
     // Sale price: <sale-price>
-    const salePriceText = productElem.find('sale-price').text().replace(/[^\d.]/g, '');
+    const salePriceText = productElem
+      .find('sale-price')
+      .text()
+      .replace(/[^\d.]/g, '');
     if (salePriceText) price = parseFloat(salePriceText);
     // Old price: <compare-at-price>
-    const compareAtText = productElem.find('compare-at-price').text().replace(/[^\d.]/g, '');
+    const compareAtText = productElem
+      .find('compare-at-price')
+      .text()
+      .replace(/[^\d.]/g, '');
     if (compareAtText) oldPrice = parseFloat(compareAtText);
     // Fallback to previous selectors if not found
     if (!price) {
-      const priceText = productElem.find('.price-item--regular, .price__regular, .price').first().text().replace(/[^\d.]/g, '');
+      const priceText = productElem
+        .find('.price-item--regular, .price__regular, .price')
+        .first()
+        .text()
+        .replace(/[^\d.]/g, '');
       if (priceText) price = parseFloat(priceText);
     }
     if (!oldPrice) {
-      const oldPriceText = productElem.find('.price-item--sale, .price__sale, .price--on-sale').first().text().replace(/[^\d.]/g, '');
+      const oldPriceText = productElem
+        .find('.price-item--sale, .price__sale, .price--on-sale')
+        .first()
+        .text()
+        .replace(/[^\d.]/g, '');
       if (oldPriceText) oldPrice = parseFloat(oldPriceText);
     }
     const salePercent = calcSalePercent(price, oldPrice) ?? 0;
@@ -296,7 +326,10 @@ class ChozenScraper extends BaseScraper {
     // --- Brand ---
     let brand = productElem.find('p.body2-thin.mb-none').text().trim();
     if (!brand) {
-      brand = productElem.find('.product-vendor, .card__vendor, .product-card__brand').text().trim();
+      brand = productElem
+        .find('.product-vendor, .card__vendor, .product-card__brand')
+        .text()
+        .trim();
     }
     brand = normalizeBrandName(brand || 'Chozen');
     const categories = [category.name];
@@ -314,22 +347,33 @@ class ChozenScraper extends BaseScraper {
       currency,
       brand,
       categories,
-      gender: title.includes("לגבר") ? "Men": (title.includes("לנשים") || title.includes("לאישה")) ? "Women" : gender,
+      gender: title.includes('לגבר')
+        ? 'Men'
+        : title.includes('לנשים') || title.includes('לאישה')
+        ? 'Women'
+        : gender,
     });
   }
 
-  private async scrapeChozenCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeChozenCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     while (hasMore) {
       const url = `${category.url}${page > 1 ? `&page=${page}` : ''}`;
       this.logProgress(`Fetching ${url}`);
       const html = await this.fetchChozenPage(url);
       const $ = cheerio.load(html);
-      const productElems = $('.product-card, .card--product, .product-card__wrapper, .product-grid__item');
+      const productElems = $(
+        '.product-card, .card--product, .product-card__wrapper, .product-grid__item',
+      );
       if (!productElems.length) break;
-      const pageProducts = productElems.map((_, el) => this.parseChozenProduct($(el), category, $)).get().filter(Boolean) as Product[];
+      const pageProducts = productElems
+        .map((_, el) => this.parseChozenProduct($(el), category, $))
+        .get()
+        .filter(Boolean) as Product[];
       allProducts.push(...pageProducts);
       // If less than 24 products, it's the last page
       hasMore = productElems.length >= 24;
@@ -353,4 +397,4 @@ if (require.main === module) {
   });
 }
 
-export { main, ChozenScraper }; 
+export { main, ChozenScraper };

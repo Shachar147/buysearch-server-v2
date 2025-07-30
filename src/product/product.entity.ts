@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany, JoinTable, Index } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+  Index,
+} from 'typeorm';
 import { Brand } from '../brand/brand.entity';
 import { Category } from '../category/category.entity';
 import { Color } from '../color/color.entity';
@@ -50,26 +60,26 @@ export class Product {
 
   // Relationships
   @Index()
-  @ManyToOne(() => Brand, brand => brand.products)
+  @ManyToOne(() => Brand, (brand) => brand.products)
   brand: Brand;
 
   @Index()
-  @ManyToOne(() => Source, source => source.products)
+  @ManyToOne(() => Source, (source) => source.products)
   source: Source;
 
-  @ManyToMany(() => Category, category => category.products)
+  @ManyToMany(() => Category, (category) => category.products)
   @JoinTable({
     name: 'product_categories',
     joinColumn: { name: 'productId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'categoryId', referencedColumnName: 'id' }
+    inverseJoinColumn: { name: 'categoryId', referencedColumnName: 'id' },
   })
   categories: Category[];
 
-  @ManyToMany(() => Color, color => color.products)
+  @ManyToMany(() => Color, (color) => color.products)
   @JoinTable({
     name: 'product_colors',
     joinColumn: { name: 'productId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'colorId', referencedColumnName: 'id' }
+    inverseJoinColumn: { name: 'colorId', referencedColumnName: 'id' },
   })
   colors: Color[];
-} 
+}

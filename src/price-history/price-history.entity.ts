@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  Index,
+} from 'typeorm';
 
 @Entity()
 export class PriceHistory {
@@ -14,4 +20,4 @@ export class PriceHistory {
 
   @CreateDateColumn()
   date: Date;
-} 
+}

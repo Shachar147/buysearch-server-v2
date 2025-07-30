@@ -2,8 +2,14 @@ import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+  extractCategory,
+} from './base/scraper_utils';
+import { fetchPageWithBrowser } from './base/browser-helpers';
+import { extractColorsWithHebrew } from '../color.constants';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -55,7 +61,7 @@ const CATEGORIES: CategoryType[] = [
     name: Category.CLOTHING,
     gender: 'Men',
     url: 'https://our-mantra.com/collections/weddings',
-  }
+  },
 ];
 
 const BASE_URL = 'https://our-mantra.com';
@@ -74,7 +80,8 @@ class MantraScraper extends BaseScraper {
 
   private async fetchMantraPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       extraHeaders: {
@@ -88,11 +95,15 @@ class MantraScraper extends BaseScraper {
         //   'button:contains("Accept")',
         //   'button:contains("OK")'
         // ]);
-      }
+      },
     });
   }
 
-  private parseMantraProduct(productCard: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
+  private parseMantraProduct(
+    productCard: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | undefined {
     try {
       // Extract title from the product card title
       const titleElement = productCard.find('.product-card__title a');
@@ -101,14 +112,14 @@ class MantraScraper extends BaseScraper {
         title = productCard.find('.product-card__image').attr('alt') || '';
       }
       if (!title) {
-        console.error("Product with no title", productCard.html());
+        console.error('Product with no title', productCard.html());
         return undefined;
       }
 
       // Extract URL from the product card link
       const url = titleElement.attr('href');
       if (!url) {
-        console.error("Product with no URL", title);
+        console.error('Product with no URL', title);
         return undefined;
       }
       const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
@@ -148,7 +159,9 @@ class MantraScraper extends BaseScraper {
       }
 
       // Look for old price (strikethrough price)
-      const oldPriceElement = productCard.find('price-list .money--old, price-list s');
+      const oldPriceElement = productCard.find(
+        'price-list .money--old, price-list s',
+      );
       if (oldPriceElement.length > 0) {
         const oldPriceText = oldPriceElement.text().trim();
         const match = oldPriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
@@ -162,12 +175,22 @@ class MantraScraper extends BaseScraper {
       const brand = normalizeBrandName('Mantra');
 
       // Extract categories
-      const categories = Array.from(new Set([category.name, ...extractCategory(title), title.toLowerCase().includes("shirt") && Category.SHIRTS].filter(Boolean)));
+      const categories = Array.from(
+        new Set(
+          [
+            category.name,
+            ...extractCategory(title),
+            title.toLowerCase().includes('shirt') && Category.SHIRTS,
+          ].filter(Boolean),
+        ),
+      );
       const gender = category.gender;
 
-      if (!title || !fullUrl || !price){
-        console.error("Product with no title, url, or price", {
-            title, url, price
+      if (!title || !fullUrl || !price) {
+        console.error('Product with no title, url, or price', {
+          title,
+          url,
+          price,
         });
         return;
       }
@@ -194,9 +217,11 @@ class MantraScraper extends BaseScraper {
     }
   }
 
-  private async scrapeMantraCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeMantraCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     let prevPageUrls: string[] = [];
     const MAX_PAGES = 50;
@@ -204,25 +229,29 @@ class MantraScraper extends BaseScraper {
     while (hasMore && page <= MAX_PAGES) {
       const url = `${category.url}${page > 1 ? `?page=${page}` : ''}`;
       this.logProgress(`Fetching ${url}`);
-      
+
       try {
         const html = await this.fetchMantraPage(url);
         const $ = cheerio.load(html);
-        
+
         // Find all product cards
         let productCards = $('product-card');
-        
+
         if (productCards.length === 0) {
           // Try alternative selectors
           productCards = $('.product-card');
         }
 
         if (productCards.length === 0) {
-          this.logProgress(`No products found for category ${category.name} on page ${page}`);
+          this.logProgress(
+            `No products found for category ${category.name} on page ${page}`,
+          );
           break;
         }
 
-        this.logProgress(`Found ${productCards.length} products in ${category.name} on page ${page}`);
+        this.logProgress(
+          `Found ${productCards.length} products in ${category.name} on page ${page}`,
+        );
 
         const pageProducts: Product[] = [];
         productCards.each((_, card) => {
@@ -232,28 +261,36 @@ class MantraScraper extends BaseScraper {
           }
         });
 
-        const pageUrls = pageProducts.map(p => p.url);
-        
+        const pageUrls = pageProducts.map((p) => p.url);
+
         // If all URLs are the same as previous page, stop
-        if (prevPageUrls.length && pageUrls.length && prevPageUrls.join(',') === pageUrls.join(',')) {
+        if (
+          prevPageUrls.length &&
+          pageUrls.length &&
+          prevPageUrls.join(',') === pageUrls.join(',')
+        ) {
           hasMore = false;
           break;
         }
 
         allProducts.push(...pageProducts);
         prevPageUrls = pageUrls;
-        
+
         // If less than expected products, it's likely the last page
         hasMore = productCards.length >= 12; // Assuming 12 products per page
         page++;
-        
       } catch (error) {
-        this.logError(`Error scraping category ${category.name} page ${page}:`, error);
+        this.logError(
+          `Error scraping category ${category.name} page ${page}:`,
+          error,
+        );
         break;
       }
     }
 
-    this.logProgress(`Successfully scraped ${allProducts.length} products from ${category.name}`);
+    this.logProgress(
+      `Successfully scraped ${allProducts.length} products from ${category.name}`,
+    );
     return allProducts;
   }
 }
@@ -272,4 +309,4 @@ if (require.main === module) {
   });
 }
 
-export { main, MantraScraper }; 
+export { main, MantraScraper };

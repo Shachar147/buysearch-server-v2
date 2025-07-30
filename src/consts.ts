@@ -1,1 +1,1 @@
-export const PAGINATION_LIMIT = 200; 
+export const PAGINATION_LIMIT = 200;

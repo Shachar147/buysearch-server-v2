@@ -1,8 +1,12 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, normalizeCategories } from './base/scraper_utils';
-import { fetchPageWithBrowser, handleInfiniteScroll } from './base/browser-helpers';
+import { Product, calcSalePercent } from './base/scraper_utils';
+import {
+  fetchPageWithBrowser,
+  handleInfiniteScroll,
+} from './base/browser-helpers';
+import { extractColorsWithHebrew } from '../color.constants';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 dotenv.config();
@@ -24,19 +28,19 @@ const CATEGORIES: CategoryType[] = [
     id: 'mens-tshirts',
     name: Category.T_SHIRTS,
     gender: 'Men',
-    url: 'https://www.nike.com/il/w/mens-tops-t-shirts-9om13znik1'
+    url: 'https://www.nike.com/il/w/mens-tops-t-shirts-9om13znik1',
   },
   {
     id: 'mens-sale',
     name: 'Sale',
     gender: 'Men',
-    url: 'https://www.nike.com/il/w/mens-sale-3yaepznik1'
+    url: 'https://www.nike.com/il/w/mens-sale-3yaepznik1',
   },
   {
     id: 'mens-shorts',
-    name :Category.SHORTS,
+    name: Category.SHORTS,
     gender: 'Men',
-    url: 'https://www.nike.com/il/w/mens-shorts-38fphznik1'
+    url: 'https://www.nike.com/il/w/mens-shorts-38fphznik1',
   },
   {
     id: 'mens-surf-swimwear',
@@ -172,10 +176,10 @@ const CATEGORIES: CategoryType[] = [
   },
   {
     id: 'mens-new',
-    name: "New",
+    name: 'New',
     gender: 'Men',
-    url :"https://www.nike.com/il/w/new-3n82y"
-  }
+    url: 'https://www.nike.com/il/w/new-3n82y',
+  },
 ];
 
 const BASE_URL = 'https://www.nike.com';
@@ -199,23 +203,31 @@ class NikeScraper extends BaseScraper {
 
   private async fetchNikePage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
       timeout: 60000,
       onPageReady: async (page) => {
-    // Infinite scroll: keep scrolling and waiting for new products
+        // Infinite scroll: keep scrolling and waiting for new products
         await handleInfiniteScroll(page, {
           productSelector: 'a.product-card__link-overlay',
           maxScrolls: 50,
           scrollDelay: 10000,
           onScroll: (currentCount, iteration) => {
-            this.logProgress(`Scroll iteration ${iteration}: ${currentCount} products loaded. Scrolling to bottom...`);
-          }
+            this.logProgress(
+              `Scroll iteration ${iteration}: ${currentCount} products loaded. Scrolling to bottom...`,
+            );
+          },
         });
 
-    const totalProducts = await page.$$eval('a.product-card__link-overlay', els => els.length);
-    this.logProgress(`Infinite scroll complete. Total products loaded: ${totalProducts}`);
-      }
+        const totalProducts = await page.$$eval(
+          'a.product-card__link-overlay',
+          (els) => els.length,
+        );
+        this.logProgress(
+          `Infinite scroll complete. Total products loaded: ${totalProducts}`,
+        );
+      },
     });
   }
 
@@ -231,8 +243,13 @@ class NikeScraper extends BaseScraper {
       const url = elem.find('a.product-card__link-overlay').attr('href')
         ? elem.find('a.product-card__link-overlay').attr('href')
         : '';
-      const image = (elem.find('img.product-card__hero-image').attr('src') || '').split(',').join('%2C');
-      let price = null, oldPrice = null;
+      const image = (
+        elem.find('img.product-card__hero-image').attr('src') || ''
+      )
+        .split(',')
+        .join('%2C');
+      let price = null,
+        oldPrice = null;
       const priceText = elem.find('div.product-price').text();
       // Nike sometimes shows both sale and original price
       const priceMatches = priceText.match(/₪([\d,.]+)/g);
@@ -245,7 +262,11 @@ class NikeScraper extends BaseScraper {
         }
       }
       const color = elem.find('div.product-card__product-count').text().trim();
-      let colors = extractColorsWithHebrew(fullTitle, [color].filter(Boolean), 'nike_scraper').filter((c) => {
+      let colors = extractColorsWithHebrew(
+        fullTitle,
+        [color].filter(Boolean),
+        'nike_scraper',
+      ).filter((c) => {
         // Use regex to match patterns like '1 Colour', '2 Colours', etc.
         return !/^\d+\s+Colours?$/i.test(c);
       });
@@ -253,7 +274,9 @@ class NikeScraper extends BaseScraper {
       if (colors.length === 0) {
         colors = [];
       }
-      const brand = fullTitle.toLocaleLowerCase().includes("jordan") ? 'Jordan' : 'Nike';
+      const brand = fullTitle.toLocaleLowerCase().includes('jordan')
+        ? 'Jordan'
+        : 'Nike';
       const categories = [category.name];
       const gender = category.gender;
       const product = this.createProduct({
@@ -290,4 +313,4 @@ if (require.main === module) {
   });
 }
 
-export { main, NikeScraper }; 
+export { main, NikeScraper };

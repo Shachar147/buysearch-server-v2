@@ -467,7 +467,9 @@ export class ProductService {
     // Upsert categories
     const categories = await this.categoryService.upsertMany(productData.categories, productData.gender);
 
-    // Upsert colors
+    // Normalize and upsert colors
+    // const normalizedColors = normalizeColors(productData.colors);
+    // const colors = await this.colorService.upsertMany(normalizedColors);
     const colors = await this.colorService.upsertMany(productData.colors);
 
     // Check if product already exists

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { SourceService } from './source.service';
 import { Source } from './source.entity';
 import { UserGuard } from '../auth/user.guard';
@@ -14,7 +24,11 @@ export class SourceController {
   }
 
   @Get()
-  async findAll(@Query('offset') offset = 0, @Query('limit') limit = 200, @Query('all') all?: string) {
+  async findAll(
+    @Query('offset') offset = 0,
+    @Query('limit') limit = 200,
+    @Query('all') all?: string,
+  ) {
     if (all === 'true') {
       return await this.sourceService.findAllNoPagination();
     }
@@ -39,4 +53,4 @@ export class SourceController {
   remove(@Param('id') id: string) {
     return this.sourceService.remove(+id);
   }
-} 
+}

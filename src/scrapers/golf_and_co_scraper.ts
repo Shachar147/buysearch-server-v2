@@ -1,8 +1,9 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
-import { calcSalePercent, extractColors, Product } from './base/scraper_utils';
+import { calcSalePercent, Product } from './base/scraper_utils';
 import { Category } from '../category.constants';
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
+import { extractColors } from '../color.constants';
 
 // NOTE: if there's a range (min, max), we currently take the max.
 // we can change it by using minPrice and oldminPrice
@@ -60,7 +61,8 @@ export class GolfAndCoScraper extends BaseScraper {
 
   private async fetchPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
@@ -70,14 +72,14 @@ export class GolfAndCoScraper extends BaseScraper {
         } catch (error) {
           console.log('No products found on page, might be the last page');
         }
-      }
+      },
     });
   }
 
   protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
-    let hasMore = true;
+    const allProducts: Product[] = [];
+    const hasMore = true;
 
     let lastSeenUrls = [];
     let currProducts = [];
@@ -95,62 +97,94 @@ export class GolfAndCoScraper extends BaseScraper {
       products.each((_, el) => {
         const title = $(el).find('.product_link').text().trim();
         const url = $(el).find('a.product_link').attr('href');
-        let images: string[] = [];
+        const images: string[] = [];
         const imgObject = $(el).find('.product-image-photo');
         if (imgObject) {
-            let img1 = $(imgObject).attr('src');
-            if (img1) images.push(img1)
-            let img2 = $(imgObject).attr('src_1');
-            if (img2) images.push(img2);
+          const img1 = $(imgObject).attr('src');
+          if (img1) images.push(img1);
+          const img2 = $(imgObject).attr('src_1');
+          if (img2) images.push(img2);
         }
-        let priceText = $(el).find('span[data-price-type="finalPrice"]').first().text().replace(/[^\d.]/g, '');
-        let oldPriceText = $(el).find('span[data-price-type="oldPrice"]').first().text().replace(/[^\d.]/g, '');
+        let priceText = $(el)
+          .find('span[data-price-type="finalPrice"]')
+          .first()
+          .text()
+          .replace(/[^\d.]/g, '');
+        let oldPriceText = $(el)
+          .find('span[data-price-type="oldPrice"]')
+          .first()
+          .text()
+          .replace(/[^\d.]/g, '');
 
         let price = priceText && priceText != '' ? parseFloat(priceText) : null;
-        let oldPrice = oldPriceText && oldPriceText != '' ? parseFloat(oldPriceText) : null;
+        let oldPrice =
+          oldPriceText && oldPriceText != '' ? parseFloat(oldPriceText) : null;
         let salePercent = oldPrice ? calcSalePercent(price, oldPrice) : null;
-
 
         // NOTE: if there's a range (min, max), we currently take the max.
         // we can change it by using minPrice and oldminPrice
-        if (!price){
-            priceText = $(el).find('span[data-price-type="maxPrice"]').first().text().replace(/[^\d.]/g, '');
-            oldPriceText = $(el).find('span[data-price-type="oldmaxPrice"]').first().text().replace(/[^\d.]/g, '');
-            price = priceText && priceText != '' ? parseFloat(priceText) : null;
-            oldPrice = oldPriceText && oldPriceText != '' ? parseFloat(oldPriceText) : null;
-            salePercent = oldPrice ? calcSalePercent(price, oldPrice) : null;
+        if (!price) {
+          priceText = $(el)
+            .find('span[data-price-type="maxPrice"]')
+            .first()
+            .text()
+            .replace(/[^\d.]/g, '');
+          oldPriceText = $(el)
+            .find('span[data-price-type="oldmaxPrice"]')
+            .first()
+            .text()
+            .replace(/[^\d.]/g, '');
+          price = priceText && priceText != '' ? parseFloat(priceText) : null;
+          oldPrice =
+            oldPriceText && oldPriceText != ''
+              ? parseFloat(oldPriceText)
+              : null;
+          salePercent = oldPrice ? calcSalePercent(price, oldPrice) : null;
         }
 
-        const colors = Array.from($(el).find('.swatch-option.color').find('.show-text')).map((e) => $(e).text())
-        
-        if (!price || !title){
-            this.logProgress(`Skipping product: ${title} - ${url} - ${price} - ${oldPrice}`);
-            return;
+        const colors = Array.from(
+          $(el).find('.swatch-option.color').find('.show-text'),
+        ).map((e) => $(e).text());
+
+        if (!price || !title) {
+          this.logProgress(
+            `Skipping product: ${title} - ${url} - ${price} - ${oldPrice}`,
+          );
+          return;
         }
 
-        if (!title || !url || !price){
+        if (!title || !url || !price) {
           return;
         }
 
         const formattedProduct = this.createProduct({
-            title,
-            url: url ? (url.startsWith('http') ? url : `https://www.golfco.co.il${url}`) : '',
-            images,
-            colors: extractColors(title, colors),
-            price,
-            oldPrice,
-            salePercent,
-            currency: 'ILS',
-            brand: 'Golf & Co',
-            categories: [category.name],
-            gender: category.gender,
-          });
+          title,
+          url: url
+            ? url.startsWith('http')
+              ? url
+              : `https://www.golfco.co.il${url}`
+            : '',
+          images,
+          colors: extractColors(title, colors),
+          price,
+          oldPrice,
+          salePercent,
+          currency: 'ILS',
+          brand: 'Golf & Co',
+          categories: [category.name],
+          gender: category.gender,
+        });
 
         currProducts.push(formattedProduct);
         allProducts.push(formattedProduct);
       });
 
-      if (!currProducts.length || currProducts.map((p) => p.url).every((url) => lastSeenUrls.includes(url))){
+      if (
+        !currProducts.length ||
+        currProducts
+          .map((p) => p.url)
+          .every((url) => lastSeenUrls.includes(url))
+      ) {
         this.logProgress(`No new products found, stopping`);
         break;
       }
@@ -169,4 +203,4 @@ async function main() {
 
 if (require.main === module) {
   main();
-} 
+}

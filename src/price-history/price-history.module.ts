@@ -7,9 +7,12 @@ import { AuthModule } from '../auth/auth.module';
 import { PriceHistoryController } from './price-history.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PriceHistory, PriceHistoryRepository]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([PriceHistory, PriceHistoryRepository]),
+    AuthModule,
+  ],
   providers: [PriceHistoryService],
   exports: [PriceHistoryService],
   controllers: [PriceHistoryController], // <-- Add this line
 })
-export class PriceHistoryModule {} 
+export class PriceHistoryModule {}

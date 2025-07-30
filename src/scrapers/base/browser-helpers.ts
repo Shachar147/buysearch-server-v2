@@ -12,10 +12,10 @@ export async function fetchPageWithBrowser(
     timeout?: number;
     extraHeaders?: Record<string, string>;
     onPageReady?: (page: Page) => Promise<void>;
-  } = {}
+  } = {},
 ): Promise<string> {
   const browserManager = getBrowserManager();
-  
+
   return browserManager.withPage(async (page: Page) => {
     // Set user agent
     if (options.userAgent) {
@@ -35,7 +35,9 @@ export async function fetchPageWithBrowser(
 
     // Execute custom page ready logic
     if (options.onPageReady) {
-      await options.onPageReady(page);
+      try {
+        await options.onPageReady(page);
+      } catch {}
     }
 
     // Get page content
@@ -54,14 +56,14 @@ export async function handleInfiniteScroll(
     maxScrolls?: number;
     scrollDelay?: number;
     onScroll?: (currentCount: number, iteration: number) => void;
-  }
+  },
 ): Promise<void> {
   const {
     scrollSelector = 'window',
     productSelector,
     maxScrolls = 50,
     scrollDelay = 10000,
-    onScroll
+    onScroll,
   } = options;
 
   let previousCount = 0;
@@ -69,8 +71,11 @@ export async function handleInfiniteScroll(
   let scrollIteration = 1;
 
   while (!reachedEnd && scrollIteration <= maxScrolls) {
-    const productsBefore = await page.$$eval(productSelector, els => els.length);
-    
+    const productsBefore = await page.$$eval(
+      productSelector,
+      (els) => els.length,
+    );
+
     if (onScroll) {
       onScroll(productsBefore, scrollIteration);
     }
@@ -88,14 +93,17 @@ export async function handleInfiniteScroll(
     }, scrollSelector);
 
     // Wait for new content to load
-    await new Promise(resolve => setTimeout(resolve, scrollDelay));
+    await new Promise((resolve) => setTimeout(resolve, scrollDelay));
 
-    const productsAfter = await page.$$eval(productSelector, els => els.length);
-    
+    const productsAfter = await page.$$eval(
+      productSelector,
+      (els) => els.length,
+    );
+
     if (productsAfter <= productsBefore) {
       reachedEnd = true;
     }
-    
+
     previousCount = productsAfter;
     scrollIteration++;
   }
@@ -106,13 +114,13 @@ export async function handleInfiniteScroll(
  */
 export async function handleCookieConsent(
   page: Page,
-  selectors: string[]
+  selectors: string[],
 ): Promise<boolean> {
   for (const selector of selectors) {
     try {
       await page.waitForSelector(selector, { timeout: 5000 });
       await page.click(selector);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       return true;
     } catch (error) {
       // Continue to next selector
@@ -127,4 +135,4 @@ export async function handleCookieConsent(
 export function getBrowserStats() {
   const browserManager = getBrowserManager();
   return browserManager.getStats();
-} 
+}

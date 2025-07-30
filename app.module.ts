@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { databaseConfig } from './src/config/database.config';
@@ -17,6 +18,10 @@ import { ScrapingHistoryModule } from './src/scraping-history/scraping-history.m
 import { SavedFilterModule } from './src/saved-filter/saved-filter.module';
 import { ProxyModule } from './src/proxy/proxy.module';
 import { NotificationModule } from './src/notification/notification.module';
+import { SecurityModule } from './src/modules/security.module';
+import { SecurityMiddleware } from './src/middleware/security.middleware';
+import { ValidationMiddleware } from './src/middleware/validation.middleware';
+import { LoggingInterceptor } from './src/interceptors/logging.interceptor';
 
 @Module({
   imports: [
@@ -34,11 +39,22 @@ import { NotificationModule } from './src/notification/notification.module';
     SavedFilterModule,
     ProxyModule,
     NotificationModule,
+    SecurityModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
     ...(process.env.ENABLE_CRON === 'true' ? [ScraperCronService] : []),
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(SecurityMiddleware, ValidationMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

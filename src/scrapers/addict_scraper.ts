@@ -1,10 +1,19 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import {
+  fetchPageWithBrowser,
+  handleCookieConsent,
+} from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+  extractCategory,
+} from './base/scraper_utils';
 import * as dotenv from 'dotenv';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [
@@ -33,7 +42,7 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://addictonline.co.il/collections/%D7%91%D7%92%D7%93%D7%99-%D7%92%D7%95%D7%A3',
   },
-  
+
   // Clothing - Pants
   {
     id: 'jeans',
@@ -53,7 +62,7 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://addictonline.co.il/collections/%D7%A9%D7%95%D7%A8%D7%98%D7%99%D7%9D',
   },
-  
+
   // Clothing - Other
   {
     id: 'suits',
@@ -85,7 +94,7 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://addictonline.co.il/collections/%D7%90%D7%95%D7%91%D7%A8%D7%95%D7%9C%D7%99%D7%9D',
   },
-  
+
   // Accessories
   {
     id: 'belts',
@@ -111,7 +120,7 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://addictonline.co.il/collections/%D7%AA%D7%99%D7%A7%D7%99%D7%9D',
   },
-  
+
   // Shoes
   {
     id: 'shoes',
@@ -119,7 +128,7 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://addictonline.co.il/collections/%D7%A0%D7%A2%D7%9C%D7%99%D7%99%D7%9D-2',
   },
-  
+
   // Special Collections
   {
     id: 'new',
@@ -150,7 +159,7 @@ const CATEGORIES: CategoryType[] = [
     name: Category.CLOTHING,
     gender: 'Kids',
     url: 'https://addictonline.co.il/?view=kids',
-  }
+  },
 ];
 
 const BASE_URL = 'https://addictonline.co.il';
@@ -169,7 +178,8 @@ class AddictScraper extends BaseScraper {
 
   private async fetchAddictPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
@@ -177,13 +187,17 @@ class AddictScraper extends BaseScraper {
         await handleCookieConsent(page, [
           '.cookie-consent button',
           '#cookie-accept',
-          '.accept-cookies'
+          '.accept-cookies',
         ]);
-      }
+      },
     });
   }
 
-  private parseAddictProduct(productItem: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
+  private parseAddictProduct(
+    productItem: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | undefined {
     try {
       // Extract title from the product item
       let title = productItem.find('.product-item-meta__title').text().trim();
@@ -194,7 +208,7 @@ class AddictScraper extends BaseScraper {
         title = productItem.find('.product-item__name').text().trim();
       }
       if (!title) {
-        console.error("Product with no title", productItem.html());
+        console.error('Product with no title', productItem.html());
         return undefined;
       }
 
@@ -204,7 +218,7 @@ class AddictScraper extends BaseScraper {
         url = productItem.find('.product-item__link').attr('href');
       }
       if (!url) {
-        console.error("Product with no URL", title);
+        console.error('Product with no URL', title);
         return undefined;
       }
       const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
@@ -215,7 +229,7 @@ class AddictScraper extends BaseScraper {
         const src = $(img).attr('src');
         const dataSrc = $(img).attr('data-src');
         const srcset = $(img).attr('data-srcset');
-        
+
         let imageUrl = src || dataSrc;
         if (imageUrl) {
           imageUrl = imageUrl.startsWith('//') ? `https:${imageUrl}` : imageUrl;
@@ -223,13 +237,17 @@ class AddictScraper extends BaseScraper {
             images.push(imageUrl);
           }
         }
-        
+
         // Handle srcset if no src found
         if (!imageUrl && srcset) {
-          const srcsetUrls = srcset.split(',').map(s => s.trim().split(' ')[0]);
+          const srcsetUrls = srcset
+            .split(',')
+            .map((s) => s.trim().split(' ')[0]);
           if (srcsetUrls.length > 0) {
             const firstUrl = srcsetUrls[0];
-            const imageUrlFromSrcset = firstUrl.startsWith('//') ? `https:${firstUrl}` : firstUrl;
+            const imageUrlFromSrcset = firstUrl.startsWith('//')
+              ? `https:${firstUrl}`
+              : firstUrl;
             if (!images.includes(imageUrlFromSrcset)) {
               images.push(imageUrlFromSrcset);
             }
@@ -242,14 +260,20 @@ class AddictScraper extends BaseScraper {
       let oldPrice: number | null = null;
 
       // Look for sale price (current price) - this is the price shown in the sale span
-      const salePriceText = productItem.find('.price .price--highlight').text().trim();
+      const salePriceText = productItem
+        .find('.price .price--highlight')
+        .text()
+        .trim();
       if (salePriceText) {
         const match = salePriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
         price = match ? parseFloat(match[0]) : null;
       }
 
       // Look for original price in the compare price span
-      const originalPriceText = productItem.find('.price .price--compare').text().trim();
+      const originalPriceText = productItem
+        .find('.price .price--compare')
+        .text()
+        .trim();
       if (originalPriceText) {
         const match = originalPriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
         oldPrice = match ? parseFloat(match[0]) : null;
@@ -296,16 +320,18 @@ class AddictScraper extends BaseScraper {
     }
   }
 
-  private async scrapeAddictCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeAddictCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     this.logProgress(`Fetching ${category.url}`);
-    
+
     try {
       const html = await this.fetchAddictPage(category.url);
       const $ = cheerio.load(html);
-      
+
       // Find all product items - use the correct selector for Addict
       let productItems = $('product-item');
-      
+
       if (productItems.length === 0) {
         // Try alternative selectors
         productItems = $('.product-item');
@@ -316,7 +342,9 @@ class AddictScraper extends BaseScraper {
         return [];
       }
 
-      this.logProgress(`Found ${productItems.length} products in ${category.name}`);
+      this.logProgress(
+        `Found ${productItems.length} products in ${category.name}`,
+      );
 
       const products: Product[] = [];
       productItems.each((_, item) => {
@@ -326,9 +354,10 @@ class AddictScraper extends BaseScraper {
         }
       });
 
-      this.logProgress(`Successfully parsed ${products.length} products from ${category.name}`);
+      this.logProgress(
+        `Successfully parsed ${products.length} products from ${category.name}`,
+      );
       return products;
-      
     } catch (error) {
       this.logError(`Error scraping category ${category.name}:`, error);
       return [];
@@ -350,4 +379,4 @@ if (require.main === module) {
   });
 }
 
-export { main, AddictScraper }; 
+export { main, AddictScraper };

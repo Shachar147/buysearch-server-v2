@@ -9,6 +9,7 @@ import {
   CATEGORY_SEARCH_KEYWORDS_MAP
 } from '../category.constants';
 import { normalizeBrandName } from '../scrapers/base/scraper_utils';
+import { getAllColorKeywords, getColorSynonyms } from '../color.constants';
 
 export interface ParsedFilters {
   colors: string[];
@@ -30,11 +31,7 @@ export class SearchService {
     private readonly colorService: ColorService,
   ) {}
 
-  private COLOR_KEYWORDS = [
-    'black', 'white', 'red', 'blue', 'green', 'yellow', 'pink', 'purple',
-    'orange', 'brown', 'grey', 'gray', 'beige', 'navy', 'cream', 'khaki',
-    'burgundy', 'silver', 'gold', 'multi', 'mauve', 'teal', 'coral', 'mint', 'lavender'
-  ];
+  private COLOR_KEYWORDS = getAllColorKeywords();
 
   private BRAND_SYNONYMS = {
     'tommy hilfiger': ['tommy hilfiger', 'tommy h', 'hilfiger', 'של טומי', 'טומי ה', 'טומי הילפיגר', 'הילפיגר'],
@@ -63,37 +60,12 @@ export class SearchService {
     'lululemon': ['lululemon', 'lulu l', 'לולולמון', 'לולו למון'],
     'gant': ['gant', 'גנט', 'גאנט'],
     'saint laurent': ['yves saint laurent', 'ysl', 'איב סאן', 'סאן לורן', 'סאן לורנט', 'san laurent', 'sun laurent', 'yves s'],
-    'legaloutfit': ['legalou', 'legal ou', 'ליגלא', 'ליגאל א', 'לגאל אא', 'ליגל א', 'ליגלאא']
+    'legaloutfit': ['legalou', 'legal ou', 'ליגלא', 'ליגאל א', 'לגאל אא', 'ליגל א', 'ליגלאא'],
+    'reebok': ['reebok', 'ריבוק'],
+    'havaianas': ['הוויאנאס', 'הוויאנס',]
   };
 
-  private HEBREW_COLOR_SYNONYMS = {
-    'red': ['אדום', 'אדומה', 'אדומים', 'אדומות'],
-    'black': ['שחור', 'שחורה', 'שחורים', 'שחורות'],
-    'white': ['לבן', 'לבנה', 'לבנים', 'לבנות'],
-    'blue': ['כחול', 'כחולה', 'כחולים', 'כחולות'],
-    'green': ['ירוק', 'ירוקה', 'ירוקים', 'ירוקות'],
-    'yellow': ['צהוב', 'צהובה', 'צהובים', 'צהובות'],
-    'pink': ['ורוד', 'ורודה', 'ורודים', 'ורודות'],
-    'purple': ['סגול', 'סגולה', 'סגולים', 'סגולות'],
-    'orange': ['כתום', 'כתומה', 'כתומים', 'כתומות'],
-    'brown': ['חום', 'חומה', 'חומים', 'חומות'],
-    'grey': ['אפור', 'אפורה', 'אפורים', 'אפורות', 'אפרפר'],
-    'gray': ['אפור', 'אפורה', 'אפורים', 'אפורות', 'אפרפר'],
-    'beige': ['בז׳', 'בז', 'בזים', 'בזות'],
-    'navy': ['נייבי', 'כחול כהה'],
-    'cream': ['קרם', 'שמנת'],
-    'khaki': ['חאקי'],
-    'burgundy': ['בורדו'],
-    'silver': ['כסף', 'כסופה', 'כסופים', 'כסופות'],
-    'gold': ['זהב', 'זהובה', 'זהובים', 'זהובות'],
-    'multi': ['צבעוני', 'צבעונית', 'צבעוניים', 'צבעוניות', 'מולטי'],
-    'mauve': ['סגלגל', 'סגלגלה', 'סגלגלים', 'סגלגלות'],
-    'teal': ['טורקיז'],
-    'coral': ['אלמוג', 'קורל'],
-    'mint': ['מנטה'],
-    'lavender': ['לבנדר', 'לוונדר', 'לונדר'],
-    'stone': ['אבן']
-  };
+  private HEBREW_COLOR_SYNONYMS = getColorSynonyms();
 
   // --- Hebrew price extraction ---
   private extractHebrewPrice(lowerQuery: string): { minPrice: number | null, maxPrice: number | null } {
@@ -204,7 +176,7 @@ export class SearchService {
     const foundColors = new Set<string>();
     Object.entries(this.HEBREW_COLOR_SYNONYMS).forEach(([color, syns]) => {
       if (!dbColors.includes(color.toLowerCase())) return;
-      if (syns.some(h => lowerQuery.includes(h))) foundColors.add(ucfirst(color));
+      if (syns.he.some(h => lowerQuery.includes(h))) foundColors.add(ucfirst(color));
     });
     return Array.from(foundColors);
   }
@@ -372,6 +344,10 @@ export class SearchService {
       filters.gender = 'Unisex';
     }
 
+    if (filters.categories.join(',').includes('Electronics')) { 
+      filters.gender = 'Unisex';
+    }
+
     // Extract general keywords (words that aren't colors, prices, or categories or brands)
     const words = query.toLowerCase().split(/\s+/);
     const foundKeywords = new Set<string>();
@@ -433,6 +409,7 @@ export class SearchService {
       { key: 'Derococo', patterns: [/derococo/, /דרוקוקו/, /דרוקוק/, /derococ/, /de rococ/] },
       { key: 'Addict', patterns: [/addict/, /אדיקט/] },
       { key: 'Mantra', patterns: [/mantra/, /מנטרה/] },
+      { key: 'KSP', patterns: [/ksp/, /קיי אס פי/, /קייאספי/, /k\.s\.p/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))

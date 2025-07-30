@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from './product.entity';
 import { UserGuard } from '../auth/user.guard';
@@ -27,19 +38,40 @@ export class ProductController {
     const gender = query.gender;
     const isFavourite = query.isFavourite;
     const withPriceChange = query.withPriceChange;
-    const filters: any = { offset, limit, color, brand, category, priceFrom, priceTo, sort, search, gender, withPriceChange };
-    if (isFavourite !== undefined) filters.isFavourite = isFavourite === 'true' || isFavourite === '';
-    const userId = filters.isFavourite && req && req.user ? req.user.sub : undefined;
+    const filters: any = {
+      offset,
+      limit,
+      color,
+      brand,
+      category,
+      priceFrom,
+      priceTo,
+      sort,
+      search,
+      gender,
+      withPriceChange,
+    };
+    if (isFavourite !== undefined)
+      filters.isFavourite = isFavourite === 'true' || isFavourite === '';
+    const userId =
+      filters.isFavourite && req && req.user ? req.user.sub : undefined;
     console.time('findAll Execution Time');
-    const result = await this.productService.findAll({ ...query, sort }, userId);
+    const result = await this.productService.findAll(
+      { ...query, sort },
+      userId,
+    );
     console.timeEnd('findAll Execution Time');
 
-    return result;  }
+    return result;
+  }
 
   @Get('by-ids')
   async findByIds(@Query('ids') ids: string) {
     if (!ids) return { data: [] };
-    const idArr = ids.split(',').map(id => Number(id)).filter(Boolean);
+    const idArr = ids
+      .split(',')
+      .map((id) => Number(id))
+      .filter(Boolean);
     const products = await this.productService.findByIds(idArr);
     return { data: products };
   }
@@ -58,4 +90,4 @@ export class ProductController {
   remove(@Param('id') id: string) {
     return this.productService.remove(+id);
   }
-} 
+}

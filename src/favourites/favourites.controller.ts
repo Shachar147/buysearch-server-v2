@@ -1,4 +1,13 @@
-import { Controller, Post, Delete, Get, Body, Param, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Delete,
+  Get,
+  Body,
+  Param,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { FavouritesService } from './favourites.service';
 import { UserGuard } from '../auth/user.guard';
 
@@ -14,9 +23,12 @@ export class FavouritesController {
   }
 
   @Delete(':productId')
-    async removeFromFavourite(@Req() req, @Param('productId') productId: number) {
+  async removeFromFavourite(@Req() req, @Param('productId') productId: number) {
     const userId = req.user.sub;
-    return this.favouritesService.removeFromFavourite(userId, Number(productId));
+    return this.favouritesService.removeFromFavourite(
+      userId,
+      Number(productId),
+    );
   }
 
   @Get()
@@ -28,6 +40,11 @@ export class FavouritesController {
   @Get('is-favourite/:productId')
   async isFavourite(@Req() req, @Param('productId') productId: number) {
     const userId = req.user.sub;
-    return { isFavourite: await this.favouritesService.isFavourite(userId, Number(productId)) };
+    return {
+      isFavourite: await this.favouritesService.isFavourite(
+        userId,
+        Number(productId),
+      ),
+    };
   }
-} 
+}

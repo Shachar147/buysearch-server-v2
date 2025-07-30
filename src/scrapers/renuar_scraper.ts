@@ -2,9 +2,14 @@ import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+} from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [
@@ -18,13 +23,13 @@ const CATEGORIES: CategoryType[] = [
     id: 'men-sale',
     name: 'Sale',
     gender: 'Men',
-    url: 'https://www.renuar.co.il/men/midseasonsale/?page=men'
+    url: 'https://www.renuar.co.il/men/midseasonsale/?page=men',
   },
   {
     id: 'men-shoes',
     name: Category.SHOES,
     gender: 'Men',
-    url: 'https://www.renuar.co.il/men/shoes/?page=men'
+    url: 'https://www.renuar.co.il/men/shoes/?page=men',
   },
   {
     id: 'men-tshirts',
@@ -166,14 +171,15 @@ class RenuarScraper extends BaseScraper {
     return products;
   }
 
-    private async fetchRenuarPage(url: string): Promise<string> {
+  private async fetchRenuarPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
       timeout: 60000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
@@ -191,10 +197,15 @@ class RenuarScraper extends BaseScraper {
       let url = elem.find('a').attr('href') || '';
       if (url && !url.startsWith('http')) url = BASE_URL + url;
       // Image: first <img> src
-      let image = elem.find('img.tile-image').attr('data-src') || elem.find('img.tile-image').attr('src') || '';
+      let image =
+        elem.find('img.tile-image').attr('data-src') ||
+        elem.find('img.tile-image').attr('src') ||
+        '';
       if (image && image.startsWith('//')) image = 'https:' + image;
       // Price: look for sale and regular price
-      let price = null, oldPrice = null, salePercent = null;
+      let price = null,
+        oldPrice = null,
+        salePercent = null;
       // Try to find sale price and old price
       const priceText = elem.text();
       const priceMatches = priceText.match(/₪\s?(\d+[.,]?\d*)/g);
@@ -213,9 +224,17 @@ class RenuarScraper extends BaseScraper {
       }
       const brand = normalizeBrandName('Renuar');
       // Color extraction: extract from data-display-value on .producttitle-swatch
-      const colorNames = elem.find('.swatch-circle').map((_, c) => $(c).attr('alt')).get().filter(Boolean);
-    //   console.log(url, colorNames);
-      const colors = extractColorsWithHebrew(title, colorNames, 'renuar_scraper');
+      const colorNames = elem
+        .find('.swatch-circle')
+        .map((_, c) => $(c).attr('alt'))
+        .get()
+        .filter(Boolean);
+      //   console.log(url, colorNames);
+      const colors = extractColorsWithHebrew(
+        title,
+        colorNames,
+        'renuar_scraper',
+      );
       const categories = [category.name];
       const gender = category.gender;
       const product = this.createProduct({
@@ -252,4 +271,4 @@ if (require.main === module) {
   });
 }
 
-export { main, RenuarScraper }; 
+export { main, RenuarScraper };

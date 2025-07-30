@@ -1,10 +1,10 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, extractColorsWithHebrew } from './base/scraper_utils';
-
+import { Product, calcSalePercent } from './base/scraper_utils';
+import { extractColorsWithHebrew } from '../color.constants';
 
 const BASE_URL = 'https://www.zarahome.com';
 
@@ -164,17 +164,22 @@ export class ZaraHomeScraper extends BaseScraper {
     return CATEGORIES;
   }
 
-  private parseZaraHomeProduct(productElem: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
+  private parseZaraHomeProduct(
+    productElem: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | undefined {
     // Title
     const title = productElem.find('.product-info__product-name').text().trim();
 
     // URL
-    let url = productElem.find('h2.product-info__product-name a').attr('href') || '';
+    let url =
+      productElem.find('h2.product-info__product-name a').attr('href') || '';
     if (url && !url.startsWith('http')) url = BASE_URL + url;
 
     // Images
     let images: string[] = [];
-    let imagesAlts = [];
+    const imagesAlts = [];
     productElem.find('.product-item__image-container img').each((_, img) => {
       let src = $(img).attr('src');
       if (src && src.startsWith('//')) src = 'https:' + src;
@@ -185,19 +190,35 @@ export class ZaraHomeScraper extends BaseScraper {
     });
     images = images.filter(Boolean);
 
-        // Price and Old Price (handle ranges like '25,999 ₪ - 31,999 ₪')
-    let price = null, oldPrice = null;
-    let minPrice = null, maxPrice = null, minOldPrice = null, maxOldPrice = null;
-    const priceTextRaw = productElem.find('.price-single__current').first().text();
-    const oldPriceTextRaw = productElem.find('.price-single__old').first().text();
+    // Price and Old Price (handle ranges like '25,999 ₪ - 31,999 ₪')
+    let price = null,
+      oldPrice = null;
+    let minPrice = null,
+      maxPrice = null,
+      minOldPrice = null,
+      maxOldPrice = null;
+    const priceTextRaw = productElem
+      .find('.price-single__current')
+      .first()
+      .text();
+    const oldPriceTextRaw = productElem
+      .find('.price-single__old')
+      .first()
+      .text();
 
     // Helper to extract min/max from a price string
-    function extractMinMaxPrice(text: string): { min: number|null, max: number|null } {
+    function extractMinMaxPrice(text: string): {
+      min: number | null;
+      max: number | null;
+    } {
       if (!text) return { min: null, max: null };
       // Remove currency and trim
       const cleaned = text.replace(/[^0-9,.-]/g, '').replace(/\s+/g, '');
       // Split on '-' for range
-      const parts = cleaned.split('-').map(s => s.trim()).filter(Boolean);
+      const parts = cleaned
+        .split('-')
+        .map((s) => s.trim())
+        .filter(Boolean);
       if (parts.length === 2) {
         const min = parseFloat(parts[0].replace(/,/g, ''));
         const max = parseFloat(parts[1].replace(/,/g, ''));
@@ -209,11 +230,13 @@ export class ZaraHomeScraper extends BaseScraper {
       return { min: null, max: null };
     }
 
-    const { min: minPriceVal, max: maxPriceVal } = extractMinMaxPrice(priceTextRaw);
+    const { min: minPriceVal, max: maxPriceVal } =
+      extractMinMaxPrice(priceTextRaw);
     minPrice = minPriceVal;
     maxPrice = maxPriceVal;
     price = maxPrice;
-    const { min: minOldPriceVal, max: maxOldPriceVal } = extractMinMaxPrice(oldPriceTextRaw);
+    const { min: minOldPriceVal, max: maxOldPriceVal } =
+      extractMinMaxPrice(oldPriceTextRaw);
     minOldPrice = minOldPriceVal;
     maxOldPrice = maxOldPriceVal;
     oldPrice = maxOldPrice;
@@ -230,12 +253,15 @@ export class ZaraHomeScraper extends BaseScraper {
       if (alt) colorAlts.push(alt.trim());
     });
     // console.log("image alts", imagesAlts);
-    const colors = extractColorsWithHebrew(title + '-' + imagesAlts.join(' '), colorAlts, 'zarahome_scraper');
+    const colors = extractColorsWithHebrew(
+      title + '-' + imagesAlts.join(' '),
+      colorAlts,
+      'zarahome_scraper',
+    );
     const currency = 'ILS';
     const brand = 'ZaraHome';
     const categories = [category.name];
     const gender = category.gender;
-
 
     if (!title || !url || price == undefined) return undefined;
 
@@ -258,26 +284,34 @@ export class ZaraHomeScraper extends BaseScraper {
   protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     this.logProgress(`Fetching ${category.url}`);
     const products: Product[] = [];
-    
+
     const finalHtml = await fetchPageWithBrowser(category.url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
       timeout: 60000,
       onPageReady: async (page) => {
         try {
-          await page.waitForSelector('.product-item-container', { timeout: 20000 });
+          await page.waitForSelector('.product-item-container', {
+            timeout: 20000,
+          });
         } catch (e) {
           this.logProgress('Timeout waiting for .product-item-container');
         }
 
-        await new Promise(res => setTimeout(res, 1500)); // Short delay after scroll
+        await new Promise((res) => setTimeout(res, 1500)); // Short delay after scroll
 
         // Infinite scroll: keep scrolling and waiting for new products
         let reachedEnd = false;
         let scrollIteration = 1;
         while (!reachedEnd) {
-          const productsBefore = await page.$$eval('.product-item-container', els => els.length);
-          this.logProgress(`Scroll iteration ${scrollIteration}: ${productsBefore} products loaded. Scrolling .sidenav-main-content to bottom...`);
+          const productsBefore = await page.$$eval(
+            '.product-item-container',
+            (els) => els.length,
+          );
+          this.logProgress(
+            `Scroll iteration ${scrollIteration}: ${productsBefore} products loaded. Scrolling .sidenav-main-content to bottom...`,
+          );
           await page.evaluate(() => {
             const el = document.querySelector('.sidenav-main-content');
             if (el) {
@@ -286,24 +320,35 @@ export class ZaraHomeScraper extends BaseScraper {
               window.dispatchEvent(new Event('mousemove'));
             }
           });
-          await new Promise(res => setTimeout(res, 500)); // Short delay after scroll
+          await new Promise((res) => setTimeout(res, 500)); // Short delay after scroll
           this.logProgress('Waiting 4 seconds for new items to load...');
-          await new Promise(res => setTimeout(res, 4000)); // Wait 7 seconds for new items to load
-          const productsAfter = await page.$$eval('.product-item-container', els => els.length);
+          await new Promise((res) => setTimeout(res, 4000)); // Wait 7 seconds for new items to load
+          const productsAfter = await page.$$eval(
+            '.product-item-container',
+            (els) => els.length,
+          );
           if (productsAfter > productsBefore) {
-            this.logProgress(`New products loaded: ${productsAfter - productsBefore}. Total: ${productsAfter}`);
+            this.logProgress(
+              `New products loaded: ${
+                productsAfter - productsBefore
+              }. Total: ${productsAfter}`,
+            );
           } else {
-            this.logProgress('No new products loaded after scroll. Stopping infinite scroll.');
+            this.logProgress(
+              'No new products loaded after scroll. Stopping infinite scroll.',
+            );
             reachedEnd = true;
           }
           scrollIteration++;
         }
-      }
+      },
     });
-    
+
     const $ = cheerio.load(finalHtml);
     const allProductElems = $('.product-item-container');
-    this.logProgress(`Total products found after scrolling: ${allProductElems.length}`);
+    this.logProgress(
+      `Total products found after scrolling: ${allProductElems.length}`,
+    );
     for (let i = 0; i < allProductElems.length; i++) {
       const productElem = $(allProductElems[i]);
       const product = this.parseZaraHomeProduct(productElem, category, $);
@@ -327,4 +372,4 @@ if (require.main === module) {
     console.error(e);
     process.exit(1);
   });
-} 
+}

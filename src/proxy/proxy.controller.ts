@@ -15,13 +15,14 @@ export class ProxyController {
       const response = await axios.get(url, {
         responseType: 'stream',
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-          'Referer': 'https://www.newbalance.co.il/',
-          'Origin': 'https://www.newbalance.co.il',
-          'Accept': 'image/webp,image/apng,image/*,*/*;q=0.8',
+          'User-Agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          Referer: 'https://www.newbalance.co.il/',
+          Origin: 'https://www.newbalance.co.il',
+          Accept: 'image/webp,image/apng,image/*,*/*;q=0.8',
           'Accept-Language': 'he-IL,he;q=0.9,en;q=0.8',
           'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
+          Pragma: 'no-cache',
         },
         timeout: 10000,
       });
@@ -43,4 +44,4 @@ export class ProxyController {
       res.status(500).json({ error: 'Failed to proxy image' });
     }
   }
-} 
+}

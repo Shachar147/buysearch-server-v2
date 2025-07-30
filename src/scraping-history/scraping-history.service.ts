@@ -1,7 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ScrapingHistory, ScrapingType, ScrapingStatus } from './scraping-history.entity';
+import {
+  ScrapingHistory,
+  ScrapingType,
+  ScrapingStatus,
+} from './scraping-history.entity';
 import * as moment from 'moment';
 
 export { ScrapingType, ScrapingStatus } from './scraping-history.entity';
@@ -15,7 +19,7 @@ export class ScrapingHistoryService {
 
   async createScrapingSession(
     scraper: string,
-    type: ScrapingType = ScrapingType.MANUAL
+    type: ScrapingType = ScrapingType.MANUAL,
   ): Promise<ScrapingHistory> {
     const session = this.scrapingHistoryRepository.create({
       scraper,
@@ -25,7 +29,7 @@ export class ScrapingHistoryService {
       createdItems: 0,
       updatedItems: 0,
     });
-    
+
     return this.scrapingHistoryRepository.save(session);
   }
 
@@ -33,13 +37,13 @@ export class ScrapingHistoryService {
     id: number,
     createdItems: number,
     updatedItems: number,
-    progress?: number
+    progress?: number,
   ): Promise<ScrapingHistory> {
     const updateData: any = {
       createdItems,
       updatedItems,
     };
-    
+
     if (progress !== undefined) {
       updateData.progress = progress;
     }
@@ -47,9 +51,9 @@ export class ScrapingHistoryService {
     if (progress != 100) {
       updateData.status = ScrapingStatus.IN_PROGRESS;
     }
-    
+
     await this.scrapingHistoryRepository.update(id, updateData);
-    
+
     return this.scrapingHistoryRepository.findOne({ where: { id } });
   }
 
@@ -58,15 +62,19 @@ export class ScrapingHistoryService {
     createdItems: number,
     updatedItems: number,
     totalItems?: number,
-    missingItems?: number
+    missingItems?: number,
   ): Promise<ScrapingHistory> {
-    const session = await this.scrapingHistoryRepository.findOne({ where: { id } });
+    const session = await this.scrapingHistoryRepository.findOne({
+      where: { id },
+    });
     if (!session) {
       throw new Error(`Scraping session with id ${id} not found`);
     }
 
     const endTime = new Date();
-    const totalSeconds = Math.round((endTime.getTime() - session.startTime.getTime()) / 1000);
+    const totalSeconds = Math.round(
+      (endTime.getTime() - session.startTime.getTime()) / 1000,
+    );
 
     await this.scrapingHistoryRepository.update(id, {
       status: ScrapingStatus.FINISHED,
@@ -74,7 +82,7 @@ export class ScrapingHistoryService {
       totalSeconds,
       createdItems,
       updatedItems,
-      totalItems: totalItems ?? (createdItems + updatedItems),
+      totalItems: totalItems ?? createdItems + updatedItems,
       missingItems: missingItems ?? 0,
     });
 
@@ -84,14 +92,18 @@ export class ScrapingHistoryService {
   async failScrapingSession(
     id: number,
     createdItems: number,
-    updatedItems: number
+    updatedItems: number,
   ): Promise<ScrapingHistory> {
-    const session = await this.scrapingHistoryRepository.findOne({ where: { id } });
+    const session = await this.scrapingHistoryRepository.findOne({
+      where: { id },
+    });
     if (!session) {
       throw new Error(`Scraping session with id ${id} not found`);
     }
     const endTime = new Date();
-    const totalSeconds = Math.round((endTime.getTime() - session.startTime.getTime()) / 1000);
+    const totalSeconds = Math.round(
+      (endTime.getTime() - session.startTime.getTime()) / 1000,
+    );
     await this.scrapingHistoryRepository.update(id, {
       status: ScrapingStatus.FAILED,
       endTime,
@@ -102,7 +114,7 @@ export class ScrapingHistoryService {
     return this.scrapingHistoryRepository.findOne({ where: { id } });
   }
 
-  async findAll(limit: number = 50): Promise<ScrapingHistory[]> {
+  async findAll(limit = 50): Promise<ScrapingHistory[]> {
     return this.scrapingHistoryRepository.find({
       order: { startTime: 'DESC' },
       take: limit,
@@ -113,7 +125,7 @@ export class ScrapingHistoryService {
     return this.scrapingHistoryRepository.findOne({ where: { id } });
   }
 
-  async findByScraper(scraper: string, limit: number = 20): Promise<ScrapingHistory[]> {
+  async findByScraper(scraper: string, limit = 20): Promise<ScrapingHistory[]> {
     return this.scrapingHistoryRepository.find({
       where: { scraper },
       order: { startTime: 'DESC' },
@@ -130,7 +142,8 @@ export class ScrapingHistoryService {
 
   // Get all unique scrapers
   async getAllScrapers(): Promise<string[]> {
-    const result = await this.scrapingHistoryRepository.createQueryBuilder('sh')
+    const result = await this.scrapingHistoryRepository
+      .createQueryBuilder('sh')
       .select('DISTINCT sh.scraper', 'scraper')
       .getRawMany();
     return result.map((row: { scraper: string }) => row.scraper);
@@ -145,18 +158,18 @@ export class ScrapingHistoryService {
 
     // @ts-ignore
     return results.map((r) => {
+      // Calculate rate (items per minute)
+      const now = r.endTime ?? new Date();
+      const start = new Date(r.startTime);
+      const elapsedMinutes = (now.getTime() - start.getTime()) / 60000;
+      const itemsScanned = (r.createdItems || 0) + (r.updatedItems || 0);
+      const ratePerMinute =
+        elapsedMinutes > 0 ? itemsScanned / elapsedMinutes : null;
 
-       // Calculate rate (items per minute)
-       const now = r.endTime ?? new Date();
-       const start = new Date(r.startTime);
-       const elapsedMinutes = (now.getTime() - start.getTime()) / 60000;
-       const itemsScanned = (r.createdItems || 0) + (r.updatedItems || 0);
-       const ratePerMinute = elapsedMinutes > 0 ? (itemsScanned / elapsedMinutes) : null;
-
-       return {
+      return {
         ...r,
-        ratePerMinute
-       };
+        ratePerMinute,
+      };
     });
   }
 
@@ -172,26 +185,29 @@ export class ScrapingHistoryService {
     const inProgress = await this.getInProgressSessions(scraper);
     const now = moment.utc();
     const expiryTime = now.clone().subtract(15, 'minutes');
-  
+
     // console.log(scraper, inProgress?.[0]?.updatedAt, moment.utc(inProgress?.[0]?.updatedAt), expiryTime);
 
-    const toCancel = inProgress.filter((session, index) =>
-      session && (
-        index > 0 ||
-        session.updatedAt && moment.utc(session.updatedAt).isBefore(expiryTime)
-      )
+    const toCancel = inProgress.filter(
+      (session, index) =>
+        session &&
+        (index > 0 ||
+          (session.updatedAt &&
+            moment.utc(session.updatedAt).isBefore(expiryTime))),
     );
-  
-    const ids = toCancel.map(s => s.id);
-  
+
+    const ids = toCancel.map((s) => s.id);
+
     if (ids.length > 0) {
-      console.log(`Cancelling ${ids.length} in-progress sessions for ${scraper}`);
+      console.log(
+        `Cancelling ${ids.length} in-progress sessions for ${scraper}`,
+      );
       await this.scrapingHistoryRepository.update(ids, {
         status: ScrapingStatus.FAILED,
-        endTime: new Date()
+        endTime: new Date(),
       });
     }
-  
+
     return ids;
   }
 }

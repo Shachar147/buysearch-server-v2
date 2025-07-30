@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, Request, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+  Request,
+  Patch,
+} from '@nestjs/common';
 import { SavedFilterService } from './saved-filter.service';
 import { UserGuard } from '../auth/user.guard';
 
@@ -20,7 +31,10 @@ export class SavedFilterController {
   }
 
   @Post()
-  async create(@Body() body: { name: string; filters: any }, @Request() req: any) {
+  async create(
+    @Body() body: { name: string; filters: any },
+    @Request() req: any,
+  ) {
     const userId = req.user.sub;
     return this.savedFilterService.create(userId, body.name, body.filters);
   }
@@ -32,7 +46,12 @@ export class SavedFilterController {
     @Request() req: any,
   ) {
     const userId = req.user.sub;
-    return this.savedFilterService.update(parseInt(id), userId, body.name, body.filters);
+    return this.savedFilterService.update(
+      parseInt(id),
+      userId,
+      body.name,
+      body.filters,
+    );
   }
 
   @Delete(':id')
@@ -47,4 +66,4 @@ export class SavedFilterController {
     const userId = req.user.sub;
     return this.savedFilterService.setLastUsed(parseInt(id), userId);
   }
-} 
+}

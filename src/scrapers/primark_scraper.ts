@@ -1,8 +1,13 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
-import { Product, calcSalePercent, extractColors, normalizeBrandName } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+} from './base/scraper_utils';
 import { Category } from '../category.constants';
+import { extractColors } from '../color.constants';
 
 const CATEGORIES: BaseCategory[] = [
   {
@@ -76,7 +81,7 @@ const CATEGORIES: BaseCategory[] = [
     name: 'New',
     gender: 'Women',
     url: 'https://www.primark.com/en-us/c/women/occasionwear',
-  }
+  },
 ];
 
 export class PrimarkScraper extends BaseScraper {
@@ -89,7 +94,7 @@ export class PrimarkScraper extends BaseScraper {
 
   protected async scrapeCategory(category: BaseCategory): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     let prevPageUrls: string[] = [];
     const MAX_PAGES = 50;
@@ -111,7 +116,11 @@ export class PrimarkScraper extends BaseScraper {
         }
       });
       console.log(`Found ${pageProducts.length} products on this page`);
-      if (prevPageUrls.length && pageUrls.length && prevPageUrls.join(',') === pageUrls.join(',')) {
+      if (
+        prevPageUrls.length &&
+        pageUrls.length &&
+        prevPageUrls.join(',') === pageUrls.join(',')
+      ) {
         hasMore = false;
         break;
       }
@@ -125,24 +134,35 @@ export class PrimarkScraper extends BaseScraper {
 
   private async fetchPrimarkPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
-      await page.waitForSelector('[id^="product-card-"]', { timeout: 10000 }).catch(() => {
-        this.logProgress('No product cards found on page, might be the last page.');
-      });
-    }
+        await page
+          .waitForSelector('[id^="product-card-"]', { timeout: 10000 })
+          .catch(() => {
+            this.logProgress(
+              'No product cards found on page, might be the last page.',
+            );
+          });
+      },
     });
   }
 
-  private parsePrimarkProduct($: cheerio.CheerioAPI, el: any, category: BaseCategory): Product | undefined {
+  private parsePrimarkProduct(
+    $: cheerio.CheerioAPI,
+    el: any,
+    category: BaseCategory,
+  ): Product | undefined {
     const $el = $(el);
     // Title
     const title = $el.find('h2[data-testautomation-id="name"] a').text().trim();
     if (!title) return undefined;
     // URL
-    const relativeUrl = $el.find('a[data-testautomation-id="link"]').attr('href');
+    const relativeUrl = $el
+      .find('a[data-testautomation-id="link"]')
+      .attr('href');
     const url = relativeUrl ? `https://www.primark.com${relativeUrl}` : '';
     if (!url) return undefined;
     // Image
@@ -151,9 +171,12 @@ export class PrimarkScraper extends BaseScraper {
     if (imgSrc) images.push(imgSrc);
     // Price
     let price: number | null = null;
-    let oldPrice: number | null = null;
+    const oldPrice: number | null = null;
     let currency = 'USD';
-    const priceText = $el.find('p[data-testautomation-id="price"] a').text().trim();
+    const priceText = $el
+      .find('p[data-testautomation-id="price"] a')
+      .text()
+      .trim();
     if (priceText) {
       const match = priceText.replace(/[$,]/g, '').match(/\d+(\.\d+)?/);
       if (match) price = parseFloat(match[0]);
@@ -161,13 +184,19 @@ export class PrimarkScraper extends BaseScraper {
     }
     // Color extraction: try to extract from color links
     let colors: string[] = [];
-    $el.find('p[data-testautomation-id="colors-number"] a').each((_, colorLink) => {
-      const colorText = $(colorLink).text().trim().toLowerCase();
-      // Only push if it's a color name, not a number or 'color(s)'
-      if (colorText && isNaN(Number(colorText)) && !/color(s)?/i.test(colorText)) {
-        colors.push(colorText);
-      }
-    });
+    $el
+      .find('p[data-testautomation-id="colors-number"] a')
+      .each((_, colorLink) => {
+        const colorText = $(colorLink).text().trim().toLowerCase();
+        // Only push if it's a color name, not a number or 'color(s)'
+        if (
+          colorText &&
+          isNaN(Number(colorText)) &&
+          !/color(s)?/i.test(colorText)
+        ) {
+          colors.push(colorText);
+        }
+      });
     // If no color links, fallback to extracting from title
     if (colors.length === 0) {
       colors = extractColors(title, []);
@@ -203,4 +232,4 @@ async function main() {
 
 if (require.main === module) {
   main();
-} 
+}

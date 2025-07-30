@@ -24,7 +24,10 @@ export class AuthService {
     return { token };
   }
 
-  async register(username: string, password: string): Promise<{ token: string }> {
+  async register(
+    username: string,
+    password: string,
+  ): Promise<{ token: string }> {
     if (!username || username.length < 4) {
       const err: any = new Error('usernameTooShort');
       err.code = 'usernameTooShort';
@@ -56,7 +59,7 @@ export class AuthService {
   }): Promise<{ token: string; isNewUser: boolean }> {
     // First, try to find user by Google ID
     let user = await this.userService.findByGoogleId(googleData.googleId);
-    
+
     if (user) {
       // User exists with this Google ID
       await this.userService.updateLastLoginAt(user.id);
@@ -67,10 +70,13 @@ export class AuthService {
 
     // Check if user exists with this email
     user = await this.userService.findByEmail(googleData.email);
-    
+
     if (user) {
       // Link Google account to existing user
-      user = await this.userService.linkGoogleToExistingUser(user.id, googleData);
+      user = await this.userService.linkGoogleToExistingUser(
+        user.id,
+        googleData,
+      );
       await this.userService.updateLastLoginAt(user.id);
       const payload = { sub: user.id, username: user.username };
       const token = await this.jwtService.signAsync(payload);
@@ -88,4 +94,4 @@ export class AuthService {
   async verifyToken(token: string): Promise<any> {
     return this.jwtService.verifyAsync(token);
   }
-} 
+}

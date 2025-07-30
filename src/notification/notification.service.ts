@@ -38,23 +38,30 @@ export class NotificationService {
     if (price === null || price === undefined) {
       return `${this.getCurrencySymbol(currency)}0.00`;
     }
-    
+
     // Convert to number and handle any type issues
-    const numericPrice = typeof price === 'string' ? parseFloat(price) : Number(price);
-    
+    const numericPrice =
+      typeof price === 'string' ? parseFloat(price) : Number(price);
+
     if (isNaN(numericPrice)) {
       return `${this.getCurrencySymbol(currency)}0.00`;
     }
-    
+
     const symbol = this.getCurrencySymbol(currency);
     return `${symbol}${numericPrice.toFixed(2)}`;
   }
 
-  async createPriceChangeNotification(productId: number, oldPrice: number, newPrice: number): Promise<void> {
+  async createPriceChangeNotification(
+    productId: number,
+    oldPrice: number,
+    newPrice: number,
+  ): Promise<void> {
     // Convert prices to numbers to ensure proper calculations
-    const oldPriceNum = typeof oldPrice === 'string' ? parseFloat(oldPrice) : Number(oldPrice);
-    const newPriceNum = typeof newPrice === 'string' ? parseFloat(newPrice) : Number(newPrice);
-    
+    const oldPriceNum =
+      typeof oldPrice === 'string' ? parseFloat(oldPrice) : Number(oldPrice);
+    const newPriceNum =
+      typeof newPrice === 'string' ? parseFloat(newPrice) : Number(newPrice);
+
     const priceChange = newPriceNum - oldPriceNum;
     const priceChangePercent = ((priceChange / oldPriceNum) * 100).toFixed(1);
     const changeType = priceChange > 0 ? 'increased' : 'dropped';
@@ -75,13 +82,26 @@ export class NotificationService {
       return;
     }
 
-    const userIds = favouriteUsers.map(f => f.userId);
+    console.log("Creating notification for price change", {
+      productId,
+      oldPrice,
+      newPrice,
+      // priceChange,
+      // priceChangePercent,
+      changeType,
+      // changeAmount,
+      // favouriteUsers,
+    });
+
+    const userIds = favouriteUsers.map((f) => f.userId);
     const usersWithFavourite = await this.userRepository
       .createQueryBuilder('user')
       .where('user.id IN (:...userIds)', { userIds })
       .getMany();
 
-    const product = await this.productRepository.findOne({ where: { id: productId } });
+    const product = await this.productRepository.findOne({
+      where: { id: productId },
+    });
     if (!product) {
       return;
     }
@@ -90,11 +110,13 @@ export class NotificationService {
     const oldPriceFormatted = this.formatPrice(oldPrice, currency);
     const newPriceFormatted = this.formatPrice(newPrice, currency);
     const changeAmountFormatted = this.formatPrice(changeAmount, currency);
-    
-    const message = `${product.title}\nPrice ${changeType} by ${Math.abs(Number(priceChangePercent))}%\nFrom ${oldPriceFormatted} to ${newPriceFormatted}`;
+
+    const message = `${product.title}\nPrice ${changeType} by ${Math.abs(
+      Number(priceChangePercent),
+    )}%\nFrom ${oldPriceFormatted} to ${newPriceFormatted}`;
 
     // Create notifications for all users who have this product favourited
-    const notifications = usersWithFavourite.map(user => {
+    const notifications = usersWithFavourite.map((user) => {
       const notification = new Notification();
       notification.message = message;
       notification.userId = user.id;
@@ -112,7 +134,11 @@ export class NotificationService {
       .execute();
   }
 
-  async getUserNotifications(userId: number, page: number = 1, limit: number = 10): Promise<{
+  async getUserNotifications(
+    userId: number,
+    page = 1,
+    limit = 10,
+  ): Promise<{
     notifications: Notification[];
     total: number;
     hasMore: boolean;
@@ -140,7 +166,10 @@ export class NotificationService {
       .createQueryBuilder()
       .update(Notification)
       .set({ seenAt: new Date() })
-      .where('id = :notificationId AND userId = :userId', { notificationId, userId })
+      .where('id = :notificationId AND userId = :userId', {
+        notificationId,
+        userId,
+      })
       .execute();
   }
 
@@ -160,4 +189,4 @@ export class NotificationService {
       .where('userId = :userId AND seenAt IS NULL', { userId })
       .execute();
   }
-} 
+}

@@ -1,13 +1,20 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import {
+  fetchPageWithBrowser,
+  handleCookieConsent,
+} from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+  extractCategory,
+} from './base/scraper_utils';
+import { extractColorsWithHebrew } from '../color.constants';
 import * as dotenv from 'dotenv';
 dotenv.config();
-
-
 
 const CATEGORIES: CategoryType[] = [
   {
@@ -87,7 +94,7 @@ const CATEGORIES: CategoryType[] = [
     name: Category.CLOTHING,
     gender: 'Women',
     url: 'https://www.legaloutfit.co.il/en/collections/hental-x-legaloutfit-1',
-  }
+  },
 ];
 
 const BASE_URL = 'https://www.legaloutfit.co.il';
@@ -104,32 +111,40 @@ class LegaloutfitScraper extends BaseScraper {
     return this.scrapeLegaloutfitCategory(category);
   }
 
-    private async fetchLegaloutfitPage(url: string): Promise<string> {
+  private async fetchLegaloutfitPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
         // Handle cookie consent
         // Custom page logic can be added here
-        await handleCookieConsent(page, ['button', 'button.onetrust-close-btn-handler']);
-      }
+        await handleCookieConsent(page, [
+          'button',
+          'button.onetrust-close-btn-handler',
+        ]);
+      },
     });
   }
 
-  private parseLegaloutfitProduct(productCard: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
+  private parseLegaloutfitProduct(
+    productCard: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | undefined {
     try {
       // Extract title
       const title = productCard.find('.product-title').text().trim();
       if (!title) {
-        console.error("Product with no title", productCard.html());
+        console.error('Product with no title', productCard.html());
         return undefined;
       }
 
       // Extract URL
       const url = productCard.find('a.product-card__media').attr('href');
       if (!url) {
-        console.error("Product with no URL", title);
+        console.error('Product with no URL', title);
         return undefined;
       }
       const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
@@ -153,7 +168,9 @@ class LegaloutfitScraper extends BaseScraper {
       }
 
       // Extract compare-at price (original price)
-      const comparePriceElement = productCard.find('compare-at-price .money').first();
+      const comparePriceElement = productCard
+        .find('compare-at-price .money')
+        .first();
       const comparePriceText = comparePriceElement.text().trim();
       let oldPrice: number | null = null;
       if (comparePriceText) {
@@ -163,7 +180,9 @@ class LegaloutfitScraper extends BaseScraper {
 
       // If no sale price found, try to get regular price from price-list
       if (!price) {
-        const regularPriceElement = productCard.find('price-list .money').first();
+        const regularPriceElement = productCard
+          .find('price-list .money')
+          .first();
         const regularPriceText = regularPriceElement.text().trim();
         if (regularPriceText) {
           const match = regularPriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
@@ -197,7 +216,10 @@ class LegaloutfitScraper extends BaseScraper {
       };
 
       if (!title || !fullUrl || !price) {
-        console.error("Product with no title, URL, or price", productCard.html());
+        console.error(
+          'Product with no title, URL, or price',
+          productCard.html(),
+        );
         return;
       }
 
@@ -208,29 +230,35 @@ class LegaloutfitScraper extends BaseScraper {
     }
   }
 
-  private async scrapeLegaloutfitCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeLegaloutfitCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     const MAX_PAGES = 50; // Reasonable limit
 
     while (hasMore && page <= MAX_PAGES) {
       const url = page === 1 ? category.url : `${category.url}?page=${page}`;
       this.logProgress(`Fetching ${url}`);
-      
+
       try {
         const html = await this.fetchLegaloutfitPage(url);
         const $ = cheerio.load(html);
-        
+
         // Find all product cards
         const productCards = $('product-card.product-card');
-        
+
         if (productCards.length === 0) {
-          this.logProgress(`No products found on page ${page}, stopping pagination`);
+          this.logProgress(
+            `No products found on page ${page}, stopping pagination`,
+          );
           break;
         }
 
-        this.logProgress(`Found ${productCards.length} products on page ${page}`);
+        this.logProgress(
+          `Found ${productCards.length} products on page ${page}`,
+        );
 
         const pageProducts: Product[] = [];
         productCards.each((_, card) => {
@@ -243,7 +271,9 @@ class LegaloutfitScraper extends BaseScraper {
         allProducts.push(...pageProducts);
 
         // Check if there's a next page
-        const nextPageLink = $('a[aria-label*="page"][aria-label*="' + (page + 1) + '"]');
+        const nextPageLink = $(
+          'a[aria-label*="page"][aria-label*="' + (page + 1) + '"]',
+        );
         const hasNextPage = nextPageLink.length > 0;
 
         if (!hasNextPage && pageProducts.length === 0) {
@@ -254,17 +284,21 @@ class LegaloutfitScraper extends BaseScraper {
         }
 
         page++;
-        
+
         // Add a small delay to be respectful to the server
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } catch (error) {
-        this.logError(`Error scraping page ${page} for category ${category.name}:`, error);
+        this.logError(
+          `Error scraping page ${page} for category ${category.name}:`,
+          error,
+        );
         break;
       }
     }
 
-    this.logProgress(`Total products found in ${category.name}: ${allProducts.length}`);
+    this.logProgress(
+      `Total products found in ${category.name}: ${allProducts.length}`,
+    );
     return allProducts;
   }
 }
@@ -283,4 +317,4 @@ if (require.main === module) {
   });
 }
 
-export { main, LegaloutfitScraper }; 
+export { main, LegaloutfitScraper };

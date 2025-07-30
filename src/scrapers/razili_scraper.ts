@@ -1,8 +1,14 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractColorsWithHebrew, extractCategory, normalizeCategories } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+  normalizeCategories,
+} from './base/scraper_utils';
+import { extractColorsWithHebrew } from '../color.constants';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -17,143 +23,143 @@ export class RaziliScraper extends BaseScraper {
       id: 'sale-clothing',
       name: Category.CLOTHING,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/sale-%D7%91%D7%92%D7%93%D7%99%D7%9D'
+      url: 'https://www.razili.co.il/collections/sale-%D7%91%D7%92%D7%93%D7%99%D7%9D',
     },
     {
       id: 'sale-shoes',
       name: Category.SHOES,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/new-in-shoes'
+      url: 'https://www.razili.co.il/collections/new-in-shoes',
     },
     {
       id: 'sale-accessories',
       name: Category.ACCESSORIES,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/accessories-new-in'
+      url: 'https://www.razili.co.il/collections/accessories-new-in',
     },
     // New In Categories
     {
       id: 'new-clothing',
       name: Category.CLOTHING,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%91%D7%99%D7%92%D7%95%D7%93-%D7%97%D7%93%D7%A9-%D7%91%D7%90%D7%AA%D7%A8'
+      url: 'https://www.razili.co.il/collections/%D7%91%D7%99%D7%92%D7%95%D7%93-%D7%97%D7%93%D7%A9-%D7%91%D7%90%D7%AA%D7%A8',
     },
     {
       id: 'new-shoes',
       name: Category.SHOES,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%A0%D7%A2%D7%9C%D7%99%D7%99%D7%9D-%D7%97%D7%93%D7%A9-%D7%91%D7%90%D7%AA%D7%A8'
+      url: 'https://www.razili.co.il/collections/%D7%A0%D7%A2%D7%9C%D7%99%D7%99%D7%9D-%D7%97%D7%93%D7%A9-%D7%91%D7%90%D7%AA%D7%A8',
     },
     {
       id: 'new-accessories',
       name: Category.ACCESSORIES,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/accessories'
+      url: 'https://www.razili.co.il/collections/accessories',
     },
     // Clothing Categories
     {
       id: 'pants',
       name: Category.PANTS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%a1%D7%99%D7%99%D7%9D'
+      url: 'https://www.razili.co.il/collections/%D7%9E%D7%9B%D7%A0%D7%a1%D7%99%D7%99%D7%9D',
     },
     {
       id: 'dresses',
       name: Category.DRESSES,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%A9%D7%9E%D7%9C%D7%95%D7%AA'
+      url: 'https://www.razili.co.il/collections/%D7%A9%D7%9E%D7%9C%D7%95%D7%AA',
     },
     {
       id: 'skirts',
       name: Category.SKIRTS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%97%D7%A6%D7%90%D7%99%D7%95%D7%AA'
+      url: 'https://www.razili.co.il/collections/%D7%97%D7%A6%D7%90%D7%99%D7%95%D7%AA',
     },
     {
       id: 'sets',
       name: Category.SETS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%97%D7%9C%D7%99%D7%A4%D7%95%D7%AA-1'
+      url: 'https://www.razili.co.il/collections/%D7%97%D7%9C%D7%99%D7%A4%D7%95%D7%AA-1',
     },
     {
       id: 'overalls',
       name: Category.OVERALLS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%90%D7%95%D7%91%D7%A8%D7%95%D7%9C%D7%99%D7%9D'
+      url: 'https://www.razili.co.il/collections/%D7%90%D7%95%D7%91%D7%A8%D7%95%D7%9C%D7%99%D7%9D',
     },
     {
       id: 'swimwear',
       name: Category.SWIMWEAR,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%91%D7%92%D7%93%D7%99-%D7%99%D7%9D-1'
+      url: 'https://www.razili.co.il/collections/%D7%91%D7%92%D7%93%D7%99-%D7%99%D7%9D-1',
     },
     {
       id: 'jeans',
       name: Category.JEANS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%92%D7%99%D7%A0%D7%A1%D7%99%D7%9D-1'
+      url: 'https://www.razili.co.il/collections/%D7%92%D7%99%D7%A0%D7%A1%D7%99%D7%9D-1',
     },
     {
       id: 'basic',
       name: 'New',
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%91%D7%99%D7%99%D7%A1%D7%99%D7%A7'
+      url: 'https://www.razili.co.il/collections/%D7%91%D7%99%D7%99%D7%A1%D7%99%D7%A7',
     },
     {
       id: 'sport',
       name: Category.SPORT,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/active'
+      url: 'https://www.razili.co.il/collections/active',
     },
     {
       id: 'sweaters',
       name: Category.SWEATERS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%A1%D7%A8%D7%99%D7%92%D7%99%D7%9D-2'
+      url: 'https://www.razili.co.il/collections/%D7%A1%D7%A8%D7%99%D7%92%D7%99%D7%9D-2',
     },
     {
       id: 'sweatshirts',
       name: Category.SWEATERS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%A1%D7%95%D7%95%D7%98%D7%A9%D7%99%D7%A8%D7%98%D7%99%D7%9D-%D7%95%D7%A7%D7%A4%D7%95%D7%A6-%D7%95%D7%A0%D7%99%D7%9D'
+      url: 'https://www.razili.co.il/collections/%D7%A1%D7%95%D7%95%D7%98%D7%A9%D7%99%D7%A8%D7%98%D7%99%D7%9D-%D7%95%D7%A7%D7%A4%D7%95%D7%A6-%D7%95%D7%A0%D7%99%D7%9D',
     },
     {
       id: 'jackets-coats',
       name: Category.JACKETS_COATS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/razili-studio-jackets'
+      url: 'https://www.razili.co.il/collections/razili-studio-jackets',
     },
     // Shoes Categories
     {
       id: 'sneakers',
       name: Category.SNEAKERS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/sneakers'
+      url: 'https://www.razili.co.il/collections/sneakers',
     },
     {
       id: 'sandals',
       name: Category.SANDALS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%A1%D7%A0%D7%93%D7%9C%D7%99%D7%9D-%D7%95%D7%9B%D7%A4%D7%9B%D7%A4%D7%99%D7%9D'
+      url: 'https://www.razili.co.il/collections/%D7%A1%D7%A0%D7%93%D7%9C%D7%99%D7%9D-%D7%95%D7%9B%D7%A4%D7%9B%D7%A4%D7%99%D7%9D',
     },
     {
       id: 'boots',
       name: Category.BOOTS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%9E%D7%92%D7%A4%D7%99%D7%99%D7%9D-1'
+      url: 'https://www.razili.co.il/collections/%D7%9E%D7%92%D7%A4%D7%99%D7%99%D7%9D-1',
     },
     {
       id: 'heels',
       name: Category.HEELS,
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/%D7%A0%D7%A2%D7%9C%D7%99-%D7%A2%D7%A7%D7%91'
+      url: 'https://www.razili.co.il/collections/%D7%A0%D7%A2%D7%9C%D7%99-%D7%A2%D7%A7%D7%91',
     },
     {
       id: 'sale',
       name: 'Sale',
       gender: 'Women',
-      url: 'https://www.razili.co.il/collections/razili-outlet'
-    }
+      url: 'https://www.razili.co.il/collections/razili-outlet',
+    },
   ];
 
   protected getCategories(): CategoryType[] {
@@ -169,22 +175,26 @@ export class RaziliScraper extends BaseScraper {
     this.totalCategories = this.CATEGORIES.length;
   }
 
-  private async scrapeRaziliCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeRaziliCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     this.logProgress(`Fetching ${category.url}`);
-    
+
     try {
       const html = await this.fetchRaziliPage(category.url);
       const $ = cheerio.load(html);
-      
+
       // Find all product items
       const productItems = $('.grid__item.grid-product');
-      
+
       if (productItems.length === 0) {
         this.logProgress(`No products found for category ${category.name}`);
         return [];
       }
 
-      this.logProgress(`Found ${productItems.length} products in ${category.name}`);
+      this.logProgress(
+        `Found ${productItems.length} products in ${category.name}`,
+      );
 
       const products: Product[] = [];
       productItems.each((_, item) => {
@@ -194,32 +204,38 @@ export class RaziliScraper extends BaseScraper {
         }
       });
 
-      this.logProgress(`Successfully parsed ${products.length} products from ${category.name}`);
+      this.logProgress(
+        `Successfully parsed ${products.length} products from ${category.name}`,
+      );
       return products;
-      
     } catch (error) {
       this.logError(`Error scraping category ${category.name}:`, error);
       return [];
     }
   }
 
-    private async fetchRaziliPage(url: string): Promise<string> {
+  private async fetchRaziliPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
       timeout: 60000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
-  private parseRaziliProduct(productItem: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | null {
+  private parseRaziliProduct(
+    productItem: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | null {
     try {
       // Extract title
       const titleElement = productItem.find('.grid-product__title');
       const title = titleElement.text().trim();
-      
+
       if (!title) {
         return null;
       }
@@ -236,15 +252,21 @@ export class RaziliScraper extends BaseScraper {
       // Extract images
       const images: string[] = [];
       const primaryImage = productItem.find('.grid-product__image').attr('src');
-      const secondaryImage = productItem.find('.grid-product__secondary-image img').attr('src');
-      
+      const secondaryImage = productItem
+        .find('.grid-product__secondary-image img')
+        .attr('src');
+
       if (primaryImage) {
         // Convert relative URLs to absolute
-        const fullPrimaryUrl = primaryImage.startsWith('//') ? `https:${primaryImage}` : primaryImage;
+        const fullPrimaryUrl = primaryImage.startsWith('//')
+          ? `https:${primaryImage}`
+          : primaryImage;
         images.push(fullPrimaryUrl);
       }
       if (secondaryImage) {
-        const fullSecondaryUrl = secondaryImage.startsWith('//') ? `https:${secondaryImage}` : secondaryImage;
+        const fullSecondaryUrl = secondaryImage.startsWith('//')
+          ? `https:${secondaryImage}`
+          : secondaryImage;
         images.push(fullSecondaryUrl);
       }
 
@@ -254,8 +276,10 @@ export class RaziliScraper extends BaseScraper {
 
       // Check if this is a sale item (has original price)
       const priceNowElement = productItem.find('.price-now');
-      const originalPriceElement = productItem.find('.grid-product__price--original');
-      
+      const originalPriceElement = productItem.find(
+        '.grid-product__price--original',
+      );
+
       if (priceNowElement.length > 0) {
         const priceNowText = priceNowElement.text().trim();
         if (priceNowText) {
@@ -269,7 +293,9 @@ export class RaziliScraper extends BaseScraper {
       if (originalPriceElement.length > 0) {
         const originalPriceText = originalPriceElement.text().trim();
         if (originalPriceText) {
-          const originalMatch = originalPriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
+          const originalMatch = originalPriceText
+            .replace(/[₪,]/g, '')
+            .match(/[\d.]+/);
           if (originalMatch) {
             oldPrice = parseFloat(originalMatch[0]);
           }
@@ -278,10 +304,14 @@ export class RaziliScraper extends BaseScraper {
 
       // If no sale price structure, check for regular price
       if (!price) {
-        const regularPriceElement = productItem.find('.grid-product__price .price-now');
+        const regularPriceElement = productItem.find(
+          '.grid-product__price .price-now',
+        );
         const regularPriceText = regularPriceElement.text().trim();
         if (regularPriceText) {
-          const regularMatch = regularPriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
+          const regularMatch = regularPriceText
+            .replace(/[₪,]/g, '')
+            .match(/[\d.]+/);
           if (regularMatch) {
             price = parseFloat(regularMatch[0]);
           }
@@ -302,7 +332,8 @@ export class RaziliScraper extends BaseScraper {
 
       // Determine if on sale
       const isOnSale = oldPrice !== null && price !== null && oldPrice > price;
-      const salePercent = isOnSale && oldPrice && price ? calcSalePercent(oldPrice, price) : null;
+      const salePercent =
+        isOnSale && oldPrice && price ? calcSalePercent(oldPrice, price) : null;
 
       // Extract colors from color swatches
       const colors: string[] = [];
@@ -323,7 +354,11 @@ export class RaziliScraper extends BaseScraper {
       const normalizedBrand = normalizeBrandName(brand);
 
       // Extract colors from Hebrew text if available
-      const extractedColors = extractColorsWithHebrew(title + ' ' + colors.join(' '), colors, this.source);
+      const extractedColors = extractColorsWithHebrew(
+        title + ' ' + colors.join(' '),
+        colors,
+        this.source,
+      );
 
       const product: Product = {
         title,
@@ -342,7 +377,6 @@ export class RaziliScraper extends BaseScraper {
       };
 
       return product;
-
     } catch (error) {
       this.logError('Error parsing Razili product:', error);
       return null;
@@ -354,4 +388,4 @@ export class RaziliScraper extends BaseScraper {
 if (require.main === module) {
   const scraper = new RaziliScraper();
   scraper.run().catch(console.error);
-} 
+}

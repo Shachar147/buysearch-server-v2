@@ -1,17 +1,19 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, extractColorsWithHebrew, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
+import { Product, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
+import { extractColorsWithHebrew } from '../color.constants';
+import * as cheerio from 'cheerio';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [
   {
     id: 'shirts-men',
-    name: Category.SHIRTS,
+    name: Category.T_SHIRTS,
     gender: 'Men',
-    url: 'https://itaybrands.co.il/collections/%D7%97%D7%95%D7%9C%D7%A6%D7%95%D7%AA-%D7%92%D7%91%D7%A8%D7%99%D7%9D',
+    url: 'https://itaybrands.co.il/collections/men-shirts-jackets',
   },
   {
     id: 'pants',
@@ -144,7 +146,20 @@ class ItayBrandsScraper extends BaseScraper {
     return variantIdToCompareAt;
   }
 
-  private parseItayBrandsVariant(variant: any, category: CategoryType, compareAtMap: Record<string, number>): Product {
+  private extractColorsFromHTML(html: string, variantId: string): string[] {
+    try {
+      const $ = cheerio.load(html);
+
+      const product = $(`button[data-variant='${variantId}']`).closest(".product-item").first();
+      const colorSwatches = product.find(".color-swatch");
+      return colorSwatches.map((i, el) => $(el).attr('data-tooltip')).get().filter(Boolean);
+    } catch (error) {
+      console.warn(`\x1b[93mFailed to extract colors from HTML for variant ${variantId}:\x1b[0m`, error);
+      return [];
+    }
+  }
+
+  private parseItayBrandsVariant(variant: any, category: CategoryType, compareAtMap: Record<string, number>, html: string): Product {
     // variant: { price: { amount, currencyCode }, product: { title, vendor, ... }, ... }
     const title = variant.product?.title || '';
     const url = variant.product?.url ? `${BASE_URL}/${variant.product.url}` : '';
@@ -152,7 +167,9 @@ class ItayBrandsScraper extends BaseScraper {
       console.error("url not found", variant);
     }
     const images = [`http:${variant.image.src}`];
-    const colors = variant.title.split(' / ').length > 1 ? extractColorsWithHebrew(title, [variant.title.split(' / ')[1]], 'itaybrands_scraper') : [];
+    const rawColors = this.extractColorsFromHTML(html, variant.id) || [];
+    console.log(title, url, rawColors);
+    const colors = extractColorsWithHebrew(title, rawColors, 'itaybrands_scraper');
     const price = typeof variant.price?.amount === 'number' ? variant.price.amount : null;
     // Use compare_at_price from Spurit if available
     let oldPrice = null;
@@ -194,7 +211,7 @@ class ItayBrandsScraper extends BaseScraper {
       const compareAtMap = this.extractSpuritCompareAtPrices(html);
       this.logProgress(`extractLastProductVariants found: ${variants.length} variants`);
       if (!variants.length) break;
-      allProducts.push(...variants.map((variant: any) => this.parseItayBrandsVariant(variant, category, compareAtMap)));
+      allProducts.push(...variants.map((variant: any) => this.parseItayBrandsVariant(variant, category, compareAtMap, html)));
       // If less than 20 variants, it's the last page
       hasMore = variants.length === 20;
       page++;

@@ -2,6 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } f
 import { ColorService } from './color.service';
 import { Color } from './color.entity';
 import { UserGuard } from '../auth/user.guard';
+import { 
+  Color as ColorEnum, 
+  colorNameToColor, 
+  colorGroups, 
+  COLOR_SEARCH_KEYWORDS_MAP,
+  getAllColorKeywords,
+  getColorSynonyms
+} from '../color.constants';
 
 @UseGuards(UserGuard)
 @Controller('colors')
@@ -36,5 +44,22 @@ export class ColorController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.colorService.remove(+id);
+  }
+
+  @Get('constants/all')
+  getColorConstants() {
+    return {
+      colors: Object.values(ColorEnum),
+      colorNameToHex: colorNameToColor,
+      colorGroups,
+      searchKeywords: COLOR_SEARCH_KEYWORDS_MAP,
+      allKeywords: getAllColorKeywords(),
+      colorSynonyms: getColorSynonyms()
+    };
+  }
+
+  @Get('analysis/non-standard')
+  async getNonStandardColors() {
+    return await this.colorService.analyzeNonStandardColors();
   }
 } 

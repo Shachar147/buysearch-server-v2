@@ -11,4 +11,4 @@ import { SourceModule } from '../source/source.module';
   controllers: [ScrapingHistoryController],
   exports: [ScrapingHistoryService],
 })
-export class ScrapingHistoryModule {} 
+export class ScrapingHistoryModule {}

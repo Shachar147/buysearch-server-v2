@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
-import { Product, extractColors, calcSalePercent } from './base/scraper_utils';
+import { Product, calcSalePercent } from './base/scraper_utils';
 import { Category } from '../category.constants';
+import { extractColors } from '../color.constants';
 
 export class LululemonScraper extends BaseScraper {
   protected readonly scraperName = 'Lululemon';
@@ -21,7 +22,7 @@ export class LululemonScraper extends BaseScraper {
       },
       {
         id: 'women-bestsellers',
-        name: "New",
+        name: 'New',
         gender: 'Women',
         url: 'https://shop.lululemon.com/c/women-bestsellers/n16o10znskl',
         category: 'women-bestsellers',
@@ -31,7 +32,7 @@ export class LululemonScraper extends BaseScraper {
       },
       {
         id: 'women-we-made-too-much',
-        name: "Sale",
+        name: 'Sale',
         gender: 'Women',
         url: 'https://shop.lululemon.com/c/women-we-made-too-much/n16o10z8mhd',
         category: 'women-we-made-too-much',
@@ -192,14 +193,18 @@ export class LululemonScraper extends BaseScraper {
     ];
   }
 
-  private async fetchLululemonProducts(category: BaseCategory, page: number, pageSize: number = 12) {
+  private async fetchLululemonProducts(
+    category: BaseCategory,
+    page: number,
+    pageSize = 12,
+  ) {
     const GRAPHQL_URL = 'https://shop.lululemon.com/snb/graphql';
     const variables = {
       pageSize,
       page,
       useHighlights: true,
       onlyStore: false,
-      abFlags: ["cdpSeodsEnabled"],
+      abFlags: ['cdpSeodsEnabled'],
       category: category.category,
       cdpHash: category.cdpHash,
       forceMemberCheck: false,
@@ -216,9 +221,9 @@ export class LululemonScraper extends BaseScraper {
       variables,
     };
     const headers = {
-      'accept': 'application/json',
+      accept: 'application/json',
       'content-type': 'application/json',
-      'origin': 'https://shop.lululemon.com',
+      origin: 'https://shop.lululemon.com',
       'user-agent': 'Mozilla/5.0',
     };
     try {
@@ -233,7 +238,10 @@ export class LululemonScraper extends BaseScraper {
           responseData: error.response.data,
         });
         if (error.response.data && error.response.data.errors) {
-          console.error('Lululemon API error details:', JSON.stringify(error.response.data.errors, null, 2));
+          console.error(
+            'Lululemon API error details:',
+            JSON.stringify(error.response.data.errors, null, 2),
+          );
         }
       } else {
         console.error('Lululemon API error:', error.message);
@@ -261,7 +269,9 @@ export class LululemonScraper extends BaseScraper {
       for (const item of items) {
         const title = item.displayName;
         const url = `https://shop.lululemon.com${item.pdpUrl}`;
-        const images = (item.images || item.swatches || []).map((img: any) => img.primaryImage ? img.primaryImage : '').filter(Boolean);
+        const images = (item.images || item.swatches || [])
+          .map((img: any) => (img.primaryImage ? img.primaryImage : ''))
+          .filter(Boolean);
         console.log(`[Lululemon] Images: ${images[0]}`);
         // // Fix image extraction: use only the image code, and build the full URL with parameters
         // const images = (item.images || [])
@@ -276,23 +286,33 @@ export class LululemonScraper extends BaseScraper {
         //     return `https://images.lululemon.com/is/image/lululemon/${code}?wid=2420&op_usm=0.5,2,10,0&fmt=webp&qlt=80,1&fit=constrain,0&op_sharpen=0&resMode=sharp2&iccEmbed=0&printRes=72`;
         // })
         // .filter(Boolean);
-        const colors = (item.skuStyleOrder || []).map((s: any) => s.colorName).filter(Boolean);
-        const price = item.listPrice && item.listPrice.length ? parseFloat(item.listPrice[0]) : null;
-        const oldPrice = item.salePrice && item.salePrice.length ? parseFloat(item.salePrice[0]) : price;
+        const colors = (item.skuStyleOrder || [])
+          .map((s: any) => s.colorName)
+          .filter(Boolean);
+        const price =
+          item.listPrice && item.listPrice.length
+            ? parseFloat(item.listPrice[0])
+            : null;
+        const oldPrice =
+          item.salePrice && item.salePrice.length
+            ? parseFloat(item.salePrice[0])
+            : price;
         const salePercent = calcSalePercent(price, oldPrice);
-        products.push(this.createProduct({
-          title,
-          url,
-          images,
-          colors: extractColors(title, colors),
-          price,
-          oldPrice,
-          salePercent,
-          currency: item.currencyCode || 'USD',
-          brand: 'Lululemon',
-          categories: [category.name],
-          gender: category.gender,
-        }));
+        products.push(
+          this.createProduct({
+            title,
+            url,
+            images,
+            colors: extractColors(title, colors),
+            price,
+            oldPrice,
+            salePercent,
+            currency: item.currencyCode || 'USD',
+            brand: 'Lululemon',
+            categories: [category.name],
+            gender: category.gender,
+          }),
+        );
       }
       page++;
     }
@@ -308,4 +328,4 @@ async function main() {
 
 if (require.main === module) {
   main();
-} 
+}

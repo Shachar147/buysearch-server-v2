@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
-import { Product, extractColors, calcSalePercent } from './base/scraper_utils';
+import { Product, calcSalePercent } from './base/scraper_utils';
 import { Category } from '../category.constants';
+import { extractColors } from '../color.constants';
 
 export class AloYogaScraper extends BaseScraper {
   protected readonly scraperName = 'Alo Yoga';
@@ -171,25 +172,25 @@ export class AloYogaScraper extends BaseScraper {
         id: 'hats',
         name: Category.HATS,
         gender: 'Women',
-        url: 'https://www.aloyoga.com/he-il/collections/hats'
+        url: 'https://www.aloyoga.com/he-il/collections/hats',
       },
       {
         id: 'snickers',
         name: Category.SNICKERS,
         gender: 'Women',
-        url: 'https://www.aloyoga.com/he-il/collections/sneakers'
+        url: 'https://www.aloyoga.com/he-il/collections/sneakers',
       },
       {
         id: 'flip-flops',
         name: Category.FLIP_FLOPS,
         gender: 'Women',
-        url: 'https://www.aloyoga.com/he-il/collections/slides'
+        url: 'https://www.aloyoga.com/he-il/collections/slides',
       },
       {
         id: 'socks',
         name: Category.SOCKS,
         gender: 'Women',
-        url: 'https://www.aloyoga.com/he-il/collections/socks'
+        url: 'https://www.aloyoga.com/he-il/collections/socks',
       },
       {
         id: 'bags',
@@ -348,8 +349,13 @@ export class AloYogaScraper extends BaseScraper {
     return 'womens-leggings';
   }
 
-  private async fetchAloYogaProducts(handle: string, offset: number, limit: number = 15) {
-    const GRAPHQL_URL = 'https://product-service.alo.software/graphql?opName=GetCollectionData&operationName=GetCollectionData';
+  private async fetchAloYogaProducts(
+    handle: string,
+    offset: number,
+    limit = 15,
+  ) {
+    const GRAPHQL_URL =
+      'https://product-service.alo.software/graphql?opName=GetCollectionData&operationName=GetCollectionData';
     const variables = {
       handle,
       offset,
@@ -361,15 +367,18 @@ export class AloYogaScraper extends BaseScraper {
     const extensions = {
       persistedQuery: {
         version: 1,
-        sha256Hash: '1647816df62eafdb2ef8305209f54c5c24a715ee12af8e0a86721913abb10dd1',
+        sha256Hash:
+          '1647816df62eafdb2ef8305209f54c5c24a715ee12af8e0a86721913abb10dd1',
       },
     };
-    const url = `${GRAPHQL_URL}&variables=${encodeURIComponent(JSON.stringify(variables))}&extensions=${encodeURIComponent(JSON.stringify(extensions))}`;
+    const url = `${GRAPHQL_URL}&variables=${encodeURIComponent(
+      JSON.stringify(variables),
+    )}&extensions=${encodeURIComponent(JSON.stringify(extensions))}`;
     const headers = {
-      'accept': 'application/json',
+      accept: 'application/json',
       'accept-language': 'en-US,en;q=0.9,he;q=0.8',
       'content-type': 'application/json',
-      'origin': 'https://www.aloyoga.com',
+      origin: 'https://www.aloyoga.com',
     };
     const res = await axios.get(url, { headers });
     return res.data;
@@ -386,30 +395,35 @@ export class AloYogaScraper extends BaseScraper {
     while (page < maxPages) {
       const data = await this.fetchAloYogaProducts(handle, offset, limit);
       // Use .nodes for the products array
-      const items = data?.data?.productsByCollectionHandle?.products?.nodes || [];
+      const items =
+        data?.data?.productsByCollectionHandle?.products?.nodes || [];
       if (!items.length) break;
       for (const item of items) {
         const title = item.title;
         const url = `https://www.aloyoga.com/he-il/products/${item.handle}`;
         const images = item.images;
-        const colorOption = item.options?.find((opt: any) => opt.name === 'Color');
+        const colorOption = item.options?.find(
+          (opt: any) => opt.name === 'Color',
+        );
         const colors = colorOption ? colorOption.values : [];
         const price = item.priceRange.minVariantPrice.amount;
         const oldPrice = item.priceRange.maxVariantPrice.amount;
         const salePercent = calcSalePercent(price, oldPrice);
-        products.push(this.createProduct({
-          title,
-          url,
-          images,
-          colors: extractColors(title, colors),
-          price,
-          oldPrice,
-          salePercent,
-          currency: 'ILS',
-          brand: 'Alo Yoga',
-          categories: [category.name],
-          gender: category.gender,
-        }));
+        products.push(
+          this.createProduct({
+            title,
+            url,
+            images,
+            colors: extractColors(title, colors),
+            price,
+            oldPrice,
+            salePercent,
+            currency: 'ILS',
+            brand: 'Alo Yoga',
+            categories: [category.name],
+            gender: category.gender,
+          }),
+        );
       }
       offset += limit;
       page++;
@@ -426,4 +440,4 @@ async function main() {
 
 if (require.main === module) {
   main();
-} 
+}

@@ -1,8 +1,13 @@
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, extractColorsWithHebrew, extractCategory, normalizeBrandName } from './base/scraper_utils';
+import {
+  Product,
+  extractCategory,
+  normalizeBrandName,
+} from './base/scraper_utils';
+import { extractColorsWithHebrew } from '../color.constants';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 dotenv.config();
@@ -114,7 +119,7 @@ const CATEGORIES: CategoryType[] = [
     brand: 'Toya Beachwear',
     gender: 'Women',
     url: 'https://styleforrent.co.il/collections/toya',
-  }
+  },
 ];
 
 const BASE_URL = 'https://styleforrent.co.il';
@@ -133,24 +138,31 @@ class StyleForRentScraper extends BaseScraper {
 
   private async fetchStyleForRentPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
         // Wait for the product grid to load
-        await page.waitForSelector('.grid__item', { timeout: 10000 }).catch(() => {
-          console.log('No products found on page, might be the last page');
-        });
-        
+        await page
+          .waitForSelector('.grid__item', { timeout: 10000 })
+          .catch(() => {
+            console.log('No products found on page, might be the last page');
+          });
+
         // Small delay to ensure dynamic content loads
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      },
     });
   }
 
-  private parseStyleForRentProduct($: cheerio.CheerioAPI, productCard: any, category: CategoryType): Product | undefined {
+  private parseStyleForRentProduct(
+    $: cheerio.CheerioAPI,
+    productCard: any,
+    category: CategoryType,
+  ): Product | undefined {
     const $card = $(productCard);
-    
+
     // Extract title
     const title = $card.find('.card__heading a').first().text().trim();
     if (!title) {
@@ -172,19 +184,19 @@ class StyleForRentScraper extends BaseScraper {
         // Get the largest image from srcset
         const matches = srcset.match(/([^\s]+)\s+\d+w/g);
         if (matches && matches.length > 0) {
-            matches[matches.length - 1].split(' ').forEach((lastImage) => {
-                if (!images.includes(lastImage) && lastImage != '') {
-                    if (lastImage.startsWith(',')) {
-                        lastImage = lastImage.substring(1, lastImage.length)
-                    }
-                    if (lastImage.startsWith('//')){
-                        lastImage = `http:${lastImage}`;
-                    }
-                    lastImage = lastImage.split('?')[0].split(',').join('%2C');
-                    // console.log(lastImage);
-                    images.push(lastImage);
-                  }
-            })
+          matches[matches.length - 1].split(' ').forEach((lastImage) => {
+            if (!images.includes(lastImage) && lastImage != '') {
+              if (lastImage.startsWith(',')) {
+                lastImage = lastImage.substring(1, lastImage.length);
+              }
+              if (lastImage.startsWith('//')) {
+                lastImage = `http:${lastImage}`;
+              }
+              lastImage = lastImage.split('?')[0].split(',').join('%2C');
+              // console.log(lastImage);
+              images.push(lastImage);
+            }
+          });
         }
       }
     });
@@ -199,28 +211,37 @@ class StyleForRentScraper extends BaseScraper {
     if (isOnSale) {
       // For sale items, old price is in <s> tag, sale price is in .price-item--sale
       const oldPriceText = priceContainer.find('s .money').first().text();
-      const salePriceText = priceContainer.find('.price-item--sale .money').first().text();
-      
+      const salePriceText = priceContainer
+        .find('.price-item--sale .money')
+        .first()
+        .text();
+
       const oldPriceMatch = oldPriceText.match(/[\d,.]+/);
       if (oldPriceMatch) {
-          oldPrice = parseFloat(oldPriceMatch[0].replace(/,/g, ''));
+        oldPrice = parseFloat(oldPriceMatch[0].replace(/,/g, ''));
       }
 
       const salePriceMatch = salePriceText.match(/[\d,.]+/);
       if (salePriceMatch) {
-          price = parseFloat(salePriceMatch[0].replace(/,/g, ''));
+        price = parseFloat(salePriceMatch[0].replace(/,/g, ''));
       }
     } else {
-        // For regular items, price is in .price-item--regular
-        const regularPriceText = priceContainer.find('.price-item--regular .money').first().text();
-        const regularPriceMatch = regularPriceText.match(/[\d,.]+/);
-        if (regularPriceMatch) {
-            price = parseFloat(regularPriceMatch[0].replace(/,/g, ''));
-        }
+      // For regular items, price is in .price-item--regular
+      const regularPriceText = priceContainer
+        .find('.price-item--regular .money')
+        .first()
+        .text();
+      const regularPriceMatch = regularPriceText.match(/[\d,.]+/);
+      if (regularPriceMatch) {
+        price = parseFloat(regularPriceMatch[0].replace(/,/g, ''));
+      }
     }
 
     // Extract sale percentage
-    const salePercentText = $card.find('.badge.price__badge-sale').text().trim();
+    const salePercentText = $card
+      .find('.badge.price__badge-sale')
+      .text()
+      .trim();
     let salePercent = 0;
     if (salePercentText) {
       const match = salePercentText.match(/(\d+)%/);
@@ -235,7 +256,9 @@ class StyleForRentScraper extends BaseScraper {
     //     ? category.name
     //     : 'Style For Rent'
     // );
-    const brand = category.brand ? normalizeBrandName(category.brand) : 'Style For Rent';
+    const brand = category.brand
+      ? normalizeBrandName(category.brand)
+      : 'Style For Rent';
 
     // Create product object
     const productJson = {
@@ -256,19 +279,21 @@ class StyleForRentScraper extends BaseScraper {
     return this.createProduct(productJson);
   }
 
-  private async scrapeStyleForRentCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeStyleForRentCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     const MAX_PAGES = 20;
 
     while (hasMore && page <= MAX_PAGES) {
       const url = `${category.url}${page > 1 ? `?page=${page}` : ''}`;
       this.logProgress(`Fetching ${url}`);
-      
+
       const html = await this.fetchStyleForRentPage(url);
       const $ = cheerio.load(html);
-      
+
       const productCards = $('.grid__item');
       if (productCards.length === 0) {
         break;
@@ -284,12 +309,12 @@ class StyleForRentScraper extends BaseScraper {
       }
 
       allProducts.push(...pageProducts);
-      
-        //   // Check if tshere's a next page by looking for pagination
-        //   const nextPageExists = $('a.pagination__item[aria-label="Next"]').length > 0;
-        //   hasMore = nextPageExists;
-        hasMore = pageProducts.length >= 24
-      
+
+      //   // Check if tshere's a next page by looking for pagination
+      //   const nextPageExists = $('a.pagination__item[aria-label="Next"]').length > 0;
+      //   hasMore = nextPageExists;
+      hasMore = pageProducts.length >= 24;
+
       page++;
     }
 
@@ -311,4 +336,4 @@ if (require.main === module) {
   });
 }
 
-export { main, StyleForRentScraper }; 
+export { main, StyleForRentScraper };

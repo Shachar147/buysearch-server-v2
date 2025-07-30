@@ -31,12 +31,12 @@ export class BrowserManager {
         '--disable-features=TranslateUI',
         '--disable-ipc-flooding-protection',
         '--memory-pressure-off',
-        '--max_old_space_size=4096'
+        '--max_old_space_size=4096',
       ],
       timeout: 60000,
       maxPages: 5,
       maxRetries: 3,
-      ...options
+      ...options,
     };
   }
 
@@ -78,7 +78,9 @@ export class BrowserManager {
     }
 
     if (this.activePages.size >= this.options.maxPages) {
-      throw new Error(`Maximum number of pages (${this.options.maxPages}) reached`);
+      throw new Error(
+        `Maximum number of pages (${this.options.maxPages}) reached`,
+      );
     }
 
     try {
@@ -145,22 +147,25 @@ export class BrowserManager {
    */
   async withRetry<T>(fn: () => Promise<T>): Promise<T> {
     let lastError: Error;
-    
+
     for (let attempt = 1; attempt <= this.options.maxRetries; attempt++) {
       try {
         return await fn();
       } catch (error) {
         lastError = error as Error;
-        console.warn(`⚠️ Attempt ${attempt}/${this.options.maxRetries} failed:`, error);
-        
+        console.warn(
+          `⚠️ Attempt ${attempt}/${this.options.maxRetries} failed:`,
+          error,
+        );
+
         if (attempt < this.options.maxRetries) {
           // Wait before retry (exponential backoff)
           const delay = Math.min(1000 * Math.pow(2, attempt - 1), 10000);
-          await new Promise(resolve => setTimeout(resolve, delay));
+          await new Promise((resolve) => setTimeout(resolve, delay));
         }
       }
     }
-    
+
     throw lastError!;
   }
 
@@ -172,7 +177,7 @@ export class BrowserManager {
       isInitialized: !!this.browser,
       activePages: this.activePages.size,
       maxPages: this.options.maxPages,
-      isShuttingDown: this.isShuttingDown
+      isShuttingDown: this.isShuttingDown,
     };
   }
 
@@ -189,7 +194,7 @@ export class BrowserManager {
 
     // Close all active pages
     const pagesToClose = Array.from(this.activePages);
-    await Promise.allSettled(pagesToClose.map(page => this.closePage(page)));
+    await Promise.allSettled(pagesToClose.map((page) => this.closePage(page)));
 
     // Close browser
     if (this.browser) {
@@ -212,7 +217,7 @@ export class BrowserManager {
    */
   async forceKill(): Promise<void> {
     console.log('🚨 Force killing browser...');
-    
+
     if (this.browser) {
       try {
         const process = this.browser.process();
@@ -223,7 +228,7 @@ export class BrowserManager {
         console.error('❌ Error force killing browser:', error);
       }
     }
-    
+
     this.browser = null;
     this.activePages.clear();
     this.isShuttingDown = false;
@@ -275,4 +280,4 @@ export function setupEmergencyCleanup(): void {
     console.error('❌ Unhandled rejection:', reason);
     await cleanup();
   });
-} 
+}

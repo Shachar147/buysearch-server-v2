@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  Unique,
+} from 'typeorm';
 
 @Entity('favourite_products')
 @Unique(['userId', 'productId'])
@@ -14,4 +20,4 @@ export class FavouriteProduct {
 
   @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
-} 
+}
