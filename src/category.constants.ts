@@ -334,6 +334,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category | string)[]> =
     מטפחות: [Category.HANDKERCHIEFS],
     טישירט: [Category.T_SHIRTS],
     'מכנסיים קצרים': [Category.PANTS, Category.SHORTS],
+    'מכנסי': [Category.PANTS],
     'short jeans': [Category.SHORTS, Category.SHORT_JEANS],
     אוברסייז: [Category.OVERSIZE],
     Oversize: [Category.OVERSIZE],
@@ -359,6 +360,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category | string)[]> =
     'שמלת מיני': [Category.MINI_DRESSES],
     'שמלה מידי': [Category.MIDI_DRESSES],
     'שמלות מידי': [Category.MIDI_DRESSES],
+    'שמלת ': [Category.DRESSES],
     'שמלת מידי': [Category.MIDI_DRESSES],
     'welness & body': [Category.WELLNESS],
     טייץ: [Category.TIGHTS],
@@ -758,6 +760,14 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category | string)[]> =
     'טלוויזיות': [Category.TVS],
     'טלויזיות': [Category.TVS],
     'tv ': [Category.TVS],
+    'טופ ': [Category.TOPS],
+    'שורט ': [Category.SHORTS],
+    'חצאית ': [Category.SKIRTS],
+    "ג'ינס ": [Category.JEANS],
+    'חצאית מקס': [Category.MAXI_SKIRTS],
+    'חצאית מינ': [Category.MINI_SKIRTS],
+    'שמלה מקס': [Category.MAXI_DRESSES],
+    'שמלה מינ': [Category.MINI_DRESSES],
   };
 
 // --- Category Synonyms Map ---
@@ -903,7 +913,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.DRESSES]: {
     en: ['dress', 'gown', 'frock', 'dresses'],
-    he: ['שמלה', 'שמלות'],
+    he: ['שמלה', 'שמלות', 'שמלת '],
   },
   [Category.MAXI_DRESSES]: {
     en: ['maxi dress', 'maxi dresses'],

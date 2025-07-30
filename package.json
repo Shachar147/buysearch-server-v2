@@ -54,6 +54,7 @@
     "scrape:shviro": "npx ts-node -r tsconfig-paths/register src/scrapers/shviro_scraper.ts",
     "scrape:superpharm": "npx ts-node -r tsconfig-paths/register src/scrapers/superpharm_scraper.ts",
     "scrape:ksp": "npx ts-node -r tsconfig-paths/register src/scrapers/ksp_scraper.ts",
+    "scrape:brenda": "npx ts-node -r tsconfig-paths/register src/scrapers/brenda_scraper.ts",
     "check:categories": "ts-node --transpile-only scripts/check-db-categories-vs-enum-nest.ts",
     "migrate:scrapers": "node scripts/migrate-scrapers.js",
     "start:old": "nest start",

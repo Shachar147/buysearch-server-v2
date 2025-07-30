@@ -62,7 +62,8 @@ export class SearchService {
     'saint laurent': ['yves saint laurent', 'ysl', 'איב סאן', 'סאן לורן', 'סאן לורנט', 'san laurent', 'sun laurent', 'yves s'],
     'legaloutfit': ['legalou', 'legal ou', 'ליגלא', 'ליגאל א', 'לגאל אא', 'ליגל א', 'ליגלאא'],
     'reebok': ['reebok', 'ריבוק'],
-    'havaianas': ['הוויאנאס', 'הוויאנס',]
+    'havaianas': ['הוויאנאס', 'הוויאנס'],
+    'brenda': ['brenda', 'ברנדה']
   };
 
   private HEBREW_COLOR_SYNONYMS = getColorSynonyms();
@@ -410,6 +411,7 @@ export class SearchService {
       { key: 'Addict', patterns: [/addict/, /אדיקט/] },
       { key: 'Mantra', patterns: [/mantra/, /מנטרה/] },
       { key: 'KSP', patterns: [/ksp/, /קיי אס פי/, /קייאספי/, /k\.s\.p/] },
+      // { key: 'Brenda', patterns: [/brenda/, /ברנדה/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))

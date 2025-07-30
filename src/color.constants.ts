@@ -410,8 +410,8 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
     he: [' מוקה', 'מוקה-בהיר'],
   },
   [Color.STONE]: {
-    en: ['stone', 'grey', 'gray', 'silver', 'charcoal', 'slate'],
-    he: ['אבן', 'אפור', 'אפורה', 'אפורים', 'אפורות', 'כסף']
+    en: ['stone'],
+    he: ['אבן', ]
   },
   [Color.GREY]: {
     en: ['grey', 'gray', 'silver', 'charcoal', 'slate'],
