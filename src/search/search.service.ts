@@ -344,6 +344,10 @@ export class SearchService {
       filters.gender = 'Unisex';
     }
 
+    if (filters.categories.join(',').includes('Electronics')) { 
+      filters.gender = 'Unisex';
+    }
+
     // Extract general keywords (words that aren't colors, prices, or categories or brands)
     const words = query.toLowerCase().split(/\s+/);
     const foundKeywords = new Set<string>();
@@ -405,6 +409,7 @@ export class SearchService {
       { key: 'Derococo', patterns: [/derococo/, /דרוקוקו/, /דרוקוק/, /derococ/, /de rococ/] },
       { key: 'Addict', patterns: [/addict/, /אדיקט/] },
       { key: 'Mantra', patterns: [/mantra/, /מנטרה/] },
+      { key: 'KSP', patterns: [/ksp/, /קיי אס פי/, /קייאספי/, /k\.s\.p/] },
     ];
     filters.sources = sourceKeywords
       .filter(src => src.patterns.some(pat => pat.test(lowerQuery)))

@@ -151,6 +151,8 @@ export enum Category {
   // 💄 Makeup
   MAKEUP = 'Makeup',
   LIP_PENCIL = 'Lip Pencils',
+  LIP_GLOSS = 'Lip Gloss',
+  LIPSTICK = 'Lipsticks',
   BROW_PENCIL = 'Brow Pencils',
   CONCEALER = 'Concealers',
   MAKEUP_REMOVER = 'Makeup Removers',
@@ -165,7 +167,6 @@ export enum Category {
   CREAMS_AND_OILS = 'Creams and Oils',
   HAND_CARE = 'Hand Care',
   MAKEUP_BRUSHES = 'Makeup Brushes',
-  LIP_GLOSS = 'Lip Gloss',
   EYE_MAKEUP = 'Eye Makeup',
   FRAMERS = 'Primers',
   FACE_CLEANSER = 'Face Cleansers',
@@ -174,6 +175,14 @@ export enum Category {
   // 🎁 Gifts
   GIFTS = 'Gifts',
   BLACK_FRIDAY = 'Black Friday',
+
+  // 🔌 Elctronics
+  ELECTRONICS = 'Electronics',
+  PHONES = 'Electronics: Phones',
+  LAPTOPS = 'Electronics: Laptops',
+  SMART_WATCHES = 'Electronics: Smart Watches',
+  TABLETS = 'Electronics: Tablets',
+  TVS = 'Electronics: TVs',
 
   PREGNANCY = 'Pregnancy',
 }
@@ -399,7 +408,7 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category | string)[]> =
     'תיקי כתף': [Category.SIDE_BAGS],
     'הריון ולידה': [Category.PREGNANCY], // Ignore, not a product category for now
     תחתונים: [Category.UNDERWEAR],
-    שפתונים: [Category.LIP_GLOSS],
+    שפתונים: [Category.LIPSTICK],
     ווסט: [Category.T_SHIRTS], // Vest for now
     'צעיפים ומטפחות': [Category.SCARVES, Category.HANDKERCHIEFS],
     שמנים: [Category.BODY_OIL],
@@ -710,6 +719,45 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category | string)[]> =
     'תיק יד': [Category.HAND_BAGS],
     'תיקי יד': [Category.HAND_BAGS],
     'תיק-יד': [Category.HAND_BAGS],
+    'שפתון': [Category.LIPSTICK],
+    'אודם': [Category.LIPSTICK],
+    'אלקטרוניקה': [Category.ELECTRONICS],
+    'סוללה נטענת': [Category.ELECTRONICS],
+    'מטענים ניידים': [Category.ELECTRONICS],
+    'מטען נייד': [Category.ELECTRONICS],
+    'טלפון סלולרי': [Category.PHONES],
+    'טלפונים סלולריים': [Category.PHONES],
+    'phones': [Category.PHONES],
+    'iphone': [Category.PHONES],
+    'samsung': [Category.PHONES],
+    'nokia': [Category.PHONES],
+    'sony': [Category.PHONES],
+    'lg': [Category.PHONES],
+    'htc': [Category.PHONES],
+    'blackberry': [Category.PHONES],
+    'טלפון חכם': [Category.PHONES],
+    'טלפונים חכמים': [Category.PHONES],
+    'אייפון': [Category.PHONES],
+    'אייפונים': [Category.PHONES],
+    'גלקסי': [Category.PHONES],
+    'שעון חכם': [Category.SMART_WATCHES],
+    'שעונים חכמים': [Category.SMART_WATCHES],
+    'apple watch': [Category.SMART_WATCHES],
+    "אפל וואטץ'": [Category.SMART_WATCHES],
+    'אפל וואטץ': [Category.SMART_WATCHES],
+    'smart watch': [Category.SMART_WATCHES],
+    'smartwatch': [Category.SMART_WATCHES],
+    'גרמין': [Category.SMART_WATCHES],
+    'tablet': [Category.TABLETS],
+    'tablets': [Category.TABLETS],
+    'ipad': [Category.TABLETS],
+    'טאבלט': [Category.TABLETS],
+    'אייפד': [Category.TABLETS],
+    'television': [Category.TVS],
+    'טלויזיה': [Category.TVS],
+    'טלוויזיות': [Category.TVS],
+    'טלויזיות': [Category.TVS],
+    'tv ': [Category.TVS],
   };
 
 // --- Category Synonyms Map ---
@@ -1739,6 +1787,34 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
       'תיק למחשב-נייד',
     ],
   },
+  [Category.LIPSTICK]: {
+    en: ['lipstick', 'lipsticks'],
+    he: ['שפתון', 'שפתונים', 'אודם']
+  },
+  [Category.ELECTRONICS]: {
+    en: ['electronics', 'charger', 'battery'],
+    he: ['אלקטרוניקה', 'סוללה נטענת', 'מטענים ניידים', 'מטען נייד']
+  },
+  [Category.PHONES]: {
+    en: ['phone', 'phones', 'cellular phone', 'cellular phones', 'smartphone', 'smartphones', 'iphone', 'samsung', 'nokia', 'sony', 'lg', 'htc', 'blackberry'],
+    he: ['טלפון', 'טלפונים', 'טלפון סלולרי', 'טלפונים סלולריים', 'טלפון חכם', 'טלפונים חכמים', 'אייפון', 'סמסון', 'נוקיה', 'לג', 'הטכ', 'בלאקבררי']
+  },
+  [Category.LAPTOPS]: {
+    en: [],
+    he: []
+  },
+  [Category.SMART_WATCHES]: {
+    en: ['smartwatch', 'smart watches', 'apple watch', 'apple watches', 'samsung watch', 'samsung watches', 'nokia watch', 'nokia watches', 'sony watch', 'sony watches', 'lg watch', 'lg watches', 'htc watch', 'htc watches', 'blackberry watch', 'blackberry watches'],
+    he: ['שעון חכם', 'שעונים חכמים', 'אפל וואטץ', 'אפל וואטץ\'', 'גלקסי וואטץ', 'גלקסי וואטץ\'', 'סמסון וואטץ', 'סמסון וואטץ\'', 'נוקיה וואטץ', 'נוקיה וואטץ\'', 'לג וואטץ', 'לג וואטץ\'', 'הטכ וואטץ', 'הטכ וואטץ\'', 'בלאקבררי וואטץ', 'בלאקבררי וואטץ\'', 'גרמין']
+  },
+  [Category.TABLETS]: {
+    en: ['tablet', 'tablets', 'ipad', 'ipads'],
+    he: ['טאבלט', 'אייפד']
+  },
+  [Category.TVS]: {
+    en: ['television', ' tv '],
+    he: ['טלויזיה', 'טלויזיות', 'טלוויזיה', 'טלוויזיות']
+  }
 };
 
 // --- Generate Keyword-to-Category Map ---
