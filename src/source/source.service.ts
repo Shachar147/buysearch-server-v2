@@ -51,11 +51,11 @@ export class SourceService {
 
   async upsert(name: string, baseUrl?: string): Promise<Source> {
     let source = await this.findByName(name);
-    
+
     if (!source) {
       source = await this.create({ name, baseUrl });
     }
-    
+
     return source;
   }
 
@@ -64,30 +64,37 @@ export class SourceService {
     return this.sourcesRepository
       .createQueryBuilder('source')
       .where('source.isActive = true')
-      .andWhere('LOWER(source.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
+      .andWhere('LOWER(source.name) IN (:...names)', {
+        names: names.map((n) => n.toLowerCase()),
+      })
       .getMany();
   }
 
   async findByNameOrNames(nameOrNames: string): Promise<Source[]> {
-    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
+    const names = nameOrNames
+      .split(',')
+      .map((n) => n.trim())
+      .filter(Boolean);
     return this.findByNames(names);
   }
 
   async upsertMany(sources: string[]): Promise<Source[]> {
-    const sourceObjects: Partial<Source>[] = sources.map(source =>
-      ({ name: source }),
-    );
-  
+    const sourceObjects: Partial<Source>[] = sources.map((source) => ({
+      name: source,
+    }));
+
     await this.sourcesRepository.upsert(sourceObjects, ['name']);
-  
-    const names = sourceObjects.map(s => s.name).filter(Boolean);
+
+    const names = sourceObjects.map((s) => s.name).filter(Boolean);
     return this.sourcesRepository.find({
       where: { name: In(names) },
     });
   }
-  
+
   public async findAllNoPagination(): Promise<Source[]> {
-    return this.sourcesRepository.find({ where: { isActive: true }, order: { id: 'ASC' } });
+    return this.sourcesRepository.find({
+      where: { isActive: true },
+      order: { id: 'ASC' },
+    });
   }
-  
-} 
+}

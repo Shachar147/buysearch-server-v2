@@ -11,8 +11,13 @@ export class CategoryService {
     private categoriesRepository: Repository<Category>,
   ) {}
 
-  async findAll(offset = 0, limit = PAGINATION_LIMIT, gender: string): Promise<any> {
-    const qb = this.categoriesRepository.createQueryBuilder('category')
+  async findAll(
+    offset = 0,
+    limit = PAGINATION_LIMIT,
+    gender: string,
+  ): Promise<any> {
+    const qb = this.categoriesRepository
+      .createQueryBuilder('category')
       .where('category.isActive = true');
     if (gender) {
       qb.andWhere('LOWER(category.gender) = LOWER(:gender)', { gender });
@@ -33,7 +38,8 @@ export class CategoryService {
   }
 
   async findByName(name: string, gender: string): Promise<Category | null> {
-    return this.categoriesRepository.createQueryBuilder('category')
+    return this.categoriesRepository
+      .createQueryBuilder('category')
       .where('category.isActive = true')
       .andWhere('category.name = :name', { name })
       .andWhere('LOWER(category.gender) = LOWER(:gender)', { gender })
@@ -45,7 +51,10 @@ export class CategoryService {
     return this.categoriesRepository.save(category);
   }
 
-  async update(id: number, updateCategoryDto: Partial<Category>): Promise<Category> {
+  async update(
+    id: number,
+    updateCategoryDto: Partial<Category>,
+  ): Promise<Category> {
     await this.categoriesRepository.update(id, updateCategoryDto);
     return this.findOne(id);
   }
@@ -56,22 +65,22 @@ export class CategoryService {
 
   async upsert(name: string, gender: string): Promise<Category> {
     let category = await this.findByName(name, gender);
-    
+
     if (!category) {
       category = await this.create({ name, gender });
     }
-    
+
     return category;
   }
 
   async upsertMany(names: string[], gender: string): Promise<Category[]> {
     const categories: Category[] = [];
-    
+
     for (const name of names) {
       const category = await this.upsert(name, gender);
       categories.push(category);
     }
-    
+
     return categories;
   }
 
@@ -79,18 +88,23 @@ export class CategoryService {
     return this.categoriesRepository
       .createQueryBuilder('category')
       .where('category.isActive = true')
-      .andWhere('LOWER(category.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
+      .andWhere('LOWER(category.name) IN (:...names)', {
+        names: names.map((n) => n.toLowerCase()),
+      })
       .getMany();
   }
 
   async findByNameOrNames(nameOrNames: string): Promise<Category[]> {
-    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
+    const names = nameOrNames
+      .split(',')
+      .map((n) => n.trim())
+      .filter(Boolean);
     return this.findByNames(names);
   }
 
   // examples: ['women|dresses', 'men|t-shirts']
   async upsertManyFromPairs(pairs: string[]): Promise<Category[]> {
-    const categoryObjects: Partial<Category>[] = pairs.map(pair => {
+    const categoryObjects: Partial<Category>[] = pairs.map((pair) => {
       const [gender, name] = pair.split('|');
       return {
         name: name.trim(),
@@ -103,7 +117,7 @@ export class CategoryService {
     await this.categoriesRepository.upsert(categoryObjects, ['name', 'gender']);
 
     // Return updated/inserted categories
-    const conditions = categoryObjects.map(c => ({
+    const conditions = categoryObjects.map((c) => ({
       name: c.name,
       gender: c.gender,
     }));
@@ -112,4 +126,4 @@ export class CategoryService {
       where: conditions,
     });
   }
-} 
+}

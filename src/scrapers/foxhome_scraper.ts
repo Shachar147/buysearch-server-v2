@@ -78,25 +78,30 @@ export class FoxHomeScraper extends BaseScraper {
     return CATEGORIES;
   }
 
-    private async fetchFoxHomePage(url: string): Promise<string> {
+  private async fetchFoxHomePage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
-  private parseFoxHomeProduct(productElem: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
+  private parseFoxHomeProduct(
+    productElem: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | undefined {
     // Title
     const title = productElem.find('.product-item-meta__title').text().trim();
 
     // URL
     let url = productElem.find('.product-item-meta__title').attr('href') || '';
     if (url && !url.startsWith('http')) url = BASE_URL + url;
-    
+
     // Images
     let images: string[] = [];
     productElem.find('.product-item__image-wrapper img').each((_, img) => {
@@ -106,35 +111,68 @@ export class FoxHomeScraper extends BaseScraper {
       if (src && !images.includes(src)) images.push(src);
     });
     images = images.filter(Boolean);
-    
+
     // Price and Old Price (handle price ranges)
-    let price = null, oldPrice = null;
-    
+    let price = null,
+      oldPrice = null;
+
     // Find price range span
     const priceRange = productElem.find('.boa-price-range.prices.price');
     if (priceRange.length) {
       // Get all price values, use the max
-      const priceSpans = priceRange.find('span').filter((_, el) => $(el).text().includes('₪'));
-      const prices = priceSpans.map((_, el) => parseFloat($(el).text().replace(/[^\d.]/g, ''))).get().filter(Boolean);
+      const priceSpans = priceRange
+        .find('span')
+        .filter((_, el) => $(el).text().includes('₪'));
+      const prices = priceSpans
+        .map((_, el) =>
+          parseFloat(
+            $(el)
+              .text()
+              .replace(/[^\d.]/g, ''),
+          ),
+        )
+        .get()
+        .filter(Boolean);
       if (prices.length) price = Math.max(...prices);
     } else {
       // Fallback: single price
-      const priceText = productElem.find('.price.price--highlight, .price.price--regular').first().text().replace(/[^\d.]/g, '');
+      const priceText = productElem
+        .find('.price.price--highlight, .price.price--regular')
+        .first()
+        .text()
+        .replace(/[^\d.]/g, '');
       if (priceText) price = parseFloat(priceText);
     }
-    
+
     // Old price (handle range)
-    const oldPriceRange = productElem.find('.boa-price-range.compare-prices.price');
+    const oldPriceRange = productElem.find(
+      '.boa-price-range.compare-prices.price',
+    );
     if (oldPriceRange.length) {
-      const oldPriceSpans = oldPriceRange.find('span').filter((_, el) => $(el).text().includes('₪'));
-      const oldPrices = oldPriceSpans.map((_, el) => parseFloat($(el).text().replace(/[^\d.]/g, ''))).get().filter(Boolean);
+      const oldPriceSpans = oldPriceRange
+        .find('span')
+        .filter((_, el) => $(el).text().includes('₪'));
+      const oldPrices = oldPriceSpans
+        .map((_, el) =>
+          parseFloat(
+            $(el)
+              .text()
+              .replace(/[^\d.]/g, ''),
+          ),
+        )
+        .get()
+        .filter(Boolean);
       if (oldPrices.length) oldPrice = Math.max(...oldPrices);
     } else {
-      const oldPriceText = productElem.find('.price.price--compare').first().text().replace(/[^\d.]/g, '');
+      const oldPriceText = productElem
+        .find('.price.price--compare')
+        .first()
+        .text()
+        .replace(/[^\d.]/g, '');
       if (oldPriceText) oldPrice = parseFloat(oldPriceText);
     }
     const salePercent = calcSalePercent(price, oldPrice) ?? 0;
-    
+
     // Colors (FoxHome usually doesn't show color swatches, so fallback to title)
     const colors = extractColorsWithHebrew(title, [], 'foxhome_scraper');
     const currency = 'ILS';
@@ -160,7 +198,7 @@ export class FoxHomeScraper extends BaseScraper {
 
   protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     const MAX_PAGES = 30;
     while (hasMore && page < MAX_PAGES) {
@@ -174,7 +212,10 @@ export class FoxHomeScraper extends BaseScraper {
         this.logProgress('No products found on page, stopping');
         break;
       }
-      const pageProducts = productElems.map((_, el) => this.parseFoxHomeProduct($(el), category, $)).get().filter(Boolean) as Product[];
+      const pageProducts = productElems
+        .map((_, el) => this.parseFoxHomeProduct($(el), category, $))
+        .get()
+        .filter(Boolean) as Product[];
       this.logProgress(`Found ${pageProducts.length} products on page ${page}`);
       allProducts.push(...pageProducts);
       // If less than 16 products, it's the last page
@@ -196,4 +237,4 @@ if (require.main === module) {
     console.error(e);
     process.exit(1);
   });
-} 
+}

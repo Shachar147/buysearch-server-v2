@@ -2,7 +2,11 @@ import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+} from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 import { extractColorsWithHebrew } from '../color.constants';
@@ -101,7 +105,7 @@ class JDSportsScraper extends BaseScraper {
 
   protected async scrapeCategory(category: CategoryType): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     const MAX_PAGES = 100;
     while (hasMore && page <= MAX_PAGES) {
@@ -112,13 +116,15 @@ class JDSportsScraper extends BaseScraper {
       this.logProgress(`Fetching ${url}`);
       const html = await this.fetchJDSportsPage(url);
       const products = this.parseJDSportsProducts(html, category);
-      this.logProgress(`Found ${products.length} products in ${category.name} (page ${page})`);
+      this.logProgress(
+        `Found ${products.length} products in ${category.name} (page ${page})`,
+      );
       if (!products.length) break;
       allProducts.push(...products);
       hasMore = products.length > 0;
       page++;
-      if (hasMore){
-        await new Promise(res => setTimeout(res, 5000)); // Wait 5 seconds
+      if (hasMore) {
+        await new Promise((res) => setTimeout(res, 5000)); // Wait 5 seconds
       }
     }
     return allProducts;
@@ -126,24 +132,32 @@ class JDSportsScraper extends BaseScraper {
 
   private async fetchJDSportsPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
       timeout: 60000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
   private getPrice(elm, selector: string): number | undefined {
     const str = elm.find(selector).first();
-    if (str && str.length){
-        const match = str.text().replace(',', '').trim().match(/[\d.]+/);
-        return parseFloat(match[0]);
+    if (str && str.length) {
+      const match = str
+        .text()
+        .replace(',', '')
+        .trim()
+        .match(/[\d.]+/);
+      return parseFloat(match[0]);
     }
   }
 
-  private parseJDSportsProducts(html: string, category: CategoryType): Product[] {
+  private parseJDSportsProducts(
+    html: string,
+    category: CategoryType,
+  ): Product[] {
     const $ = cheerio.load(html);
     const productCards = $('product-item.product-item');
     const products: Product[] = [];
@@ -151,22 +165,32 @@ class JDSportsScraper extends BaseScraper {
       const elem = $(el);
       // console.log(elem.html());
       const title = elem.find('.product-item-meta').find('h2').find('a').text();
-      let image = elem.find(".product-item__primary-image").attr("src");
+      let image = elem.find('.product-item__primary-image').attr('src');
       image = image ? `http:${image}` : image;
-      
+
       let oldPrice = this.getPrice(elem, '.price .price--compare');
       let price;
-      if (oldPrice){
+      if (oldPrice) {
         price = this.getPrice(elem, '.price .price--highlight');
       } else {
-        price = this.getPrice(elem, ".price-list .price");
+        price = this.getPrice(elem, '.price-list .price');
         oldPrice = price;
       }
 
-      const url = elem.find('a[href]').attr('href') ? BASE_URL + elem.find('a[href]').attr('href') : '';
-      const brand = normalizeBrandName(elem.find(".product-item-meta__vendor").text());
-      const colors = Array.from($(elem).find(".wd-product-item-swatch span[data-color]")).map((span) => $(span).attr("data-color"))
-      const normalizedColors = extractColorsWithHebrew(title, colors, 'jdsports_scraper');
+      const url = elem.find('a[href]').attr('href')
+        ? BASE_URL + elem.find('a[href]').attr('href')
+        : '';
+      const brand = normalizeBrandName(
+        elem.find('.product-item-meta__vendor').text(),
+      );
+      const colors = Array.from(
+        $(elem).find('.wd-product-item-swatch span[data-color]'),
+      ).map((span) => $(span).attr('data-color'));
+      const normalizedColors = extractColorsWithHebrew(
+        title,
+        colors,
+        'jdsports_scraper',
+      );
       const categories = [category.name];
       const gender = category.gender;
       const product = this.createProduct({
@@ -206,4 +230,4 @@ if (require.main === module) {
   });
 }
 
-export { main, JDSportsScraper }; 
+export { main, JDSportsScraper };

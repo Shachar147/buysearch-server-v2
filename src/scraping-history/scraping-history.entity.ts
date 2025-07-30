@@ -1,14 +1,20 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export enum ScrapingType {
   MANUAL = 'manual',
-  AUTO = 'auto'
+  AUTO = 'auto',
 }
 
 export enum ScrapingStatus {
   IN_PROGRESS = 'in_progress',
   FINISHED = 'finished',
-  FAILED = 'failed'
+  FAILED = 'failed',
 }
 
 @Entity('scraping_history')
@@ -19,20 +25,20 @@ export class ScrapingHistory {
   @Column({ type: 'varchar', length: 100 })
   scraper: string;
 
-  @Column({ 
-    type: 'enum', 
+  @Column({
+    type: 'enum',
     enum: ScrapingType,
-    default: ScrapingType.MANUAL 
+    default: ScrapingType.MANUAL,
   })
   type: ScrapingType;
 
   @Column({ type: 'timestamptz' })
   startTime: Date;
 
-  @Column({ 
-    type: 'enum', 
+  @Column({
+    type: 'enum',
     enum: ScrapingStatus,
-    default: ScrapingStatus.IN_PROGRESS 
+    default: ScrapingStatus.IN_PROGRESS,
   })
   status: ScrapingStatus;
 
@@ -58,7 +64,10 @@ export class ScrapingHistory {
   // This logic will run after entity is loaded or before insert/update
   // (TypeORM does not support computed columns in entity, so we use a getter for convenience)
   get computedTotalItems(): number {
-    return (this.totalItems ?? 0) || ((this.createdItems ?? 0) + (this.updatedItems ?? 0));
+    return (
+      (this.totalItems ?? 0) ||
+      (this.createdItems ?? 0) + (this.updatedItems ?? 0)
+    );
   }
 
   @Column({ type: 'int', default: 0 })
@@ -69,4 +78,4 @@ export class ScrapingHistory {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
-} 
+}

@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Unique,
+} from 'typeorm';
 import { MinLength } from 'class-validator';
 
 @Entity('users')
@@ -46,4 +53,4 @@ export class User {
 
   @Column({ type: 'int', default: 0 })
   totalSearches: number;
-} 
+}

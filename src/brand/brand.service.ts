@@ -39,12 +39,17 @@ export class BrandService {
     return this.brandsRepository
       .createQueryBuilder('brand')
       .where('brand.isActive = true')
-      .andWhere('LOWER(brand.name) IN (:...names)', { names: names.map(n => n.toLowerCase()) })
+      .andWhere('LOWER(brand.name) IN (:...names)', {
+        names: names.map((n) => n.toLowerCase()),
+      })
       .getMany();
   }
 
   async findByNameOrNames(nameOrNames: string): Promise<Brand[]> {
-    const names = nameOrNames.split(',').map(n => n.trim()).filter(Boolean);
+    const names = nameOrNames
+      .split(',')
+      .map((n) => n.trim())
+      .filter(Boolean);
     return this.findByNames(names);
   }
 
@@ -64,31 +69,33 @@ export class BrandService {
 
   async upsert(name: string): Promise<Brand> {
     let brand = await this.findByName(name);
-    
+
     if (!brand) {
       brand = await this.create({ name });
     }
-    
+
     return brand;
   }
 
   async upsertMany(brands: string[]): Promise<Brand[]> {
-    const brandObjects: Partial<Brand>[] = brands.map(brand =>
-      ({ name: brand })
-    );
-  
+    const brandObjects: Partial<Brand>[] = brands.map((brand) => ({
+      name: brand,
+    }));
+
     // Perform bulk upsert on `name`
     await this.brandsRepository.upsert(brandObjects, ['name']);
-  
+
     // Fetch and return all upserted brands
-    const names = brandObjects.map(b => b.name).filter(Boolean);
+    const names = brandObjects.map((b) => b.name).filter(Boolean);
     return this.brandsRepository.find({
       where: { name: In(names) },
     });
   }
 
   public async findAllNoPagination(): Promise<Brand[]> {
-    return this.brandsRepository.find({ where: { isActive: true }, order: { id: 'ASC' } });
+    return this.brandsRepository.find({
+      where: { isActive: true },
+      order: { id: 'ASC' },
+    });
   }
-
-} 
+}

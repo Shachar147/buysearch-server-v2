@@ -11,4 +11,4 @@ import { AuthModule } from '../auth/auth.module';
   controllers: [FavouritesController],
   exports: [FavouritesService],
 })
-export class FavouritesModule {} 
+export class FavouritesModule {}

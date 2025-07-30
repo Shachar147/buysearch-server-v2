@@ -11,7 +11,9 @@ export class FavouritesService {
   ) {}
 
   async addToFavourite(userId: number, productId: number) {
-    let fav = await this.favouritesRepository.findOne({ where: { userId, productId } });
+    let fav = await this.favouritesRepository.findOne({
+      where: { userId, productId },
+    });
     if (!fav) {
       fav = this.favouritesRepository.create({ userId, productId });
       await this.favouritesRepository.save(fav);
@@ -29,7 +31,9 @@ export class FavouritesService {
   }
 
   async isFavourite(userId: number, productId: number) {
-    const fav = await this.favouritesRepository.findOne({ where: { userId, productId } });
+    const fav = await this.favouritesRepository.findOne({
+      where: { userId, productId },
+    });
     return !!fav;
   }
 
@@ -47,4 +51,4 @@ export class FavouritesService {
     console.log('result', result);
     return result;
   }
-} 
+}

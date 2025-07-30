@@ -4,7 +4,17 @@
 import { SourceService } from 'src/source/source.service';
 import { ProductService } from '../../product/product.service';
 import { ScrapingHistoryService } from '../../scraping-history/scraping-history.service';
-import { Product, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, normalizeColors, processProducts, updateSourceScraperPath } from './scraper_utils';
+import {
+  Product,
+  createAppContext,
+  createScrapingSession,
+  extractCategory,
+  finishScrapingSession,
+  normalizeCategories,
+  normalizeColors,
+  processProducts,
+  updateSourceScraperPath,
+} from './scraper_utils';
 import { getBrowserManager, setupEmergencyCleanup } from './browser-manager';
 import { extractColors } from '../../color.constants';
 
@@ -19,13 +29,13 @@ export interface Category {
 export abstract class BaseScraper {
   protected abstract readonly scraperName: string;
   protected abstract readonly source: string;
-  
+
   protected productsService!: ProductService;
   protected scrapingHistoryService!: ScrapingHistoryService;
   protected sourceService: SourceService;
   protected session: any;
   protected startTime!: Date;
-  protected totalCategories: number = 0;
+  protected totalCategories = 0;
   protected browserManager = getBrowserManager();
 
   /**
@@ -68,13 +78,17 @@ export abstract class BaseScraper {
     const allScrapedUrls: Set<string> = new Set();
     try {
       // Initialize NestJS context
-      const { app, productsService, scrapingHistoryService, sourceService } = await createAppContext();
+      const { app, productsService, scrapingHistoryService, sourceService } =
+        await createAppContext();
       this.productsService = productsService;
       this.scrapingHistoryService = scrapingHistoryService;
       this.sourceService = sourceService;
 
       // Create scraping session
-      const { session, startTime } = await createScrapingSession(this.scraperName, scrapingHistoryService);
+      const { session, startTime } = await createScrapingSession(
+        this.scraperName,
+        scrapingHistoryService,
+      );
       this.session = session;
       this.startTime = startTime;
 
@@ -96,13 +110,15 @@ export abstract class BaseScraper {
       // Process each category
       for (let i = 0; i < categories.length; i++) {
         const category = categories[i];
-        console.log(`Scanning category ${category.name} – ${i + 1}/${categories.length}`);
+        console.log(
+          `Scanning category ${category.name} – ${i + 1}/${categories.length}`,
+        );
         try {
           const products = await this.scrapeCategory(category);
           console.log(`Found ${products.length} products in ${category.name}`);
 
           // Collect scraped URLs
-          products.forEach(p => allScrapedUrls.add(p.url));
+          products.forEach((p) => allScrapedUrls.add(p.url));
 
           // Process and save products
           console.log(`Start adding these products to BuySearch...`);
@@ -113,28 +129,35 @@ export abstract class BaseScraper {
           categoriesScanned = i + 1;
 
           // Calculate progress percentage
-          const progressPercentage = Math.round((categoriesScanned / this.totalCategories) * 100);
+          const progressPercentage = Math.round(
+            (categoriesScanned / this.totalCategories) * 100,
+          );
 
           // Update scraping progress with percentage
           await this.scrapingHistoryService.updateScrapingProgress(
-            this.session.id, 
-            totalNew, 
+            this.session.id,
+            totalNew,
             totalUpdated,
-            progressPercentage
+            progressPercentage,
           );
 
-          console.log(`${this.scraperName}: ${result.created} CREATED, ${result.updated} UPDATED for category ${category.name} (${categoriesScanned}/${this.totalCategories} categories completed - ${progressPercentage}%)`);
-
+          console.log(
+            `${this.scraperName}: ${result.created} CREATED, ${result.updated} UPDATED for category ${category.name} (${categoriesScanned}/${this.totalCategories} categories completed - ${progressPercentage}%)`,
+          );
         } catch (error) {
-          console.warn(`⚠️  Failed category ${category.name}: ${error.message}`);
+          console.warn(
+            `⚠️  Failed category ${category.name}: ${error.message}`,
+          );
           // Still increment progress even if category failed
           categoriesScanned = i + 1;
-          const progressPercentage = Math.round((categoriesScanned / this.totalCategories) * 100);
+          const progressPercentage = Math.round(
+            (categoriesScanned / this.totalCategories) * 100,
+          );
           await this.scrapingHistoryService.updateScrapingProgress(
-            this.session.id, 
-            totalNew, 
+            this.session.id,
+            totalNew,
             totalUpdated,
-            progressPercentage
+            progressPercentage,
           );
         }
       }
@@ -146,8 +169,12 @@ export abstract class BaseScraper {
       await this.browserManager.cleanup();
 
       // Fetch all DB URLs and IDs for this source
-      const dbUrlIdPairs = await this.productsService.getAllUrlsAndIdsBySource(this.source);
-      const missingIds = dbUrlIdPairs.filter(({ url }) => !allScrapedUrls.has(url)).map(({ id }) => id);
+      const dbUrlIdPairs = await this.productsService.getAllUrlsAndIdsBySource(
+        this.source,
+      );
+      const missingIds = dbUrlIdPairs
+        .filter(({ url }) => !allScrapedUrls.has(url))
+        .map(({ id }) => id);
       const missingItems = missingIds.length;
       const totalItems = allScrapedUrls.size;
 
@@ -168,27 +195,25 @@ export abstract class BaseScraper {
           this.scraperName,
           this.scrapingHistoryService,
           totalItems,
-          missingItems
+          missingItems,
         );
       } else {
-        
         // if we scraped nothing, mark session as failed
         await this.scrapingHistoryService.failScrapingSession(
           this.session.id,
           totalNew,
-          totalUpdated
+          totalUpdated,
         );
       }
 
       await app.close();
-      
     } catch (error) {
       console.error(`❌ ${this.scraperName} scraper failed:`, error);
       if (this.scrapingHistoryService && this.session) {
         await this.scrapingHistoryService.failScrapingSession(
           this.session.id,
           totalNew,
-          totalUpdated
+          totalUpdated,
         );
       }
 
@@ -208,7 +233,7 @@ export abstract class BaseScraper {
   public async runWithSignalHandling() {
     // Set up emergency cleanup for browser resources
     setupEmergencyCleanup();
-    
+
     let interrupted = false;
     const handleInterrupt = async () => {
       if (interrupted) return;
@@ -219,7 +244,7 @@ export abstract class BaseScraper {
           await this.scrapingHistoryService.failScrapingSession(
             this.session.id,
             0, // created
-            0  // updated
+            0, // updated
           );
           console.error('Session marked as failed.');
         }
@@ -253,18 +278,21 @@ export abstract class BaseScraper {
     gender: string;
     isSellingFast?: boolean;
   }): Product {
-
-     // Extract categories from both the raw categories and the product title
-     const extractedFromTitle = extractCategory(data.title);
-     const categories = normalizeCategories(Array.from(new Set([...data.categories, ...extractedFromTitle])));
+    // Extract categories from both the raw categories and the product title
+    const extractedFromTitle = extractCategory(data.title);
+    const categories = normalizeCategories(
+      Array.from(new Set([...data.categories, ...extractedFromTitle])),
+    );
     //  console.log("heree", {
     //      title: data.title,
     //      rawCategories: data.categories, extractedFromTitle, categories
     //  });
 
-    let title = data.title;
+    const title = data.title;
     const extractedColorsFromTitle = extractColors(title, [], 'createProduct');
-     const colors = normalizeColors(Array.from(new Set([...data.colors, ...extractedColorsFromTitle])));
+    const colors = normalizeColors(
+      Array.from(new Set([...data.colors, ...extractedColorsFromTitle])),
+    );
 
     return {
       ...data,
@@ -295,4 +323,4 @@ export abstract class BaseScraper {
   protected logError(message: string, error?: any): void {
     console.error(`❌ ${this.scraperName}: ${message}`, error || '');
   }
-} 
+}

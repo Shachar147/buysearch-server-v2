@@ -13,7 +13,11 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+} from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 import { extractColorsWithHebrew } from '../color.constants';
@@ -26,7 +30,7 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Men',
     url: 'https://www.oneprojectshop.com/collections/mens-short-t-shirts',
   },
-   {
+  {
     id: 'mens-jackets',
     name: Category.JACKETS_COATS,
     gender: 'Men',
@@ -158,7 +162,9 @@ class OneProjectShopScraper extends BaseScraper {
       try {
         const metaObj = JSON.parse(metaMatch[1]);
         if (Array.isArray(metaObj.products)) {
-          this.logProgress(`Found ${metaObj.products.length} products in meta.products`);
+          this.logProgress(
+            `Found ${metaObj.products.length} products in meta.products`,
+          );
           return metaObj.products;
         }
       } catch (e) {
@@ -173,26 +179,41 @@ class OneProjectShopScraper extends BaseScraper {
     const productItems: any[] = [];
     const $ = cheerio.load(html);
     const elems = $('product-item, .product-item');
-    this.logProgress(`extractProductsFromProductItemTags: found ${elems.length} elements`);
+    this.logProgress(
+      `extractProductsFromProductItemTags: found ${elems.length} elements`,
+    );
     if (elems.length > 0) {
-      this.logProgress('First product-item HTML: ' + $.html(elems[0]).slice(0, 500));
+      this.logProgress(
+        'First product-item HTML: ' + $.html(elems[0]).slice(0, 500),
+      );
     }
     elems.each((_, el) => {
       const attribs = el.attribs || {};
       productItems.push(attribs);
     });
     if (productItems.length) {
-      this.logProgress(`Found ${productItems.length} products in <product-item> tags`);
+      this.logProgress(
+        `Found ${productItems.length} products in <product-item> tags`,
+      );
     } else {
-        this.logProgress(`Found ${productItems.length} products in <product-item> tags`);
+      this.logProgress(
+        `Found ${productItems.length} products in <product-item> tags`,
+      );
     }
     return productItems;
   }
 
-  private parseMetaProduct(metaProduct: any, category: CategoryType): Product | undefined {
+  private parseMetaProduct(
+    metaProduct: any,
+    category: CategoryType,
+  ): Product | undefined {
     const title = metaProduct.title || '';
-    const url = metaProduct.url ? `https://www.oneprojectshop.com${metaProduct.url}` : '';
-    const images = metaProduct.featured_image ? [metaProduct.featured_image] : [];
+    const url = metaProduct.url
+      ? `https://www.oneprojectshop.com${metaProduct.url}`
+      : '';
+    const images = metaProduct.featured_image
+      ? [metaProduct.featured_image]
+      : [];
     const price = metaProduct.price || null;
     const oldPrice = metaProduct.compare_at_price || null;
     const salePercent = calcSalePercent(price, oldPrice) ?? 0;
@@ -221,16 +242,19 @@ class OneProjectShopScraper extends BaseScraper {
   private async fetchOneProjectShopPage(url: string): Promise<string> {
     const { data } = await axios.get(url, {
       headers: {
-        'accept': 'text/html,application/xhtml+xml,application/xml',
-        'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+        accept: 'text/html,application/xhtml+xml,application/xml',
+        'user-agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       },
     });
     return data;
   }
 
-  private async scrapeOneProjectShopCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeOneProjectShopCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     let page = 1;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     while (hasMore) {
       const url = `${category.url}${page > 1 ? `?page=${page}` : ''}`;
@@ -245,17 +269,26 @@ class OneProjectShopScraper extends BaseScraper {
       // --- 2. Parse DOM for product-item elements ---
       const $ = cheerio.load(html);
       const productElems = $('.product-item');
-      this.logProgress(`Found ${productElems.length} .product-item elements in DOM`);
+      this.logProgress(
+        `Found ${productElems.length} .product-item elements in DOM`,
+      );
       const products: Product[] = [];
       productElems.each((_, el) => {
         const elem = $(el);
         const id = elem.attr('data-infator-id') || elem.attr('id');
         const meta = id && metaById[id] ? metaById[id] : {};
         // --- Extract from DOM ---
-        const title = elem.find('.product-item-meta__title').text().trim() || meta.title || '';
+        const title =
+          elem.find('.product-item-meta__title').text().trim() ||
+          meta.title ||
+          '';
         const url = elem.find('.product-item__image-wrapper a').attr('href')
-          ? `https://www.oneprojectshop.com${elem.find('.product-item__image-wrapper a').attr('href')}`
-          : meta.url ? `https://www.oneprojectshop.com${meta.url}` : '';
+          ? `https://www.oneprojectshop.com${elem
+              .find('.product-item__image-wrapper a')
+              .attr('href')}`
+          : meta.url
+          ? `https://www.oneprojectshop.com${meta.url}`
+          : '';
         // Images: prefer data-selected-img, else <img src>
         let images: string[] = [];
         const img1 = elem.find('[data-selected-img]').attr('data-selected-img');
@@ -264,40 +297,63 @@ class OneProjectShopScraper extends BaseScraper {
         if (img2) images.push(img2.startsWith('http') ? img2 : `https:${img2}`);
         images = images.filter(Boolean);
         // Price: prefer .price, else meta.variants[0].price
-        let price = null, oldPrice = null;
-        const priceText = elem.find('.price').first().text().replace(/[^\d.]/g, '');
+        let price = null,
+          oldPrice = null;
+        const priceText = elem
+          .find('.price')
+          .first()
+          .text()
+          .replace(/[^\d.]/g, '');
         if (priceText) price = parseFloat(priceText);
         // Sale/old price: look for compare-at or sale price
-        const saleText = elem.find('.price--on-sale').first().text().replace(/[^\d.]/g, '');
+        const saleText = elem
+          .find('.price--on-sale')
+          .first()
+          .text()
+          .replace(/[^\d.]/g, '');
         if (saleText) oldPrice = parseFloat(saleText);
         // Fallback to meta.variants
-        if (!price && meta.variants && meta.variants[0]) price = meta.variants[0].price;
-        if (!oldPrice && meta.variants && meta.variants[0]) oldPrice = meta.variants[0].compare_at_price;
+        if (!price && meta.variants && meta.variants[0])
+          price = meta.variants[0].price;
+        if (!oldPrice && meta.variants && meta.variants[0])
+          oldPrice = meta.variants[0].compare_at_price;
         // Color: from data-selected-color or swatch, else empty
-        let colors: string[] = [];
-        const color = elem.find('.related-product-color-link[title]').attr('title');
+        const colors: string[] = [];
+        const color = elem
+          .find('.related-product-color-link[title]')
+          .attr('title');
         if (color) colors.push(color);
         // Brand/vendor: prefer meta
-        const brand = normalizeBrandName(meta.vendor || elem.find('.product-item-meta__vendor').text().trim() || 'OneProjectShop');
+        const brand = normalizeBrandName(
+          meta.vendor ||
+            elem.find('.product-item-meta__vendor').text().trim() ||
+            'OneProjectShop',
+        );
         // Category/type: prefer meta
         const categories = [category.name, meta.type].filter(Boolean);
         const gender = category.gender;
         const salePercent = calcSalePercent(price, oldPrice) ?? 0;
         if (!title || !url) return;
-        products.push(this.createProduct({
-          title,
-          url,
-          images,
-          colors: extractColorsWithHebrew(title, colors, 'oneprojectshop_scraper'),
-          isSellingFast: false,
-          price,
-          oldPrice,
-          salePercent,
-          currency: 'ILS',
-          brand,
-          categories,
-          gender,
-        }));
+        products.push(
+          this.createProduct({
+            title,
+            url,
+            images,
+            colors: extractColorsWithHebrew(
+              title,
+              colors,
+              'oneprojectshop_scraper',
+            ),
+            isSellingFast: false,
+            price,
+            oldPrice,
+            salePercent,
+            currency: 'ILS',
+            brand,
+            categories,
+            gender,
+          }),
+        );
       });
       allProducts.push(...products);
       hasMore = products.length >= 11;
@@ -321,4 +377,4 @@ if (require.main === module) {
   });
 }
 
-export { main, OneProjectShopScraper }; 
+export { main, OneProjectShopScraper };

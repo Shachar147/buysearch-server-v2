@@ -25,4 +25,4 @@ export class SearchController {
     const filters = await this.searchService.parseSearchQuery(search);
     return { filters };
   }
-} 
+}

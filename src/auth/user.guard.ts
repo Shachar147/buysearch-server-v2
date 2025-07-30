@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Request } from 'express';
 
@@ -8,7 +13,9 @@ export class UserGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
-    const token = req.cookies?.token || req.headers['authorization']?.replace('Bearer ', '');
+    const token =
+      req.cookies?.token ||
+      req.headers['authorization']?.replace('Bearer ', '');
     if (!token) throw new UnauthorizedException('No token');
     try {
       // console.log('token', token);
@@ -20,4 +27,4 @@ export class UserGuard implements CanActivate {
       throw new UnauthorizedException('Invalid token');
     }
   }
-} 
+}

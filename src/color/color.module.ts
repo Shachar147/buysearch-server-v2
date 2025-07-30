@@ -11,4 +11,4 @@ import { AuthModule } from '../auth/auth.module';
   providers: [ColorService],
   exports: [ColorService],
 })
-export class ColorModule {} 
+export class ColorModule {}

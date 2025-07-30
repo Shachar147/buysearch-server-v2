@@ -3,12 +3,15 @@ import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
-import { Product, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+  extractCategory,
+} from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
-
-
 
 const CATEGORIES: CategoryType[] = [
   {
@@ -76,7 +79,7 @@ const CATEGORIES: CategoryType[] = [
     name: Category.SHOES,
     gender: 'Women',
     url: 'https://www.newbalance.co.il/he/shop/outlet/sale-women/sale-women-shoes?sz=1000',
-  }
+  },
 ];
 
 const BASE_URL = 'https://www.newbalance.co.il';
@@ -93,18 +96,23 @@ class NewBalanceScraper extends BaseScraper {
     return this.scrapeNewBalanceCategory(category);
   }
 
-    private async fetchNewBalancePage(url: string): Promise<string> {
+  private async fetchNewBalancePage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'domcontentloaded',
       timeout: 60000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
-  private parseNewBalanceProduct(productCard: cheerio.Cheerio<any>, category: CategoryType, $: cheerio.CheerioAPI): Product | undefined {
+  private parseNewBalanceProduct(
+    productCard: cheerio.Cheerio<any>,
+    category: CategoryType,
+    $: cheerio.CheerioAPI,
+  ): Product | undefined {
     try {
       // Extract title from the pdp-link
       let title = productCard.find('.pdp-link .link').first().text().trim();
@@ -112,14 +120,14 @@ class NewBalanceScraper extends BaseScraper {
         title = productCard.find('.tile-image').attr('alt') || '';
       }
       if (!title) {
-        console.error("Product with no title", productCard.html());
+        console.error('Product with no title', productCard.html());
         return undefined;
       }
 
       // Extract URL from the pdp-link
       const url = productCard.find('.pdp-link .link').attr('href');
       if (!url) {
-        console.error("Product with no URL", title);
+        console.error('Product with no URL', title);
         return undefined;
       }
       const fullUrl = url.startsWith('http') ? url : `${BASE_URL}${url}`;
@@ -141,14 +149,22 @@ class NewBalanceScraper extends BaseScraper {
       let oldPrice: number | null = null;
 
       // Look for sale price (current price) in the sales span
-      const salePriceText = productCard.find('.price .sales .value').first().text().trim();
+      const salePriceText = productCard
+        .find('.price .sales .value')
+        .first()
+        .text()
+        .trim();
       if (salePriceText) {
         const match = salePriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
         price = match ? parseFloat(match[0]) : null;
       }
 
       // Look for original price in the strike-through del element
-      const originalPriceText = productCard.find('.price del .strike-through .value').first().text().trim();
+      const originalPriceText = productCard
+        .find('.price del .strike-through .value')
+        .first()
+        .text()
+        .trim();
       if (originalPriceText) {
         const match = originalPriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
         oldPrice = match ? parseFloat(match[0]) : null;
@@ -156,7 +172,11 @@ class NewBalanceScraper extends BaseScraper {
 
       // If no sale price found, look for regular price (no sale)
       if (!price) {
-        const regularPriceText = productCard.find('.price .value').first().text().trim();
+        const regularPriceText = productCard
+          .find('.price .value')
+          .first()
+          .text()
+          .trim();
         if (regularPriceText) {
           const match = regularPriceText.replace(/[₪,]/g, '').match(/[\d.]+/);
           price = match ? parseFloat(match[0]) : null;
@@ -195,18 +215,18 @@ class NewBalanceScraper extends BaseScraper {
     }
   }
 
-
-
-  private async scrapeNewBalanceCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeNewBalanceCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     this.logProgress(`Fetching ${category.url}`);
-    
+
     try {
       const html = await this.fetchNewBalancePage(category.url);
       const $ = cheerio.load(html);
-      
+
       // Find all product cards - use the correct selector for New Balance
       let productCards = $('.product-tile-item');
-      
+
       if (productCards.length === 0) {
         // Try alternative selectors
         productCards = $('.product-tile');
@@ -217,7 +237,9 @@ class NewBalanceScraper extends BaseScraper {
         return [];
       }
 
-      this.logProgress(`Found ${productCards.length} products in ${category.name}`);
+      this.logProgress(
+        `Found ${productCards.length} products in ${category.name}`,
+      );
 
       const products: Product[] = [];
       productCards.each((_, card) => {
@@ -227,9 +249,10 @@ class NewBalanceScraper extends BaseScraper {
         }
       });
 
-      this.logProgress(`Successfully parsed ${products.length} products from ${category.name}`);
+      this.logProgress(
+        `Successfully parsed ${products.length} products from ${category.name}`,
+      );
       return products;
-      
     } catch (error) {
       this.logError(`Error scraping category ${category.name}:`, error);
       return [];
@@ -251,4 +274,4 @@ if (require.main === module) {
   });
 }
 
-export { main, NewBalanceScraper }; 
+export { main, NewBalanceScraper };

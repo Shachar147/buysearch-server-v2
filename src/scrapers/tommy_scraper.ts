@@ -1,7 +1,12 @@
 import { fetchPageWithBrowser } from './base/browser-helpers';
 import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName, prefixHttp } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+  prefixHttp,
+} from './base/scraper_utils';
 import { Category } from '../category.constants';
 import { extractColors } from '../color.constants';
 
@@ -184,14 +189,15 @@ export class TommyScraper extends BaseScraper {
     ];
   }
 
-    private async fetchTommyPage(url: string): Promise<string> {
+  private async fetchTommyPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
       timeout: 20000,
       onPageReady: async (page) => {
         // Custom page logic can be added here
-      }
+      },
     });
   }
 
@@ -221,15 +227,23 @@ export class TommyScraper extends BaseScraper {
         productDivs.each((_, el) => {
           const productTile = $(el).find('.product-tile');
           // Product URL
-          const urlPath = productTile.find('.pdpurl').attr('href') || productTile.find('.ds-product-name').attr('href');
-          const url = (urlPath ? prefixHttp('usa.tommy.com' + urlPath) : '').split('?')[0];
+          const urlPath =
+            productTile.find('.pdpurl').attr('href') ||
+            productTile.find('.ds-product-name').attr('href');
+          const url = (
+            urlPath ? prefixHttp('usa.tommy.com' + urlPath) : ''
+          ).split('?')[0];
           // Title
-          const title = productTile.find('.ds-product-name span[role="heading"]').text().trim();
+          const title = productTile
+            .find('.ds-product-name span[role="heading"]')
+            .text()
+            .trim();
           // Images (main and alternates)
           const images: string[] = [];
           // Extract from <source srcset> inside <picture>
           productTile.find('picture source').each((_, source) => {
-            const srcset = $(source).attr('srcset') || $(source).attr('data-srcset');
+            const srcset =
+              $(source).attr('srcset') || $(source).attr('data-srcset');
             if (srcset) {
               // srcset can be a comma-separated list, take the first URL
               const firstUrl = srcset.split(',')[0].split(' ')[0].trim();
@@ -243,11 +257,17 @@ export class TommyScraper extends BaseScraper {
               if (src && !src.startsWith('data:')) images.push(src);
             });
           }
-          if (images.length === 0){
+          if (images.length === 0) {
             const parts = url.split('?')[0].split('/');
-            const id = parts[parts.length-1].replace('-','_').replace('.html','');
-            images.push(`https://shoptommy.scene7.com/is/image/ShopTommy/${id}_FNT`);
-            images.push(`https://shoptommy.scene7.com/is/image/ShopTommy/${id}_BCK`);
+            const id = parts[parts.length - 1]
+              .replace('-', '_')
+              .replace('.html', '');
+            images.push(
+              `https://shoptommy.scene7.com/is/image/ShopTommy/${id}_FNT`,
+            );
+            images.push(
+              `https://shoptommy.scene7.com/is/image/ShopTommy/${id}_BCK`,
+            );
           }
           console.log(url, images);
 
@@ -260,10 +280,15 @@ export class TommyScraper extends BaseScraper {
           // Price
           let price: number | null = null;
           let oldPrice: number | null = null;
-          const priceText = productTile.find('.sales .value').attr('content') || productTile.find('.sales .value').text();
+          const priceText =
+            productTile.find('.sales .value').attr('content') ||
+            productTile.find('.sales .value').text();
           if (priceText) price = parseFloat(priceText.replace(/[^\d.]/g, ''));
-          const oldPriceText = productTile.find('.ds-slash-price .value').attr('content') || productTile.find('.ds-slash-price .value').text();
-          if (oldPriceText) oldPrice = parseFloat(oldPriceText.replace(/[^\d.]/g, ''));
+          const oldPriceText =
+            productTile.find('.ds-slash-price .value').attr('content') ||
+            productTile.find('.ds-slash-price .value').text();
+          if (oldPriceText)
+            oldPrice = parseFloat(oldPriceText.replace(/[^\d.]/g, ''));
           // Sale percent
           const salePercent = calcSalePercent(price, oldPrice);
           // Brand
@@ -286,16 +311,19 @@ export class TommyScraper extends BaseScraper {
                 brand,
                 categories,
                 gender,
-              })
+              }),
             );
           }
         });
         // Pagination logic: first page always returns 16, others 48
         console.log(`Tommy: Found ${products.length} products so far.`);
-        if ((pageNum === 1 && productDivs.length === firstPageSize) || (pageNum > 1 && productDivs.length === pageSize)) {
+        if (
+          (pageNum === 1 && productDivs.length === firstPageSize) ||
+          (pageNum > 1 && productDivs.length === pageSize)
+        ) {
           hasMore = true;
-          await new Promise(res => setTimeout(res, 2000));
-          start += (pageNum == 1 ? firstPageSize : pageSize);
+          await new Promise((res) => setTimeout(res, 2000));
+          start += pageNum == 1 ? firstPageSize : pageSize;
           pageNum++;
         } else {
           hasMore = false;
@@ -316,4 +344,4 @@ async function main() {
 
 if (require.main === module) {
   main();
-} 
+}

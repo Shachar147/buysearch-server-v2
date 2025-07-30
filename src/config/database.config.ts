@@ -1,12 +1,16 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 function getEnv(name: string, fallback: string): string {
-  return process.env[name] && process.env[name].trim() !== '' ? process.env[name] : fallback;
+  return process.env[name] && process.env[name].trim() !== ''
+    ? process.env[name]
+    : fallback;
 }
 
 const databaseConfig: TypeOrmModuleOptions = {
   type: 'postgres',
-  url: process.env.DATABASE_URL || 'postgresql://postgres.klasiqvayzpgbojzyxbg:f4c5J0URwHIM5iAG@aws-0-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true',
+  url:
+    process.env.DATABASE_URL ||
+    'postgresql://postgres.klasiqvayzpgbojzyxbg:f4c5J0URwHIM5iAG@aws-0-eu-north-1.pooler.supabase.com:6543/postgres?pgbouncer=true',
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: process.env.NODE_ENV !== 'production',
   logging: false,

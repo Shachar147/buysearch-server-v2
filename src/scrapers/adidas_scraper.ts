@@ -1,10 +1,18 @@
 import * as cheerio from 'cheerio';
 import { BaseScraper } from './base/base-scraper';
 import { Category as CategoryType } from './base/base-scraper';
-import { Product, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
+import {
+  Product,
+  calcSalePercent,
+  normalizeBrandName,
+  extractCategory,
+} from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
-import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
+import {
+  fetchPageWithBrowser,
+  handleCookieConsent,
+} from './base/browser-helpers';
 import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
@@ -33,7 +41,7 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=women-clothing&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dwomen-clothing%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
   },
-  { 
+  {
     id: 'men-clothing',
     name: Category.CLOTHING,
     gender: 'Men',
@@ -50,7 +58,7 @@ const CATEGORIES: CategoryType[] = [
     name: Category.ACCESSORIES,
     gender: 'Women',
     url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=women-accessories&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dwomen-accessories%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
-  }
+  },
 ];
 
 const BASE_URL = 'https://www.adidas.co.il';
@@ -69,30 +77,31 @@ class AdidasScraper extends BaseScraper {
 
   private async fetchAdidasPage(url: string): Promise<string> {
     return fetchPageWithBrowser(url, {
-      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
+      userAgent:
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36',
       waitUntil: 'networkidle2',
       timeout: 60000,
       onPageReady: async (page) => {
         // Try to accept cookie consent if it appears
         await handleCookieConsent(page, ['button']);
-        
+
         // Custom cookie consent handling for Hebrew text
         try {
           const buttons = await page.$$('button');
           for (const btn of buttons) {
-            const text = await page.evaluate(el => el.textContent, btn);
+            const text = await page.evaluate((el) => el.textContent, btn);
             if (text && text.includes('אני מאשר')) {
               await btn.click();
-              await new Promise(res => setTimeout(res, 1000)); // Wait for modal to close
+              await new Promise((res) => setTimeout(res, 1000)); // Wait for modal to close
               break;
             }
           }
         } catch (e) {
           // If not found, continue
         }
-        
-        await new Promise(res => setTimeout(res, 5000)); // Wait 5 seconds
-      }
+
+        await new Promise((res) => setTimeout(res, 5000)); // Wait 5 seconds
+      },
     });
   }
 
@@ -115,11 +124,11 @@ class AdidasScraper extends BaseScraper {
         }
       }
       // Title
-      let title = elem.find('.tile-body').find(".link").text().trim();
-      console.log(`Title ${title}`)
+      const title = elem.find('.tile-body').find('.link').text().trim();
+      console.log(`Title ${title}`);
       // Brand
-      let brand = normalizeBrandName(trackingJson.product_brand || 'Adidas');
-      console.log(`Brand ${brand}`)
+      const brand = normalizeBrandName(trackingJson.product_brand || 'Adidas');
+      console.log(`Brand ${brand}`);
       // URL
       let url = '';
       const linkElem = elem.find('.image-container a[href]');
@@ -127,7 +136,7 @@ class AdidasScraper extends BaseScraper {
         url = linkElem.attr('href') || '';
         if (url && !url.startsWith('http')) url = BASE_URL + url;
       }
-      console.log(`URL ${url}`)
+      console.log(`URL ${url}`);
       // Images
       const imgElems = elem.find('img');
       let images: string[] = [];
@@ -138,14 +147,16 @@ class AdidasScraper extends BaseScraper {
         if (src) images.push(src.split(',').join('%2C'));
       });
       // Filter out the QuickView icon image
-      images = images.filter(src => !src.includes('QuickView Icon.png'));
+      images = images.filter((src) => !src.includes('QuickView Icon.png'));
       images = images.filter(Boolean);
       // Price and oldPrice: handle discount case
       let price: number | null = null;
       let oldPrice: number | null = null;
       // If both sales and strike-through are present, use them
-      const saleValueElem = elem.find(".price .sales .value[content]");
-      const strikeValueElem = elem.find(".price .strike-through.list .value[content]");
+      const saleValueElem = elem.find('.price .sales .value[content]');
+      const strikeValueElem = elem.find(
+        '.price .strike-through.list .value[content]',
+      );
       if (saleValueElem.length && strikeValueElem.length) {
         const saleContent = saleValueElem.attr('content');
         const strikeContent = strikeValueElem.attr('content');
@@ -159,9 +170,15 @@ class AdidasScraper extends BaseScraper {
         }
         if (price == null) {
           if (trackingJson.product_price) {
-            price = parseFloat(String(trackingJson.product_price).replace(',', ''));
+            price = parseFloat(
+              String(trackingJson.product_price).replace(',', ''),
+            );
           } else {
-            const priceText = elem.find('.product-price, .price').text().replace(/[^\d.,]/g, '').replace(',', '');
+            const priceText = elem
+              .find('.product-price, .price')
+              .text()
+              .replace(/[^\d.,]/g, '')
+              .replace(',', '');
             if (priceText) {
               const match = priceText.match(/\d+(\.\d+)?/);
               if (match) price = parseFloat(match[0]);
@@ -175,7 +192,11 @@ class AdidasScraper extends BaseScraper {
             oldPrice = Math.round((price * 100) / (100 - discount));
           }
         } else {
-          const oldPriceText = elem.find('.product-strike-price, .old-price').text().replace(/[^\d.,]/g, '').replace(',', '');
+          const oldPriceText = elem
+            .find('.product-strike-price, .old-price')
+            .text()
+            .replace(/[^\d.,]/g, '')
+            .replace(',', '');
           if (oldPriceText) {
             const match = oldPriceText.match(/\d+(\.\d+)?/);
             if (match) oldPrice = parseFloat(match[0]);
@@ -191,7 +212,7 @@ class AdidasScraper extends BaseScraper {
       elem.find('img[data-attr-value]').each((_, img) => {
         const colorVal = $(img).attr('data-attr-value');
         if (colorVal) {
-          colorVal.split('/').forEach(part => {
+          colorVal.split('/').forEach((part) => {
             const trimmed = part.trim();
             if (trimmed) colors.push(trimmed);
           });
@@ -228,9 +249,11 @@ class AdidasScraper extends BaseScraper {
     return products;
   }
 
-  private async scrapeAdidasCategory(category: CategoryType): Promise<Product[]> {
+  private async scrapeAdidasCategory(
+    category: CategoryType,
+  ): Promise<Product[]> {
     let page = 0;
-    let allProducts: Product[] = [];
+    const allProducts: Product[] = [];
     let hasMore = true;
     const PAGE_SIZE = 1000;
     const MAX_PAGES = 3;
@@ -242,12 +265,19 @@ class AdidasScraper extends BaseScraper {
       } else {
         // Use the AJAX endpoint for pagination, with dynamic cgid
         const start = page * PAGE_SIZE;
-        url = category.url.replace('&start=0&sz=1000', `&start=${start}&sz=${PAGE_SIZE}`);
+        url = category.url.replace(
+          '&start=0&sz=1000',
+          `&start=${start}&sz=${PAGE_SIZE}`,
+        );
       }
       this.logProgress(`Fetching ${url}`);
       const html = await this.fetchAdidasPage(url);
       const products = this.parseAdidasProducts(html, category);
-      this.logProgress(`Found ${products.length} products in ${category.name} (page ${page + 1})`);
+      this.logProgress(
+        `Found ${products.length} products in ${category.name} (page ${
+          page + 1
+        })`,
+      );
       if (!products.length) break;
       allProducts.push(...products);
       hasMore = products.length >= PAGE_SIZE;
@@ -271,4 +301,4 @@ if (require.main === module) {
   });
 }
 
-export { main, AdidasScraper }; 
+export { main, AdidasScraper };

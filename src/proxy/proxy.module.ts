@@ -4,4 +4,4 @@ import { ProxyController } from './proxy.controller';
 @Module({
   controllers: [ProxyController],
 })
-export class ProxyModule {} 
+export class ProxyModule {}

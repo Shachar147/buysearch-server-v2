@@ -11,4 +11,4 @@ import { AuthModule } from '../auth/auth.module';
   providers: [CategoryService],
   exports: [CategoryService],
 })
-export class CategoryModule {} 
+export class CategoryModule {}

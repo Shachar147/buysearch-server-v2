@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Category } from './category.entity';
 import { UserGuard } from '../auth/user.guard';
@@ -14,7 +24,11 @@ export class CategoryController {
   }
 
   @Get()
-  findAll(@Query('gender') gender: string, @Query('offset') offset = 0, @Query('limit') limit = 200) {
+  findAll(
+    @Query('gender') gender: string,
+    @Query('offset') offset = 0,
+    @Query('limit') limit = 200,
+  ) {
     offset = Number(offset) || 0;
     limit = Math.min(Number(limit) || 200, 200);
     return this.categoryService.findAll(offset, limit, gender);
@@ -26,7 +40,10 @@ export class CategoryController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoryDto: Partial<Category>) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: Partial<Category>,
+  ) {
     return this.categoryService.update(+id, updateCategoryDto);
   }
 
@@ -34,4 +51,4 @@ export class CategoryController {
   remove(@Param('id') id: string) {
     return this.categoryService.remove(+id);
   }
-} 
+}

@@ -8,7 +8,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private readonly userService: UserService) {
     const clientID = process.env.GOOGLE_CLIENT_ID;
     const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
-    const callbackURL = process.env.GOOGLE_CALLBACK_URL || 'http://localhost:3001/api/auth/google/callback';
+    const callbackURL =
+      process.env.GOOGLE_CALLBACK_URL ||
+      'http://localhost:3001/api/auth/google/callback';
 
     super({
       clientID: clientID || 'dummy',
@@ -26,7 +28,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   ): Promise<any> {
     // If credentials are not configured, return error
     if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
-      return done(new Error('Google OAuth is not configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.'), null);
+      return done(
+        new Error(
+          'Google OAuth is not configured. Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET environment variables.',
+        ),
+        null,
+      );
     }
 
     const { name, emails, photos, id } = profile;
@@ -37,7 +44,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       googleName: name.givenName + ' ' + name.familyName,
       googlePicture: photos[0].value,
     };
-    
+
     done(null, user);
   }
-} 
+}

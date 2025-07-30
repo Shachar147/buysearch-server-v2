@@ -13,4 +13,4 @@ import { UserModule } from '../user/user.module';
   controllers: [SearchController],
   exports: [SearchService],
 })
-export class SearchModule {} 
+export class SearchModule {}

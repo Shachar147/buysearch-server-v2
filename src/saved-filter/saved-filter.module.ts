@@ -11,4 +11,4 @@ import { AuthModule } from '../auth/auth.module';
   controllers: [SavedFilterController],
   exports: [SavedFilterService],
 })
-export class SavedFilterModule {} 
+export class SavedFilterModule {}

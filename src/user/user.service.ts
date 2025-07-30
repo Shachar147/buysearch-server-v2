@@ -45,7 +45,7 @@ export class UserService {
     const baseUsername = googleData.email.split('@')[0];
     let username = baseUsername;
     let counter = 1;
-    
+
     // Ensure username is unique
     while (await this.findByUsername(username)) {
       username = `${baseUsername}${counter}`;
@@ -60,17 +60,20 @@ export class UserService {
       googleName: googleData.googleName,
       googlePicture: googleData.googlePicture,
     });
-    
+
     return this.usersRepository.save(user);
   }
 
-  async linkGoogleToExistingUser(userId: number, googleData: {
-    googleId: string;
-    email: string;
-    googleEmail: string;
-    googleName: string;
-    googlePicture: string;
-  }): Promise<User> {
+  async linkGoogleToExistingUser(
+    userId: number,
+    googleData: {
+      googleId: string;
+      email: string;
+      googleEmail: string;
+      googleName: string;
+      googlePicture: string;
+    },
+  ): Promise<User> {
     await this.usersRepository.update(userId, {
       googleId: googleData.googleId,
       googleEmail: googleData.googleEmail,
@@ -78,7 +81,7 @@ export class UserService {
       googlePicture: googleData.googlePicture,
       email: googleData.email, // Update email if not set
     });
-    
+
     return this.findById(userId);
   }
 
@@ -100,4 +103,4 @@ export class UserService {
   async findAll(): Promise<User[]> {
     return this.usersRepository.find({ order: { createdAt: 'DESC' } });
   }
-} 
+}

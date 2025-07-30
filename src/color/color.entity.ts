@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToMany,
+} from 'typeorm';
 import { Product } from '../product/product.entity';
 
 @Entity('colors')
@@ -21,6 +28,6 @@ export class Color {
   @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt: Date;
 
-  @ManyToMany(() => Product, product => product.colors)
+  @ManyToMany(() => Product, (product) => product.colors)
   products: Product[];
-} 
+}
