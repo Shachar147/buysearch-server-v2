@@ -35,7 +35,11 @@ export async function fetchPageWithBrowser(
 
     // Execute custom page ready logic
     if (options.onPageReady) {
+      try {
       await options.onPageReady(page);
+      } catch {
+        
+      }
     }
 
     // Get page content

@@ -50,6 +50,8 @@
     "scrape:derococo": "npx ts-node -r tsconfig-paths/register src/scrapers/derococo_scraper.ts",
     "scrape:mantra": "npx ts-node -r tsconfig-paths/register src/scrapers/mantra_scraper.ts",
     "scrape:addict": "npx ts-node -r tsconfig-paths/register src/scrapers/addict_scraper.ts",
+    "scrape:green": "npx ts-node -r tsconfig-paths/register src/scrapers/green_scraper.ts",
+    "scrape:shviro": "npx ts-node -r tsconfig-paths/register src/scrapers/shviro_scraper.ts",
     "check:categories": "ts-node --transpile-only scripts/check-db-categories-vs-enum-nest.ts",
     "migrate:scrapers": "node scripts/migrate-scrapers.js",
     "start:old": "nest start",

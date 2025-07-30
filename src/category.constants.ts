@@ -123,6 +123,11 @@ export enum Category {
   PERFUMES = "Perfumes",
   HOME = "Home",
   HOME_FURNITURE = "Home: Furniture",
+  HOME_OUTDOOR_FURNITURE = "Home: Outdoor Furniture",
+  HOME_OUTDOOR_KITCHEN = "Home: Outdoor Kitchen",
+  HOME_OUTDOOR_SEATING_AREAS = "Home: Outdoor Seating Areas",
+  HOME_OUTDOOR_SHADOWING = "Home: Outdoor Shadowing",
+  HOME_OUTDOOR_ACCESSORIES = "Home: Outdoor Accessories",
   HOME_KITCHEN = "Home: Kitchen",
   HOME_SLEEP = "Home: Sleep",
   HOME_CARPETS = "Home: Carpets",
@@ -645,6 +650,57 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'jacket': [Category.JACKETS_COATS],
     ' jersey': [Category.TANKS],
     ' tee': [Category.T_SHIRTS],
+    'ריהוט חוץ': [Category.HOME_OUTDOOR_FURNITURE],
+    'ריהוט גן': [Category.HOME_OUTDOOR_FURNITURE],
+    'שולחן חוץ': [Category.HOME_OUTDOOR_FURNITURE],
+    'כסא חוץ': [Category.HOME_OUTDOOR_FURNITURE],
+    'שולחן גן': [Category.HOME_OUTDOOR_FURNITURE],
+    'כסא גן': [Category.HOME_OUTDOOR_FURNITURE],
+    'פינות ישיבה': [Category.HOME_OUTDOOR_SEATING_AREAS],
+    'פינת ישיבה': [Category.HOME_OUTDOOR_SEATING_AREAS],
+    'גריל חוץ': [Category.HOME_OUTDOOR_KITCHEN],
+    'מטבח חוץ': [Category.HOME_OUTDOOR_KITCHEN],
+    'מטבח גינה': [Category.HOME_OUTDOOR_KITCHEN],
+    'שולחנות גן': [Category.HOME_OUTDOOR_FURNITURE],
+    'כסאות גן': [Category.HOME_OUTDOOR_FURNITURE],
+    'שולחן-גן': [Category.HOME_OUTDOOR_FURNITURE],
+    'כיסא גן': [Category.HOME_OUTDOOR_FURNITURE],
+    'שולחן-חוץ': [Category.HOME_OUTDOOR_FURNITURE],
+    'כיסא חוץ': [Category.HOME_OUTDOOR_FURNITURE],
+    'outdoor chair': [Category.HOME_OUTDOOR_FURNITURE],
+    'outdoor table': [Category.HOME_OUTDOOR_FURNITURE],
+    'outdoor garden': [Category.HOME_OUTDOOR_FURNITURE],
+    'outdoor garden furniture': [Category.HOME_OUTDOOR_FURNITURE],
+    'outdoor garden table': [Category.HOME_OUTDOOR_FURNITURE],
+    'outdoor garden chair': [Category.HOME_OUTDOOR_FURNITURE],
+    'outdoor seating': [Category.HOME_OUTDOOR_SEATING_AREAS],
+    'פינות חוץ': [Category.HOME_OUTDOOR_SEATING_AREAS],
+    'פינת חוץ': [Category.HOME_OUTDOOR_SEATING_AREAS],
+    'פינות-ישיבה': [Category.HOME_OUTDOOR_SEATING_AREAS],
+    'פינת-ישיבה': [Category.HOME_OUTDOOR_SEATING_AREAS],
+    'ישיבת חוץ': [Category.HOME_OUTDOOR_SEATING_AREAS],
+    'גריל 3 מבערים': [Category.HOME_OUTDOOR_KITCHEN],
+    'גריל 4 מבערים': [Category.HOME_OUTDOOR_KITCHEN],
+    'גריל 5 מבערים': [Category.HOME_OUTDOOR_KITCHEN],
+    'טאבון גז': [Category.HOME_OUTDOOR_KITCHEN],
+    'טאבון לפיצה': [Category.HOME_OUTDOOR_KITCHEN],
+    'שמשיה': [Category.HOME_OUTDOOR_SHADOWING],
+    'שמשייה': [Category.HOME_OUTDOOR_SHADOWING],
+    'שמשיית חוץ': [Category.HOME_OUTDOOR_SHADOWING],
+    'שמשייה חוץ': [Category.HOME_OUTDOOR_SHADOWING],
+    'מבנה הצללה': [Category.HOME_OUTDOOR_SHADOWING],
+    'shadowing': [Category.HOME_OUTDOOR_SHADOWING],
+    'sunshade': [Category.HOME_OUTDOOR_SHADOWING],
+    'parasol': [Category.HOME_OUTDOOR_SHADOWING],
+    'outdoor accessories': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'outdoor decor': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'עיצוב חוץ': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'עיצוב גן': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'עיצוב-חוץ': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'כריות חוץ': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'כריות גן': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'כריות-חוץ': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'כריות-גן': [Category.HOME_OUTDOOR_ACCESSORIES],
 };
 
 // --- Category Synonyms Map ---
@@ -1179,7 +1235,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.HOME_BAR_CHAIRS]: {
     en: ['bar chair', 'bar chairs'],
-    he: ['כיסא בר', 'כיסאות בר', 'לבית']
+    he: ['כיסא בר', 'כיסאות בר', 'לבית', 'כיסא בר', 'כיסאות בר', 'כסאות בר', 'כיסא-בר', 'סט בר']
   },
   [Category.HOME_SOFAS]: {
     en: ['sofa', 'sofas'],
@@ -1232,8 +1288,27 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.EARRINGS]: {
     en: ['earring'],
     he: ['עגיל']
+  },
+  [Category.HOME_OUTDOOR_FURNITURE]: {
+    en: ["outdoor dining", "outdoor furniture", "outdoor chair", "outdoor table", "garden furniture", "garden table", "garden chair"],
+    he: ["ריהוט חוץ", "ריהוט גן", "שולחן חוץ", "כסא חוץ", "שולחן גן", "כסא גן", "ריהוט-גן", "שולחן-חוץ", "כסא-חוץ", "שולחן-גן", "כסא-גן"]
+  },
+  [Category.HOME_OUTDOOR_SEATING_AREAS]: {
+    en: ["outdoor seating area", "outdoor seating", "outdoor seating furniture", "outdoor seating table", "outdoor seating chair", "outdoor seating furniture", "outdoor seating table", "outdoor seating chair"],
+    he: ["פינות ישיבה", "פינת ישיבה", "פינות ישיבה", "פינת ישיבה", "פינות ישיבה", "פינת ישיבה", "פינות ישיבה", "פינת ישיבה"]
+  },
+  [Category.HOME_OUTDOOR_KITCHEN]: {
+    en: ["outdoor kitchen", "garden kitchen", "outside kitchen", "outdoor grill",],
+    he: ["מטבח חוץ", "גריל חוץ", "מטבח גינה"]
+  },
+  [Category.HOME_OUTDOOR_SHADOWING]: {
+    en: ["outdoor shade", "shadowing"],
+    he: ["שמשייה", "רפפה צד למבנה", "מבנה הצללה"]
+  },
+  [Category.HOME_OUTDOOR_ACCESSORIES]: {
+    en: ["outdoor accessories", "garden accessories", "outdoor decor", "garden decor", "outdoor decoration", "garden decoration"],
+    he: ["אביזרי גן", "אביזרי גן", "אביזרי גן", "אביזרי גן", "אביזרי גן", "אביזרי גן"]
   }
-  
 };
 
 // --- Generate Keyword-to-Category Map ---

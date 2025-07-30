@@ -336,6 +336,16 @@ export const COLOR_NORMALIZATION_MAP: Record<string, (Color|string)[]> = {
   'ירוק כהה': [Color.GREEN],
   'קאמל': [Color.CAMEL],
   'ורוד עתיק': [Color.PINK],
+  'פיסטוק בהיר': [Color.GREEN],
+  'תכלת בהיר': [Color.LIGHT_BLUE],
+  'פיסטוק': [Color.GREEN],
+  'אמבר': [Color.YELLOW],
+  'ונילה': [Color.WHITE],
+  'שמפניה': [Color.BRONZE],
+  'שמפנייה': [Color.BRONZE],
+  'טאופ': [Color.TAUPE],
+  'מוקה בהיר': [Color.MOCHA],
+  'טרקוטה': [Color.RED],
 };
 
 /**
@@ -347,24 +357,24 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
     he: ['שחור', 'שחורה', 'שחורים', 'שחורות', 'שחרחר']
   },
   [Color.WHITE]: {
-    en: ['white', 'ivory', 'cream', 'off-white', 'bone'],
-    he: ['לבן', 'לבנה', 'לבנים', 'לבנות', 'שנהב', ' שמנת', 'לבנבן']
+    en: ['white', 'ivory', 'cream', 'off-white', 'bone', 'vanilla'],
+    he: ['לבן', 'לבנה', 'לבנים', 'לבנות', 'שנהב', ' שמנת', 'לבנבן', ' וניל', 'ונילה']
   },
   [Color.RED]: {
     en: ['red', 'crimson', 'scarlet', 'ruby', 'cherry'],
-    he: ['אדום', 'אדומה', 'אדומים', 'אדומות', 'ארגמן', 'אדמדם']
+    he: ['אדום', 'אדומה', 'אדומים', 'אדומות', 'ארגמן', 'אדמדם', 'טרקוטה']
   },
   [Color.BLUE]: {
     en: ['blue', 'azure', 'cobalt', 'sapphire'],
     he: ['כחול', 'כחולה', 'כחולים', 'כחולות', 'תכלת', 'כחלחל']
   },
   [Color.GREEN]: {
-    en: ['green', 'emerald', 'jade', 'forest', 'mint'],
-    he: ['ירוק', 'ירוקה', 'ירוקים', 'ירוקות', 'אמרלד', 'ירקרק']
+    en: ['green', 'emerald', 'jade', 'forest', 'mint', 'pistachio'],
+    he: ['ירוק', 'ירוקה', 'ירוקים', 'ירוקות', 'אמרלד', 'ירקרק', 'פיסטוק']
   },
   [Color.YELLOW]: {
     en: ['yellow', 'golden', 'amber', 'lemon', 'canary'],
-    he: ['צהוב', 'צהובה', 'צהובים', 'צהובות', 'צהבהב']
+    he: ['צהוב', 'צהובה', 'צהובים', 'צהובות', 'צהבהב', ' אמבר']
   },
   [Color.PINK]: {
     en: ['pink', 'rose', 'blush', 'fuchsia', 'magenta'],
@@ -384,7 +394,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.MOCHA]: {
     en: ['mocha', 'coffee'],
-    he: [' מוקה'],
+    he: [' מוקה', 'מוקה-בהיר'],
   },
   [Color.STONE]: {
     en: ['stone', 'grey', 'gray', 'silver', 'charcoal', 'slate'],
@@ -443,7 +453,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
     he: ['קאקי', 'בז ירוק', 'צבאי']
   },
   [Color.CAMEL]: {
-    en: ['camel', 'tan', 'beige brown'],
+    en: ['camel', 'beige brown'],
     he: ['חום בהיר', 'בז חום', 'קאמל']
   },
   [Color.MUSTARD]: {
@@ -488,7 +498,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.TAUPE]: {
     en: ['taupe', 'grey brown', 'mushroom'],
-    he: ['אפור חום', 'פטריה']
+    he: ['אפור חום', 'צבע פטרייה', 'טאופ', 'צבע פטריה']
   },
   [Color.GOLD]: {
     en: ['gold', 'golden', 'yellow gold'],
@@ -515,7 +525,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
     he: ['ורוד', 'סומק']
   },
   [Color.TAN]: {
-    en: ['tan', 'beige', 'nude'],
+    en: [' tan ', 'beige', 'nude'],
     he: ['חום בהיר', 'בז', 'עירום']
   },
   [Color.NUDE]: {
@@ -524,7 +534,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.BRONZE]: {
     en: ['bronze', 'brown gold', 'copper brown'],
-    he: ['ארד', 'חום זהב', 'נחושת חום']
+    he: ['ארד', 'חום זהב', 'נחושת חום', 'שמפניה', 'שמפנייה']
   },
   [Color.STRIPED]: {
     en: ['striped', 'stripes', 'pinstripe'],
@@ -621,6 +631,11 @@ Object.entries(COLOR_SEARCH_KEYWORDS_MAP).forEach(([color, synonyms]) => {
 
 // Colors to ignore (not actual colors or too generic)
 export const COLORS_TO_IGNORE = new Set([
+  "ג'ינג'ר",
+  "ג׳ינג׳ר",
+  'דמוי-עץ', // ?
+  'דמוי עץ',
+  'טבעי',
   'color',
   'צבע',
   'multicolor',
