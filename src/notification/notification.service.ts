@@ -82,6 +82,17 @@ export class NotificationService {
       return;
     }
 
+    console.log("Creating notification for price change", {
+      productId,
+      oldPrice,
+      newPrice,
+      // priceChange,
+      // priceChangePercent,
+      changeType,
+      // changeAmount,
+      // favouriteUsers,
+    });
+
     const userIds = favouriteUsers.map((f) => f.userId);
     const usersWithFavourite = await this.userRepository
       .createQueryBuilder('user')

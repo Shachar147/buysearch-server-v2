@@ -28,7 +28,7 @@ export class Notification {
   @Column({ nullable: true })
   seenAt: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt: Date;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
