@@ -59,6 +59,30 @@ const CATEGORIES: CategoryType[] = [
     gender: 'Women',
     url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=women-accessories&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dwomen-accessories%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
   },
+  {
+    id: 'kids 8-16',
+    name: 'New',
+    gender: 'Kids',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=kids-kids&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dkids-kids%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  },
+  {
+    id: 'kids 4-8',
+    name: 'New',
+    gender: 'Kids',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=kids-children&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dkids-children%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  }
+  {
+    id: 'kids 0-4',
+    name: 'New',
+    gender: 'Babies',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=kids-infants&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dkids-infants%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  },
+  {
+    id: 'kids-accessories',
+    name: Category.ACCESSORIES,
+    gender: 'Kids',
+    url: 'https://www.adidas.co.il/on/demandware.store/Sites-adidas-IL-Site/he_IL/Search-UpdateGrid?cgid=kids-accessories&pmin=0.01&searchtrigger=shownext&start=0&sz=1000&selectedUrl=https%3A%2F%2Fwww.adidas.co.il%2Fon%2Fdemandware.store%2FSites-adidas-IL-Site%2Fhe_IL%2FSearch-UpdateGrid%3Fcgid%3Dkids-accessories%26pmin%3D0.01%26searchtrigger%3Dshownext%26start%3D24%26sz%3D24',
+  }
 ];
 
 const BASE_URL = 'https://www.adidas.co.il';

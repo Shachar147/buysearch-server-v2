@@ -16,7 +16,7 @@ async function main() {
   const productService = app.get(ProductService);
 
   // Fetch all categories (adjust params as needed)
-  const { data: dbCategories } = await categoryService.findAll(0, 1000, undefined);
+  const { data: dbCategories } = await categoryService.findAll(0, 1000000000, undefined);
   const dbCategoryNames = dbCategories.map((c: any) => c.name.trim());
 
   // Fetch all brands

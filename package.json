@@ -56,6 +56,7 @@
     "scrape:ksp": "npx ts-node -r tsconfig-paths/register src/scrapers/ksp_scraper.ts",
     "scrape:brenda": "npx ts-node -r tsconfig-paths/register src/scrapers/brenda_scraper.ts",
     "check:categories": "ts-node --transpile-only scripts/check-db-categories-vs-enum-nest.ts",
+    "check:colors": "ts-node --transpile-only scripts/check-db-colors-vs-enum-nest.ts",
     "migrate:scrapers": "node scripts/migrate-scrapers.js",
     "start:old": "nest start",
     "start:dev": "nest start --watch",
