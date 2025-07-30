@@ -4,7 +4,7 @@ import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
 import { Product, calcSalePercent, normalizeBrandName, normalizeCategories } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
-import { extractColorsWithHebrew } from 'src/color.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 export class HamashbirScraper extends BaseScraper {

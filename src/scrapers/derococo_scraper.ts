@@ -3,7 +3,7 @@ import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
 import { Product, calcSalePercent } from './base/scraper_utils';
 import { fetchPageWithBrowser } from './base/browser-helpers';
 import { Category } from 'src/category.constants';
-import { extractColors } from 'src/color.constants';
+import { extractColors } from '../color.constants';
 
 const CATEGORIES: BaseCategory[] = [
   // Main Categories

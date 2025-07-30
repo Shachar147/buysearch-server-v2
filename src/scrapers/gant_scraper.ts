@@ -6,7 +6,7 @@ import { Product, normalizeBrandName } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 import { ucfirst } from '../search/search.utils';
-import { extractColorsWithHebrew } from 'src/color.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [

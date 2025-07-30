@@ -17,7 +17,7 @@ import { Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, prefixHttp, normalizeBrandName } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
-import { extractColors } from 'src/color.constants';
+import { extractColors } from '../color.constants';
 dotenv.config();
 
 // --- Type definitions ---

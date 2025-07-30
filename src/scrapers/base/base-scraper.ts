@@ -4,8 +4,9 @@
 import { SourceService } from 'src/source/source.service';
 import { ProductService } from '../../product/product.service';
 import { ScrapingHistoryService } from '../../scraping-history/scraping-history.service';
-import { Product, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, processProducts, updateSourceScraperPath } from './scraper_utils';
-import { getBrowserManager, cleanupBrowserManager, setupEmergencyCleanup } from './browser-manager';
+import { Product, createAppContext, createScrapingSession, extractCategory, finishScrapingSession, normalizeCategories, normalizeColors, processProducts, updateSourceScraperPath } from './scraper_utils';
+import { getBrowserManager, setupEmergencyCleanup } from './browser-manager';
+import { extractColors } from '../../color.constants';
 
 export interface Category {
   id: string | number;
@@ -261,9 +262,14 @@ export abstract class BaseScraper {
     //      rawCategories: data.categories, extractedFromTitle, categories
     //  });
 
+    let title = data.title;
+    const extractedColorsFromTitle = extractColors(title, [], 'createProduct');
+     const colors = normalizeColors(Array.from(new Set([...data.colors, ...extractedColorsFromTitle])));
+
     return {
       ...data,
       categories,
+      colors,
       isSellingFast: data.isSellingFast ?? false,
       source: this.source,
     };

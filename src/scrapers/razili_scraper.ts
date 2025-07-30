@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { Category } from '../category.constants';
 import { Product, calcSalePercent, normalizeBrandName, normalizeCategories } from './base/scraper_utils';
-import { extractColorsWithHebrew } from 'src/color.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 import * as dotenv from 'dotenv';
 dotenv.config();
 

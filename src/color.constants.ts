@@ -52,6 +52,7 @@ export enum Color {
   BRONZE = "Bronze", // distinct from gold and copper; good addition.
   MOCHA = "Mocha",
   STONE = "Stone",
+  INDIGO = "Indigo",
 
   // patterns - These are patterns, not colors, but very useful for a fashion filter system.
   STRIPED = "Stripped", 
@@ -129,6 +130,7 @@ export const colorNameToColor: Record<Color, string> = {
   [Color.TAN]: '#D2B48C',
   [Color.NUDE]: '#FAD6BF',
   [Color.BRONZE]: '#CD7F32',
+  [Color.INDIGO]: '#4B0082',
 
   // Patterns (approximate or symbolic)
   [Color.STRIPED]: 'https://buysearch.s3.eu-north-1.amazonaws.com/colors/stripped.jpeg', // light grey placeholder
@@ -169,7 +171,7 @@ export const colorGroups = {
     yellows: [Color.YELLOW, Color.GOLD],
     greens: [Color.GREEN, Color.SAGE, Color.TEAL, Color.TURQUOISE, Color.MINT, Color.OLIVE, Color.EMERLAD],
     blues: [Color.BLUE, Color.NAVY, Color.LIGHT_BLUE, Color.SKY_BLUE, Color.DARK_BLUE, Color.ROYAL_BLUE],
-    purples: [Color.PURPLE, Color.LAVENDER, Color.LILAC],
+    purples: [Color.PURPLE, Color.LAVENDER, Color.LILAC, Color.INDIGO],
     neutrals: [Color.BLACK, Color.WHITE, Color.GREY, Color.CHARCOAL, Color.BEIGE, Color.IVORY, Color.OFFWHITE, Color.CREAM, Color.TAUPE, Color.STONE],
     browns: [Color.BROWN, Color.KHAKI, Color.CAMEL, Color.TAN, Color.NUDE, Color.MOCHA],
     denims: [Color.DENIM, Color.LIGHT_DENIM, Color.DARK_DENIM, Color.WASHED_DENIM, Color.RIPPED_DENIM],
@@ -342,39 +344,39 @@ export const COLOR_NORMALIZATION_MAP: Record<string, (Color|string)[]> = {
 export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   [Color.BLACK]: {
     en: ['black', 'ebony', 'onyx', 'coal', 'jet'],
-    he: ['שחור', 'שחורה', 'שחורים', 'שחורות']
+    he: ['שחור', 'שחורה', 'שחורים', 'שחורות', 'שחרחר']
   },
   [Color.WHITE]: {
     en: ['white', 'ivory', 'cream', 'off-white', 'bone'],
-    he: ['לבן', 'לבנה', 'לבנים', 'לבנות', 'שנהב', ' שמנת']
+    he: ['לבן', 'לבנה', 'לבנים', 'לבנות', 'שנהב', ' שמנת', 'לבנבן']
   },
   [Color.RED]: {
     en: ['red', 'crimson', 'scarlet', 'ruby', 'cherry'],
-    he: ['אדום', 'אדומה', 'אדומים', 'אדומות', 'ארגמן']
+    he: ['אדום', 'אדומה', 'אדומים', 'אדומות', 'ארגמן', 'אדמדם']
   },
   [Color.BLUE]: {
-    en: ['blue', 'azure', 'cobalt', 'indigo', 'sapphire'],
-    he: ['כחול', 'כחולה', 'כחולים', 'כחולות', 'תכלת']
+    en: ['blue', 'azure', 'cobalt', 'sapphire'],
+    he: ['כחול', 'כחולה', 'כחולים', 'כחולות', 'תכלת', 'כחלחל']
   },
   [Color.GREEN]: {
     en: ['green', 'emerald', 'jade', 'forest', 'mint'],
-    he: ['ירוק', 'ירוקה', 'ירוקים', 'ירוקות', 'אמרלד']
+    he: ['ירוק', 'ירוקה', 'ירוקים', 'ירוקות', 'אמרלד', 'ירקרק']
   },
   [Color.YELLOW]: {
     en: ['yellow', 'golden', 'amber', 'lemon', 'canary'],
-    he: ['צהוב', 'צהובה', 'צהובים', 'צהובות', 'זהב']
+    he: ['צהוב', 'צהובה', 'צהובים', 'צהובות', 'צהבהב']
   },
   [Color.PINK]: {
     en: ['pink', 'rose', 'blush', 'fuchsia', 'magenta'],
-    he: ['ורוד', 'ורודה', 'ורודים', 'ורודות', 'ורוד בהיר']
+    he: ['ורוד', 'ורודה', 'ורודים', 'ורודות', 'ורוד בהיר', 'ורדרד']
   },
   [Color.PURPLE]: {
     en: ['purple', 'violet', 'lavender', 'plum', 'amethyst'],
-    he: ['סגול', 'סגולה', 'סגולים', 'סגולות', 'לילך']
+    he: ['סגול', 'סגולה', 'סגולים', 'סגולות', 'לילך', 'סגלגל']
   },
   [Color.ORANGE]: {
     en: ['orange', 'tangerine', 'peach', 'coral', 'apricot'],
-    he: ['כתום', 'כתומה', 'כתומים', 'כתומות', 'אפרסק']
+    he: ['כתום', 'כתומה', 'כתומים', 'כתומות', 'אפרסק', 'כתמתם']
   },
   [Color.BROWN]: {
     en: ['brown', 'chocolate', 'coffee', 'caramel'],
@@ -398,11 +400,11 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.NAVY]: {
     en: ['navy', 'navy blue', 'marine', 'midnight blue'],
-    he: ['כחול כהה', 'כחול ימי', 'כחול חצות']
+    he: ['כחול כהה', 'כחול ימי', 'כחול חצות', 'כחול רויאלי', 'כחול מלכותי', 'כחול רויאל']
   },
   [Color.LIGHT_BLUE]: {
     en: ['light blue', 'sky blue', 'baby blue', 'powder blue'],
-    he: ['כחול בהיר', 'כחול שמיים', 'כחול תינוק']
+    he: ['כחול בהיר', 'כחול שמיים', 'כחול תינוק', 'כחלחל', 'תכלת']
   },
   [Color.SKY_BLUE]: {
     en: ['sky blue', 'azure', 'celestial blue'],
@@ -434,7 +436,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.OLIVE]: {
     en: ['olive', 'olive green', 'army green'],
-    he: ['זית', 'ירוק זית', 'ירוק צבאי']
+    he: ['זית', 'ירוק זית', 'ירוק צבאי', 'ירקרק']
   },
   [Color.KHAKI]: {
     en: ['khaki', 'beige green', 'military'],
@@ -462,11 +464,11 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.LAVENDER]: {
     en: ['lavender', 'light purple', 'lilac'],
-    he: ['לילך', 'סגול בהיר', 'לילך']
+    he: ['לילך', 'סגול בהיר', 'לילך', 'סגלגל']
   },
   [Color.LILAC]: {
     en: ['lilac', 'light purple', 'lavender'],
-    he: ['לילך', 'סגול בהיר', 'לילך']
+    he: ['לילך', 'סגול בהיר', 'לילך', 'סגלגל']
   },
   [Color.CHARCOAL]: {
     en: ['charcoal', 'dark grey', 'slate'],
@@ -482,7 +484,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.CREAM]: {
     en: ['cream', 'off white', 'ivory'],
-    he: ['קרם', 'לבן עמום', 'שנהב']
+    he: ['קרם', 'לבן עמום', 'שנהב', 'לבנבן']
   },
   [Color.TAUPE]: {
     en: ['taupe', 'grey brown', 'mushroom'],
@@ -494,7 +496,7 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
   },
   [Color.SILVER]: {
     en: ['silver', 'metallic grey', 'platinum'],
-    he: ['צבע כסף', 'אפור מתכתי', 'פלטינה', 'כסוף', 'אפרפר', 'מטאלי']
+    he: ['צבע כסף', 'אפור מתכתי', 'פלטינה', 'כסוף', 'אפרפר']
   },
   [Color.COPPER]: {
     en: ['copper', 'orange brown', 'rust'],
@@ -600,6 +602,10 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
     en: ['transparent', 'clear', 'see through'],
     he: ['שקוף']
   },
+  [Color.INDIGO]: {
+    en: ['indigo', 'dark purple', 'deep purple'],
+    he: ['אינדיגו', 'סגול כהה']
+  }
 };
 
 // Build keyword to color mapping
@@ -917,7 +923,7 @@ export const COLORS_TO_IGNORE = new Set([
 export function extractColors(title: string, apiColors: string[] = [], source?: string): string[] {
   if (!title) return [];
   
-  const lowerTitle = title.toLowerCase().replace('tailored', '');
+  const lowerTitle = title.toLowerCase();
   const colorsSet = new Set<string>();
   
   // Add API colors first (if provided)
@@ -930,7 +936,7 @@ export function extractColors(title: string, apiColors: string[] = [], source?: 
   
   // Add keyword-based detection from title
   Object.keys(COLOR_NORMALIZATION_MAP).forEach(keyword => {
-    if (lowerTitle.includes(keyword.toLowerCase())) {
+    if (lowerTitle.includes(` ${keyword.toLowerCase()}`) || lowerTitle.includes(`${keyword.toLowerCase()} `) || lowerTitle == keyword.toLowerCase()) {
       const mappedColors = COLOR_NORMALIZATION_MAP[keyword];
       mappedColors.forEach(color => {
         if (typeof color === 'string' && Object.values(Color).includes(color as Color)) {
@@ -938,6 +944,15 @@ export function extractColors(title: string, apiColors: string[] = [], source?: 
         }
       });
     }
+  });
+
+  Object.keys(COLOR_SEARCH_KEYWORDS_MAP).forEach((color) => {
+    const synonyms = [...COLOR_SEARCH_KEYWORDS_MAP[color].he, ...COLOR_SEARCH_KEYWORDS_MAP[color].en];
+    synonyms.forEach(synonym => {
+      if (lowerTitle.includes(synonym.toLowerCase())) {
+        colorsSet.add(color);
+      }
+    });
   });
   
   return Array.from(colorsSet).filter(color => color && !COLORS_TO_IGNORE.has(color.toLowerCase()));

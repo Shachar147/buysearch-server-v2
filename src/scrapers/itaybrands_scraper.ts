@@ -4,7 +4,7 @@ import { Category as CategoryType } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
-import { extractColorsWithHebrew } from 'src/color.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 import * as cheerio from 'cheerio';
 dotenv.config();
 

@@ -4,7 +4,7 @@ import { Product, calcSalePercent, normalizeBrandName } from './base/scraper_uti
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 import { fetchPageWithBrowser } from './base/browser-helpers';
-import { extractColorsWithHebrew } from 'src/color.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [

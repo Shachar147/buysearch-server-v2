@@ -190,6 +190,8 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
   'pants': [Category.PANTS],
   'מכנסיים': [Category.PANTS],
   'dresses': [Category.DRESSES],
+  'dress': [Category.DRESSES],
+  'isla top': [Category.TOPS],
   'שמלות': [Category.DRESSES],
   'skirts': [Category.SKIRTS],
   'חצאיות': [Category.SKIRTS],

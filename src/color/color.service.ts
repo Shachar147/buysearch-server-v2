@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Color } from './color.entity';
 import { PAGINATION_LIMIT } from '../consts';
+import { Color as ColorEnum } from '../color.constants';
 
 @Injectable()
 export class ColorService {
@@ -99,5 +100,118 @@ export class ColorService {
   public async findAllNoPagination(): Promise<Color[]> {
     return this.colorsRepository.find({ where: { isActive: true }, order: { id: 'ASC' } });
   }
-  
+
+  async analyzeNonStandardColors() {
+    // Get all colors from database
+    const allColors = await this.colorsRepository.find({ 
+      where: { isActive: true },
+      relations: ['products', 'products.source']
+    });
+
+    const standardColors = Object.values(ColorEnum);
+    const nonStandardColors: any[] = [];
+
+    for (const color of allColors) {
+      // Check if color name is not in the standard enum
+      if (!standardColors.includes(color.name as ColorEnum)) {
+        const products = color.products || [];
+        const sourceCounts: { [key: string]: number } = {};
+        
+        // Count products by source
+        products.forEach(product => {
+          const sourceName = product.source?.name || 'Unknown';
+          sourceCounts[sourceName] = (sourceCounts[sourceName] || 0) + 1;
+        });
+
+        // Suggest a standard color name based on similarity
+        const suggestedColor = this.suggestStandardColor(color.name);
+
+        nonStandardColors.push({
+          nonStandardColorName: color.name,
+          amountOfProducts: products.length,
+          sources: sourceCounts,
+          suggestedName: suggestedColor
+        });
+      }
+    }
+
+    // Sort by amount of products (descending)
+    return nonStandardColors.sort((a, b) => b.amountOfProducts - a.amountOfProducts);
+  }
+
+  private suggestStandardColor(colorName: string): string {
+    const lowerColorName = colorName.toLowerCase();
+    const standardColors = Object.values(ColorEnum);
+
+    // Direct matches
+    for (const standardColor of standardColors) {
+      if (lowerColorName.includes(standardColor.toLowerCase())) {
+        return standardColor;
+      }
+    }
+
+    // Check for common color keywords
+    const colorKeywords: { [key: string]: string } = {
+      'red': 'Red',
+      'blue': 'Blue',
+      'green': 'Green',
+      'yellow': 'Yellow',
+      'pink': 'Pink',
+      'purple': 'Purple',
+      'orange': 'Orange',
+      'brown': 'Brown',
+      'grey': 'Grey',
+      'gray': 'Grey',
+      'black': 'Black',
+      'white': 'White',
+      'beige': 'Beige',
+      'navy': 'Navy',
+      'olive': 'Olive',
+      'khaki': 'Khaki',
+      'camel': 'Camel',
+      'mustard': 'Mustard',
+      'coral': 'Coral',
+      'salmon': 'Salmon',
+      'bordeaux': 'Bordeaux',
+      'lavender': 'Lavender',
+      'lilac': 'Lilac',
+      'charcoal': 'Charcoal',
+      'ivory': 'Ivory',
+      'cream': 'Cream',
+      'taupe': 'Taupe',
+      'gold': 'Gold',
+      'silver': 'Silver',
+      'copper': 'Copper',
+      'emerald': 'Emerald',
+      'rose': 'Rose',
+      'tan': 'Tan',
+      'nude': 'Nude',
+      'bronze': 'Bronze',
+      'mocha': 'Mocha',
+      'stone': 'Stone',
+      'denim': 'Denim',
+      'striped': 'Striped',
+      'floral': 'Floral',
+      'checked': 'Checked',
+      'plaid': 'Plaid',
+      'camouflage': 'Camouflage',
+      'leopard': 'Leopard',
+      'zebra': 'Zebra',
+      'polka': 'Polka Dot',
+      'pinstripe': 'Pinstripe',
+      'shiny': 'Shiny',
+      'glitter': 'Glitter',
+      'metallic': 'Metallic',
+      'multicolor': 'Multicolor',
+      'transparent': 'Transparent'
+    };
+
+    for (const [keyword, standardColor] of Object.entries(colorKeywords)) {
+      if (lowerColorName.includes(keyword)) {
+        return standardColor;
+      }
+    }
+
+    return 'Unknown';
+  }
 } 

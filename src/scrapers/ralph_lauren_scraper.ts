@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio';
 import { BaseScraper, Category as BaseCategory } from './base/base-scraper';
 import { Product, calcSalePercent, normalizeBrandName, prefixHttp } from './base/scraper_utils';
 import { Category } from '../category.constants';
-import { extractColors } from 'src/color.constants';
+import { extractColors } from '../color.constants';
 
 // V todo: fix sale price
 // todo: fix ralph lauren blocking "are you robot"

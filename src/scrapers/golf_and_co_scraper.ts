@@ -3,7 +3,7 @@ import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { calcSalePercent, Product } from './base/scraper_utils';
 import { Category } from '../category.constants';
 import { fetchPageWithBrowser } from './base/browser-helpers';
-import { extractColors } from 'src/color.constants';
+import { extractColors } from '../color.constants';
 
 // NOTE: if there's a range (min, max), we currently take the max.
 // we can change it by using minPrice and oldminPrice

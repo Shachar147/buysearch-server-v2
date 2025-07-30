@@ -16,7 +16,7 @@ import { Product, calcSalePercent, normalizeBrandName } from './base/scraper_uti
 import * as dotenv from 'dotenv';
 import { Category } from '../category.constants';
 import { fetchPageWithBrowser } from './base/browser-helpers';
-import { extractColorsWithHebrew } from 'src/color.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 const MEN_FILTER = '?filter.p.m.custom.gender=%D7%92%D7%91%D7%A8%D7%99%D7%9D';

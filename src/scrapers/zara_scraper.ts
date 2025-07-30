@@ -5,7 +5,7 @@ import { Category } from '../category.constants';
 import { Product, calcSalePercent, normalizeBrandName, extractCategory } from './base/scraper_utils';
 import { fetchPageWithBrowser, handleCookieConsent } from './base/browser-helpers';
 import * as dotenv from 'dotenv';
-import { extractColorsWithHebrew } from 'src/color.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 dotenv.config();
 
 const CATEGORIES: CategoryType[] = [

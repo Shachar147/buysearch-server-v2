@@ -3,7 +3,7 @@ import { BaseScraper, Category as CategoryType } from './base/base-scraper';
 import { calcSalePercent, Product } from './base/scraper_utils';
 import { fetchPageWithBrowser } from './base/browser-helpers';
 import { Category } from '../category.constants';
-import { extractColorsWithHebrew } from 'src/color.constants';
+import { extractColorsWithHebrew } from '../color.constants';
 
 const BASE_URL = 'https://bananhot.co.il';
 

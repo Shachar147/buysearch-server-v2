@@ -57,4 +57,9 @@ export class ColorController {
       colorSynonyms: getColorSynonyms()
     };
   }
+
+  @Get('analysis/non-standard')
+  async getNonStandardColors() {
+    return await this.colorService.analyzeNonStandardColors();
+  }
 } 
