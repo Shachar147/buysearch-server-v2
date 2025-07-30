@@ -9,9 +9,25 @@ export interface SecurityConfig {
   rateLimit: {
     windowMs: number;
     max: number;
+    skipSuccessfulRequests: boolean;
+    skipFailedRequests: boolean;
+  };
+  slowDown: {
+    windowMs: number;
+    delayAfter: number;
+    delayMs: number;
+  };
+  antiBot: {
+    enabled: boolean;
+    userAgentPatterns: string[];
+    suspiciousPatterns: string[];
   };
   admin: {
     username: string;
+  };
+  api: {
+    maxRequestSize: string;
+    timeout: number;
   };
 }
 
@@ -46,9 +62,30 @@ export function getSecurityConfig(): SecurityConfig {
     rateLimit: {
       windowMs: 15 * 60 * 1000, // 15 minutes
       max: 100, // limit each IP to 100 requests per windowMs
+      skipSuccessfulRequests: false,
+      skipFailedRequests: false,
+    },
+    slowDown: {
+      windowMs: 15 * 60 * 1000, // 15 minutes
+      delayAfter: 50, // allow 50 requests per 15 minutes, then...
+      delayMs: 500, // begin adding 500ms of delay per request above 50
+    },
+    antiBot: {
+      enabled: process.env.ANTI_BOT_ENABLED !== 'false',
+      userAgentPatterns: [
+        'bot', 'crawler', 'spider', 'scraper', 'curl', 'wget', 'python', 'java',
+        'headless', 'phantom', 'selenium', 'puppeteer', 'playwright'
+      ],
+      suspiciousPatterns: [
+        'no-user-agent', 'empty-user-agent', 'default-user-agent'
+      ],
     },
     admin: {
       username: adminUsername,
+    },
+    api: {
+      maxRequestSize: '10mb',
+      timeout: 30000, // 30 seconds
     },
   };
 }
