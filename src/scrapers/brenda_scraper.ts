@@ -3,6 +3,7 @@ import { Category as CategoryType } from './base/base-scraper';
 import { Product, normalizeBrandName } from './base/scraper_utils';
 import * as cheerio from 'cheerio';
 import { Category } from '../category.constants';
+import { fetchPageWithBrowser } from './base/browser-helpers';
 import axios from 'axios';
 
 // Define categories for Brenda Studio based on their website structure
@@ -131,7 +132,7 @@ export class BrendaScraper extends BaseScraper {
         const url = this.buildUrl(category, page);
         this.logProgress(`Scraping ${category.name} page ${page}: ${url}`);
 
-        const html = await this.fetchPage(url);
+        const html = await fetchPageWithBrowser(url);
         const $ = cheerio.load(html);
 
         const productElements = $('.ProductItem');
