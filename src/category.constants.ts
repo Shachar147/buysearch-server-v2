@@ -85,6 +85,8 @@ export enum Category {
   ACCESSORIES = "Accessories",
   BAGS = "Bags",
   BACKPACKS = "Backpacks",
+  SUITCASES = "Suitcases",
+  HAND_BAGS = "Handbags",
   LAPTOP_BAGS = "Laptop Bags",
   SIDE_BAGS = "Side Bags",
   TRAVEL_BAGS = "Travel Bags",
@@ -701,6 +703,12 @@ export const CATEGORY_NORMALIZATION_MAP: Record<string, (Category|string)[]> = {
     'כריות גן': [Category.HOME_OUTDOOR_ACCESSORIES],
     'כריות-חוץ': [Category.HOME_OUTDOOR_ACCESSORIES],
     'כריות-גן': [Category.HOME_OUTDOOR_ACCESSORIES],
+    'מזוודות': [Category.SUITCASES],
+    'מזוודה': [Category.SUITCASES],
+    'מזוודת': [Category.SUITCASES],
+    'תיק יד': [Category.HAND_BAGS],
+    'תיקי יד': [Category.HAND_BAGS],
+    'תיק-יד': [Category.HAND_BAGS],
 };
 
 // --- Category Synonyms Map ---
@@ -895,7 +903,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.BOOTS]: {
     en: ['boot', 'boots'],
-    he: ['מגף', 'מגפיים']
+    he: ['מגף', 'מגפיים', 'מגפי ']
   },
   [Category.SANDALS]: {
     en: ['sandal', 'sandals'],
@@ -939,7 +947,7 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   },
   [Category.LAPTOP_BAGS]: {
     en: ['laptop bag', 'laptop bags'],
-    he: ['תיק למחשב', 'תיקי מחשב']
+    he: ['תיק למחשב', 'תיקי מחשב', 'תיק למחשב נייד', 'תיק למחשב-נייד', 'תיקים למחשב', 'תיקי מחשב']
   },
   [Category.SIDE_BAGS]: {
     en: ['side bag', 'side bags', 'crossbody', 'cross body'],
@@ -1308,6 +1316,14 @@ export const CATEGORY_SEARCH_KEYWORDS_MAP: CategorySynonyms = {
   [Category.HOME_OUTDOOR_ACCESSORIES]: {
     en: ["outdoor accessories", "garden accessories", "outdoor decor", "garden decor", "outdoor decoration", "garden decoration"],
     he: ["אביזרי גן", "אביזרי גן", "אביזרי גן", "אביזרי גן", "אביזרי גן", "אביזרי גן"]
+  },
+  [Category.SUITCASES]: {
+    en: ["suitcase", "suitcases"],
+    he: ["מזוודה", "מזוודות", 'טרולי', 'מזוודת']
+  },
+  [Category.HAND_BAGS]: {
+    en: ['handbag', 'handbags'],
+    he: ['תיק יד', 'תיקי יד', 'תיק-יד', 'תיק לפטופ', 'תיקי לפטופ', 'תיק למחשב נייד', 'תיק למחשב-נייד']
   }
 };
 
