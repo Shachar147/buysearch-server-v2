@@ -24,7 +24,6 @@ export enum Color {
   DARK_BLUE = "Dark Blue",
   ROYAL_BLUE = "Royal Blue", // distinct and common in fashion.
   SAGE = "Sage", // trendy muted green, popular in fashion/home.
-  TEAL = "Teal",
   TURQUOISE = "Turquoise",
   MINT = "Mint",
   OLIVE = "Olive",
@@ -104,7 +103,6 @@ export const colorNameToColor: Record<Color, string> = {
   [Color.DARK_BLUE]: '#00008B',
   [Color.ROYAL_BLUE]: '#4169E1',
   [Color.SAGE]: '#B2AC88',
-  [Color.TEAL]: '#008080',
   [Color.TURQUOISE]: '#40E0D0',
   [Color.MINT]: '#98FF98',
   [Color.OLIVE]: '#808000',
@@ -169,7 +167,7 @@ export const colorGroups = {
     pinks: [Color.PINK, Color.BABY_PINK],
     oranges: [Color.ORANGE, Color.MUSTARD, Color.BRONZE, Color.COPPER],
     yellows: [Color.YELLOW, Color.GOLD],
-    greens: [Color.GREEN, Color.SAGE, Color.TEAL, Color.TURQUOISE, Color.MINT, Color.OLIVE, Color.EMERLAD],
+    greens: [Color.GREEN, Color.SAGE, Color.TURQUOISE, Color.MINT, Color.OLIVE, Color.EMERLAD],
     blues: [Color.BLUE, Color.NAVY, Color.LIGHT_BLUE, Color.SKY_BLUE, Color.DARK_BLUE, Color.ROYAL_BLUE],
     purples: [Color.PURPLE, Color.LAVENDER, Color.LILAC, Color.INDIGO],
     neutrals: [Color.BLACK, Color.WHITE, Color.GREY, Color.CHARCOAL, Color.BEIGE, Color.IVORY, Color.OFFWHITE, Color.CREAM, Color.TAUPE, Color.STONE],
@@ -229,7 +227,7 @@ export const COLOR_NORMALIZATION_MAP: Record<string, (Color|string)[]> = {
   'dark blue': [Color.DARK_BLUE],
   'royal blue': [Color.ROYAL_BLUE],
   'sage': [Color.SAGE],
-  'teal': [Color.TEAL],
+  'teal': [Color.TURQUOISE],
   'turquoise': [Color.TURQUOISE],
   'mint': [Color.MINT],
   'olive': [Color.OLIVE],
@@ -346,6 +344,21 @@ export const COLOR_NORMALIZATION_MAP: Record<string, (Color|string)[]> = {
   'טאופ': [Color.TAUPE],
   'מוקה בהיר': [Color.MOCHA],
   'טרקוטה': [Color.RED],
+  'team navy blue 2': [Color.NAVY],
+  'navy blue stripe': [Color.NAVY, Color.STRIPED],
+  'red and navy blue': [Color.RED, Color.NAVY],
+  'navy blue print': [Color.NAVY],
+  'navy blue dot': [Color.NAVY, Color.POLKA_DOT],
+  'navy blue pattern': [Color.NAVY],
+  'white and navy blue': [Color.WHITE, Color.NAVY],
+  'navy blue floral': [Color.NAVY, Color.FLORAL],
+  'navy blue and cream': [Color.NAVY, Color.CREAM],
+  'navy blue / red stripe': [Color.NAVY, Color.RED, Color.STRIPED],
+  'navy blue check': [Color.NAVY, Color.CHECKED],
+  'navy blue plaid': [Color.NAVY, Color.PLAID],
+  'navy blue and red': [Color.NAVY, Color.RED],
+  'navy blue and heather gray stripe': [Color.NAVY, Color.GREY, Color.STRIPED],
+  'navy blue/heather gray': [Color.NAVY, Color.GREY],
 };
 
 /**
@@ -432,13 +445,9 @@ export const COLOR_SEARCH_KEYWORDS_MAP: ColorSynonyms = {
     en: ['sage', 'sage green', 'muted green'],
     he: ['מרווה', 'ירוק מרווה', 'ירוק עמום']
   },
-  [Color.TEAL]: {
-    en: ['teal', 'teal blue', 'blue green'],
-    he: ['טורקיז כהה', 'כחול ירוק']
-  },
   [Color.TURQUOISE]: {
-    en: ['turquoise', 'aqua', 'cyan'],
-    he: ['טורקיז', 'אקווה', 'ציאן']
+    en: ['turquoise', 'aqua', 'cyan', 'teal', 'teal blue', 'blue green'],
+    he: ['טורקיז', 'אקווה', 'ציאן', 'טורקיז כהה', 'כחול ירוק']
   },
   [Color.MINT]: {
     en: ['mint', 'mint green', 'pastel green'],
